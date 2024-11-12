@@ -1,0 +1,45 @@
+import express from "express";
+import morgan from "morgan";
+import dotenv from "dotenv";
+import { dbConnect } from "./mongo/dbConnect.js";
+import authRoutes from "./routes/authRoutes.js";
+import commentRoutes from "./routes/commentRoute.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import likeRoutes from "./routes/likeRoutes.js";
+import slangwordRoute from "./routes/slangwordRoute.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const app = express();
+dotenv.config();
+
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+app.use(morgan("combined"));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// app.use(express.static(path.join(__dirname, "../client/public")));
+app.use(express.static(path.join(__dirname, "./public")));
+dbConnect();
+
+app.use("/auth", authRoutes);
+app.use("/comments", commentRoutes);
+app.use("/blog", blogRoutes);
+app.use("/like", likeRoutes);
+app.use("/slangword", slangwordRoute);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server Connected Successfully on PORT ${process.env.PORT}`);
+});
