@@ -1,3 +1,4 @@
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,16 +10,16 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 
 const Create = () => {
-  const [images, setImages] = useState([]);
+  const [contentSections, setContentSections] = useState([
+    { type: "text", value: "" },
+  ]);
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
-  const [content, setContent] = useState("");
   const navigation = useNavigation();
 
   const createBlog = async () => {
@@ -26,30 +27,32 @@ const Create = () => {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("subTitle", subtitle);
-      formData.append("content", content);
+      formData.append("content", JSON.stringify(contentSections));
 
-      images.forEach((image) => {
-        formData.append("images", {
-          uri: image.uri,
-          type: image.mimeType,
-          name: image.fileName || image.uri.split("/").pop(),
+      contentSections
+        .filter((section) => section.type === "image")
+        .forEach((section) => {
+          formData.append("image", {
+            uri: section.value.uri,
+            type: section.value.mimeType,
+            name: section.value.fileName || section.value.uri.split("/").pop(),
+          });
         });
-      });
 
       await axios.post("/blog/createBlog", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
       setTitle("");
       setSubtitle("");
-      setContent("");
-      setImages([]);
+      setContentSections([{ type: "text", value: "" }]);
 
       Toast.show({
         type: "success",
         position: "top",
-        text1: "Yay! you just created a blog",
+        text1: "Yay! You just created a blog",
       });
 
       navigation.navigate("Home");
@@ -67,39 +70,56 @@ const Create = () => {
     }
   };
 
-  const pickImage = async () => {
-    if (Platform.OS === "android") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-        return;
-      }
+  const pickImage = useCallback(async (index) => {
+    const { status } =
+      Platform.OS === "android"
+        ? await ImagePicker.requestMediaLibraryPermissionsAsync()
+        : { status: "granted" };
 
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        if (images.length < 5) {
-          setImages([...images, result.assets[0]]);
-        } else {
-          alert("You can only upload up to 5 images.");
-        }
-      }
-    } else {
-      alert("This feature is only available on Android devices.");
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
     }
-  };
 
-  const removeImage = (index) => {
-    const updatedImages = [...images]; // Create a copy of the images array
-    updatedImages.splice(index, 1); // Remove the image at the specified index
-    setImages(updatedImages); // Update the state with the new array
-  };
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length) {
+      const newSection = { type: "image", value: result.assets[0] };
+      setContentSections((prevSections) => [
+        ...prevSections.slice(0, index + 1),
+        newSection,
+        ...prevSections.slice(index + 1),
+      ]);
+    }
+  }, []);
+
+  const addTextSection = useCallback((index) => {
+    const newSection = { type: "text", value: "" };
+    setContentSections((prevSections) => [
+      ...prevSections.slice(0, index + 1),
+      newSection,
+      ...prevSections.slice(index + 1),
+    ]);
+  }, []);
+
+  const updateText = useCallback((text, index) => {
+    setContentSections((prevSections) => {
+      const updatedSections = [...prevSections];
+      updatedSections[index] = { type: "text", value: text };
+      return updatedSections;
+    });
+  }, []);
+
+  const removeSection = useCallback((index) => {
+    setContentSections((prevSections) =>
+      prevSections.filter((_, i) => i !== index)
+    );
+  }, []);
 
   return (
     <View className="flex-1 px-6 pt-5">
@@ -107,14 +127,10 @@ const Create = () => {
         <TouchableOpacity
           className="p-1 bg-gray-800 rounded-xl"
           onPress={createBlog}
+          accessible
+          accessibilityLabel="Publish the blog"
         >
           <Text className="text-gray-50">Publish now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="p-1 bg-gray-200 rounded-xl"
-          onPress={pickImage}
-        >
-          <Ionicons name="image-outline" size={30} className="text-gray-800" />
         </TouchableOpacity>
       </View>
       <ScrollView className="flex-1">
@@ -132,32 +148,56 @@ const Create = () => {
           onChangeText={setSubtitle}
           multiline
         />
-        <TextInput
-          className="text-justify text-lg font-normal mt-3"
-          placeholder="Blog content"
-          value={content}
-          onChangeText={setContent}
-          multiline
-        />
 
-        <View className="flex-row flex-wrap mt-3 mb-3">
-          {images.map((uri, index) => (
-            <View key={index} className="relative m-1">
-              <Image
-                source={{ uri: images[index].uri }}
-                className="w-80 h-40 rounded-sm"
+        {/* Render content sections */}
+        {contentSections.map((section, index) => (
+          <View key={index} className="mb-3">
+            {section.type === "text" ? (
+              <TextInput
+                className="text-lg font-normal mt-2"
+                placeholder="Add text here..."
+                value={section.value}
+                onChangeText={(text) => updateText(text, index)}
+                multiline
               />
+            ) : (
+              <View className="relative mt-2">
+                <Image
+                  source={{ uri: section.value.uri }}
+                  className="w-80 h-40 rounded-sm"
+                />
+                <TouchableOpacity
+                  onPress={() => removeSection(index)}
+                  className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                  accessible
+                  accessibilityLabel="Remove image"
+                >
+                  <Ionicons name="close" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
+            )}
+            <View className="flex-row justify-between mt-2">
               <TouchableOpacity
-                onPress={() => removeImage(index)}
-                className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                className="bg-gray-200 rounded-xl p-2 flex-row items-center"
+                onPress={() => addTextSection(index)}
+                accessible
+                accessibilityLabel="Add text section"
               >
-                <Ionicons name="close" size={20} color="white" />
+                <Ionicons name="text-outline" size={20} />
+                <Text className="ml-2">Add Text</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-gray-200 rounded-xl p-2 flex-row items-center"
+                onPress={() => pickImage(index)}
+                accessible
+                accessibilityLabel="Add image"
+              >
+                <Ionicons name="image-outline" size={20} />
+                <Text className="ml-2">Add Image</Text>
               </TouchableOpacity>
             </View>
-          ))}
-        </View>
-
-        <View className="h-5" />
+          </View>
+        ))}
       </ScrollView>
     </View>
   );

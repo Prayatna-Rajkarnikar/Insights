@@ -6,6 +6,7 @@ import cors from "cors";
 import {
   registerUser,
   loginUser,
+  forgetPassword,
   getUser,
   getUserNumbers,
   logout,
@@ -18,6 +19,7 @@ const router = Router();
 router.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.put("/forgetPassword", forgetPassword);
 router.get("/profile", authMiddleware, getUser);
 router.post("/logout", authMiddleware, logout);
 router.get("/getTotalUser", getUserNumbers);

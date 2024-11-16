@@ -1,17 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
-import axios from "axios";
-import Toast from "react-native-toast-message";
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import logo from "../assets/Insights.png";
+import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import axios from "axios";
 
-const Register = () => {
-  const [name, setName] = useState("");
+const ForgetPassword = () => {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [verifyNewPassword, setVerifyNewPassword] = useState("");
   const [isPasswordVisible, setIspasswordVisible] = useState(false);
   const [isConfPasswordVisible, setIsConfpasswordVisible] = useState(false);
   const navigation = useNavigation();
@@ -24,24 +21,20 @@ const Register = () => {
     setIsConfpasswordVisible(!isConfPasswordVisible);
   };
 
-  const registerUser = async () => {
+  const resetPassword = async () => {
     try {
-      await axios.post("/auth/register", {
-        name,
+      await axios.put("/auth/forgetPassword", {
         email,
-        username,
-        password,
-        verifyPassword: confirmPassword,
+        newPassword,
+        verifyNewPassword,
       });
-      setName("");
       setEmail("");
-      setUsername("");
-      setPassword("");
-      setConfirmPassword("");
+      setNewPassword("");
+      setVerifyNewPassword("");
       Toast.show({
         type: "success",
         position: "bottom",
-        text1: "Register Successful",
+        text1: "Password reset successful. You can now log in",
       });
       navigation.navigate("Login");
     } catch (error) {
@@ -49,39 +42,22 @@ const Register = () => {
         type: "error",
         position: "bottom",
         text1: error.response.data.error || "Something went wrong",
-        text1Style: {
-          color: "black", // Text color for better contrast
-          fontSize: 8, // Increase font size if needed
-        },
       });
     }
   };
 
   return (
     <View className="bg-gray-50 flex-1">
-      <TouchableOpacity className="ml-5 mt-10">
-        <Ionicons name="close" size={30} />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="ml-5 mt-10"
+      >
+        <Ionicons name="arrow-back" size={30} />
       </TouchableOpacity>
-      <View className="items-end">
-        <Image source={logo} className="h-16 w-48" />
-      </View>
-      <View className="mt-4 mx-4">
-        <Text className="text-right text-5xl text-gray-800">
-          Create a new account
-        </Text>
-      </View>
+      <Text className="text-center mt-4 mx-4 text-3xl text-gray-800">
+        Reset Password
+      </Text>
       <View className="mt-5 mx-4">
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="person-outline" size={20} color="white" />
-          </View>
-          <TextInput
-            placeholder="Your Full Name"
-            value={name}
-            onChangeText={setName}
-            className="w-full"
-          />
-        </View>
         <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
           <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
             <Ionicons name="mail-outline" size={20} color="white" />
@@ -90,29 +66,18 @@ const Register = () => {
             placeholder="Youremail@gmail.com"
             value={email}
             onChangeText={setEmail}
-            className="w-full"
           />
         </View>
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="at-outline" size={20} color="white" />
-          </View>
-          <TextInput
-            placeholder="Your_username"
-            value={username}
-            onChangeText={setUsername}
-            className="w-full"
-          />
-        </View>
+
         <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
           <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
             <Ionicons name="key-outline" size={20} color="white" />
           </View>
-          <View className="flex-1 justify-center w-full">
+          <View className="flex-1 justify-center">
             <TextInput
-              placeholder="Passsword"
-              value={password}
-              onChangeText={setPassword}
+              placeholder="Password"
+              value={newPassword}
+              onChangeText={setNewPassword}
               secureTextEntry={!isPasswordVisible}
             />
           </View>
@@ -135,8 +100,8 @@ const Register = () => {
             <TextInput
               placeholder="Confirm Password"
               secureTextEntry={!isConfPasswordVisible}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              value={verifyNewPassword}
+              onChangeText={setVerifyNewPassword}
             />
           </View>
           <TouchableOpacity
@@ -152,25 +117,15 @@ const Register = () => {
         </View>
         <TouchableOpacity
           className="bg-gray-900 my-4 rounded-full py-4"
-          onPress={registerUser}
+          onPress={resetPassword}
         >
           <Text className="text-gray-50 text-center text-lg font-semibold">
-            Join Now
+            Done
           </Text>
         </TouchableOpacity>
-        <View className="flex-row justify-center mt-3 space-x-1">
-          <Text className="text-gray-500 text-sm">
-            Already have an account?
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text className="text-gray-800 font-medium underline">
-              Continue here
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );
 };
 
-export default Register;
+export default ForgetPassword;

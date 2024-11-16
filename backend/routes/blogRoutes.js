@@ -14,12 +14,7 @@ import cors from "cors";
 const router = Router();
 router.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
-router.post(
-  "/createBlog",
-  authMiddleware,
-  upload.array("images", 5),
-  createBlog
-);
+router.post("/createBlog", authMiddleware, upload.array("image"), createBlog);
 router.put(
   "/editBlog/:id",
   authMiddleware,

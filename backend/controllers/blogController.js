@@ -6,17 +6,33 @@ export const createBlog = async (req, res) => {
     const { title, subTitle, content } = req.body;
     const authorId = req.user.id;
 
+    // Parse the `content` field from the request body
+    const parsedContent = JSON.parse(content);
+
+    // Ensure the content is properly formatted
+    if (!Array.isArray(parsedContent) || !parsedContent.length) {
+      return res
+        .status(400)
+        .json({ error: "Content must be a non-empty array" });
+    }
+
     // Map is necessary when you want to transform the array of uploaded files into an array of image paths.
     const images = req.files
       ? req.files.map((file) => `/blogImages/${file.filename}`)
       : [];
 
+    // Map uploaded images into the content array (if necessary)
+    parsedContent.forEach((item, index) => {
+      if (item.type === "image" && images[index]) {
+        item.value = images[index]; // Assign the uploaded image path
+      }
+    });
+
     const newBlog = new blogModel({
       title,
       subTitle,
-      content,
+      content: parsedContent,
       author: authorId,
-      images,
     });
     await newBlog.save();
 

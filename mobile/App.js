@@ -3,8 +3,14 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import Toast from "react-native-toast-message";
+
 import Login from "./screens/Login";
 import Register from "./screens/Register";
+import ForgetPassword from "./screens/ForgetPassword";
 import Home from "./screens/Home";
 import ProfileBlog from "./screens/ProfileBlog";
 import UserBlogs from "./screens/UserBlogs";
@@ -16,13 +22,9 @@ import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import AboutMe from "./screens/AboutMe";
 import Trial from "./screens/Trial";
-import axios from "axios";
-import Toast from "react-native-toast-message";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 
-// axios.defaults.baseURL = "http://192.168.1.5:3001";
-axios.defaults.baseURL = "http://100.64.209.105:3001";
+axios.defaults.baseURL = "http://192.168.1.4:3001";
+// axios.defaults.baseURL = "http://100.64.209.105:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -38,6 +40,7 @@ export default function App() {
         >
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
           <Stack.Screen name="Home" component={BottomNav} />
           <Stack.Screen name="Create" component={BottomNav} />
           <Stack.Screen name="ProfileBlog" component={ProfileBlog} />
