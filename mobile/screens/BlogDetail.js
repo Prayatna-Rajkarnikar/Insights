@@ -113,19 +113,28 @@ const BlogDetail = () => {
             </Text>
           </View>
         </View>
-        <Text className="text-lg text-justify mt-3">{blog.content}</Text>
-        {blog.images && blog.images.length > 0 && (
-          <View className="">
-            {blog.images.map((imageUri, index) => (
-              <Image
-                key={index}
-                source={{ uri: `${axios.defaults.baseURL}${imageUri}` }}
-                className="w-full h-40 rounded-lg mt-2"
-                resizeMode="cover"
-              />
-            ))}
-          </View>
-        )}
+        <View className="mt-3">
+          {blog.content.map((item, index) => {
+            if (item.type === "text") {
+              return (
+                <Text key={index} className="text-lg text-justify mt-3">
+                  {item.value}
+                </Text>
+              );
+            }
+            if (item.type === "image") {
+              return (
+                <Image
+                  key={index}
+                  source={{ uri: `${axios.defaults.baseURL}${item.value}` }}
+                  className="w-full h-40 rounded-lg mt-2"
+                  resizeMode="cover"
+                />
+              );
+            }
+            return null;
+          })}
+        </View>
         <View className="h-5" />
       </ScrollView>
       <View className="flex-row justify-evenly h-14">

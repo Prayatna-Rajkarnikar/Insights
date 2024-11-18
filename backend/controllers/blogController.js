@@ -6,46 +6,73 @@ export const createBlog = async (req, res) => {
     const { title, subTitle, content } = req.body;
     const authorId = req.user.id;
 
-    // Parse the `content` field from the request body
-    const parsedContent = JSON.parse(content);
-
-    // Ensure the content is properly formatted
-    if (!Array.isArray(parsedContent) || !parsedContent.length) {
+    // Ensure that none of the required fields are empty
+    if (!title || !subTitle || !content) {
       return res
-        .status(400)
-        .json({ error: "Content must be a non-empty array" });
+        .status(404)
+        .json({ error: "Title, Subtitle, and Content are required." });
     }
 
-    // Map is necessary when you want to transform the array of uploaded files into an array of image paths.
+    // Parse the `content` field from the request body
+    let parsedContent;
+    try {
+      parsedContent = JSON.parse(content); // Parse the content JSON string
+    } catch (error) {
+      return res.status(400).json({
+        error: "Invalid content format. It should be a valid JSON array.",
+      });
+    }
+
+    // Ensure content is an array and not empty
+    if (!Array.isArray(parsedContent) || parsedContent.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Content must be a non-empty array." });
+    }
+
+    // Process uploaded images and map them to the content array
     const images = req.files
       ? req.files.map((file) => `/blogImages/${file.filename}`)
       : [];
 
-    // Map uploaded images into the content array (if necessary)
-    parsedContent.forEach((item, index) => {
-      if (item.type === "image" && images[index]) {
-        item.value = images[index]; // Assign the uploaded image path
+    // Update the parsed content with the image paths
+    let imageIndex = 0; // Keep track of image assignment
+    parsedContent.forEach((item) => {
+      if (item.type === "image") {
+        if (imageIndex < images.length) {
+          // Assign the next available image
+          item.value = images[imageIndex];
+          imageIndex++; // Move to the next image
+        } else {
+          item.value = ""; // No image available for this slot
+        }
       }
     });
 
+    // Create a new blog post in the database
     const newBlog = new blogModel({
       title,
       subTitle,
       content: parsedContent,
       author: authorId,
     });
+
+    // Save the new blog post
     await newBlog.save();
 
+    // Find the author and associate the blog with the author
     const author = await userModel.findById(authorId);
     if (!author) {
-      return res.status(404).json({ error: "Author not found" });
+      return res.status(404).json({ error: "Author not found." });
     }
-
-    //Add new blog in respective user array
     author.blogs.push(newBlog._id);
     await author.save();
 
-    res.status(200).json({ message: "Blog Created sucessfully", newBlog });
+    // Log and respond with the new blog content
+    console.log("New blog content:", newBlog.content);
+
+    // Respond with success
+    res.status(200).json({ message: "Blog created successfully", newBlog });
   } catch (error) {
     console.error("Error while creating blog:", error); // Log the error details
     res.status(500).json({ error: "Failed to create blog" });
@@ -124,8 +151,7 @@ export const blogDetail = async (req, res) => {
     if (!blog) {
       return res.status(404).json({ message: "Blog not found." });
     }
-
-    res.status(201).json(blog);
+    res.status(200).json(blog);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch blog details" });

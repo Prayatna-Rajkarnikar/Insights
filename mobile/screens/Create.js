@@ -44,24 +44,20 @@ const Create = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
       setTitle("");
       setSubtitle("");
       setContentSections([{ type: "text", value: "" }]);
-
       Toast.show({
         type: "success",
         position: "top",
         text1: "Yay! You just created a blog",
       });
-
       navigation.navigate("Home");
     } catch (error) {
       const errorMessage =
         error.response && error.response.data
           ? error.response.data.error
           : error.message || "Something went wrong";
-
       Toast.show({
         type: "error",
         position: "top",
@@ -81,20 +77,29 @@ const Create = () => {
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
+    console.log(result);
+    console.log("Image Props", result.assets[0]);
+
     if (!result.canceled && result.assets.length) {
-      const newSection = { type: "image", value: result.assets[0] };
-      setContentSections((prevSections) => [
-        ...prevSections.slice(0, index + 1),
-        newSection,
-        ...prevSections.slice(index + 1),
-      ]);
+      const asset = result.assets[0];
+      if (asset.uri) {
+        const newSection = { type: "image", value: asset };
+        setContentSections((prevSections) => {
+          // If the last section is text, add the image after it
+          const updatedSections = [...prevSections];
+          updatedSections.push(newSection); // Push image after existing sections
+          return updatedSections;
+        });
+      } else {
+        console.error("invalid uri", asset);
+      }
     }
   }, []);
 
@@ -122,85 +127,104 @@ const Create = () => {
   }, []);
 
   return (
-    <View className="flex-1 px-6 pt-5">
-      <View className="flex-row justify-end items-center space-x-3">
-        <TouchableOpacity
-          className="p-1 bg-gray-800 rounded-xl"
-          onPress={createBlog}
-          accessible
-          accessibilityLabel="Publish the blog"
-        >
-          <Text className="text-gray-50">Publish now</Text>
+    <View className="flex-1 bg-gray-50">
+      <View className="flex-1 px-6 pt-2">
+        <TouchableOpacity>
+          <Ionicons name="close" size={30} color="black" />
         </TouchableOpacity>
-      </View>
-      <ScrollView className="flex-1">
-        <TextInput
-          className="text-3xl font-black mt-5"
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-          multiline
-        />
-        <TextInput
-          className="text-xl font-semibold mt-1"
-          placeholder="Subtitle"
-          value={subtitle}
-          onChangeText={setSubtitle}
-          multiline
-        />
+        <ScrollView className="flex-1">
+          <TextInput
+            className="text-4xl font-black mt-2"
+            placeholder="Title"
+            value={title}
+            onChangeText={setTitle}
+            multiline
+          />
+          <TextInput
+            className="text-2xl font-bold mt-1"
+            placeholder="Subtitle"
+            value={subtitle}
+            onChangeText={setSubtitle}
+            multiline
+          />
 
-        {/* Render content sections */}
-        {contentSections.map((section, index) => (
-          <View key={index} className="mb-3">
-            {section.type === "text" ? (
-              <TextInput
-                className="text-lg font-normal mt-2"
-                placeholder="Add text here..."
-                value={section.value}
-                onChangeText={(text) => updateText(text, index)}
-                multiline
-              />
-            ) : (
-              <View className="relative mt-2">
-                <Image
-                  source={{ uri: section.value.uri }}
-                  className="w-80 h-40 rounded-sm"
-                />
-                <TouchableOpacity
-                  onPress={() => removeSection(index)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
-                  accessible
-                  accessibilityLabel="Remove image"
-                >
-                  <Ionicons name="close" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
-            )}
-            <View className="flex-row justify-between mt-2">
-              <TouchableOpacity
-                className="bg-gray-200 rounded-xl p-2 flex-row items-center"
-                onPress={() => addTextSection(index)}
-                accessible
-                accessibilityLabel="Add text section"
-              >
-                <Ionicons name="text-outline" size={20} />
-                <Text className="ml-2">Add Text</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="bg-gray-200 rounded-xl p-2 flex-row items-center"
-                onPress={() => pickImage(index)}
-                accessible
-                accessibilityLabel="Add image"
-              >
-                <Ionicons name="image-outline" size={20} />
-                <Text className="ml-2">Add Image</Text>
-              </TouchableOpacity>
+          {/* Render content sections */}
+          {contentSections.map((section, index) => (
+            <View key={index} className="mb-3">
+              {section.type === "text" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    placeholder="Add text here..."
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View className="relative mt-2">
+                  {section.type === "image" && section.value.uri ? (
+                    <Image
+                      source={{ uri: section.value.uri }}
+                      className="w-80 h-40 rounded-sm"
+                    />
+                  ) : (
+                    <Text>No image available</Text> // Fallback text
+                  )}
+
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                    accessible
+                    accessibilityLabel="Remove image"
+                  >
+                    <Ionicons name="close" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View className="flex-row bottom-0 px-4 h-20 space-x-2 items-center bg-gray-200 w-full">
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => addTextSection(contentSections.length)}
+          accessible
+          accessibilityLabel="Add text section"
+        >
+          <Ionicons name="text-outline" size={20} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => pickImage(contentSections.length)}
+        >
+          <Ionicons name="image-outline" size={20} />
+        </TouchableOpacity>
+        <View className="flex-1 items-end">
+          <TouchableOpacity
+            className="p-2 bg-gray-800 rounded-xl"
+            onPress={createBlog}
+            accessible
+            accessibilityLabel="Publish the blog"
+          >
+            <Text className="text-gray-50 font-bold text-base">Next</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
-export default Create;
+export { Create };

@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
 
 import Login from "./screens/Login";
 import Register from "./screens/Register";
@@ -17,14 +18,14 @@ import UserBlogs from "./screens/UserBlogs";
 import EditBlog from "./screens/EditBlog";
 import UpdateProfile from "./screens/UpdateProfile";
 import BlogDetail from "./screens/BlogDetail";
-import Create from "./screens/Create";
+import { Create } from "./screens/Create";
 import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import AboutMe from "./screens/AboutMe";
 import Trial from "./screens/Trial";
 
 axios.defaults.baseURL = "http://192.168.1.4:3001";
-// axios.defaults.baseURL = "http://100.64.209.105:3001";
+// axios.defaults.baseURL = "http://100.64.200.175:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -41,8 +42,8 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-          <Stack.Screen name="Home" component={BottomNav} />
-          <Stack.Screen name="Create" component={BottomNav} />
+          <Stack.Screen name="Home" component={MainStack} />
+          <Stack.Screen name="Create" component={Create} />
           <Stack.Screen name="ProfileBlog" component={ProfileBlog} />
           <Stack.Screen name="UserBlogs" component={UserBlogs} />
           <Stack.Screen name="BlogDetail" component={BlogDetail} />
@@ -61,6 +62,7 @@ export default function App() {
 }
 
 const BottomNav = () => {
+  const navigation = useNavigation();
   return (
     <Tab.Navigator
       initialRouteName="UserHome"
@@ -92,6 +94,12 @@ const BottomNav = () => {
       <Tab.Screen
         name="Create"
         component={Create}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate("Create");
+          },
+        }}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -117,5 +125,13 @@ const BottomNav = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const MainStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="BottomNav" component={BottomNav} />
+    </Stack.Navigator>
   );
 };

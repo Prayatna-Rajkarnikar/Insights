@@ -41,12 +41,16 @@ const LoginScreen = () => {
 
   return (
     <View className="bg-gray-50 flex-1">
+      {/* close icon */}
       <TouchableOpacity className="ml-5 mt-10">
         <Ionicons name="close" size={30} />
       </TouchableOpacity>
+
+      {/* logo */}
       <View className="items-end">
         <Image source={logo} className="h-16 w-48" />
       </View>
+
       <Text className="text-right mt-4 mx-4 text-5xl text-gray-800">
         Welcome to Insights
       </Text>
@@ -59,6 +63,7 @@ const LoginScreen = () => {
             placeholder="Youremail@gmail.com"
             value={email}
             onChangeText={setEmail}
+            className="w-full"
           />
         </View>
 

@@ -45,13 +45,17 @@ const ProfileBlog = () => {
     { key: "bio", title: "About Me" },
   ]);
 
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: "white" }}
-      className="bg-gray-600"
-    />
-  );
+  const renderTabBar = (props) => {
+    const { key, ...filteredProps } = props;
+    return (
+      <TabBar
+        key={key}
+        {...filteredProps}
+        indicatorStyle={{ backgroundColor: "white" }}
+        className="bg-gray-600"
+      />
+    );
+  };
 
   useFocusEffect(
     useCallback(() => {

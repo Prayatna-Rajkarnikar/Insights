@@ -78,8 +78,8 @@ const UserBlogs = () => {
 
   const renderItem = ({ item }) => {
     const firstImg =
-      item.images && item.images.length > 0 ? item.images[0] : null;
-
+      item.content.find((contentItem) => contentItem.type === "image")?.value ||
+      null;
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
@@ -102,11 +102,13 @@ const UserBlogs = () => {
                 {item.subTitle}
               </Text>
             </View>
-            <Image
-              source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-              className="w-36 h-28 rounded-xl"
-              resizeMode="cover"
-            />
+            {firstImg && (
+              <Image
+                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
+                className="w-36 h-28 rounded-xl"
+                resizeMode="cover"
+              />
+            )}
           </View>
           <View className="flex-row justify-between mt-2 items-center">
             <Text className="text-gray-500 text-xs">
