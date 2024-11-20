@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useRoute } from "@react-navigation/native";
@@ -19,10 +19,9 @@ import { useNavigation } from "@react-navigation/native";
 const EditBlog = () => {
   const route = useRoute();
   const { blogId } = route.params;
-  const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
-  const [content, setContent] = useState("");
+  const [contentSections, setContentSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
@@ -32,17 +31,15 @@ const EditBlog = () => {
         const response = await axios.get(`/blog/getBlogDetail/${blogId}`);
         setTitle(response.data.title);
         setSubtitle(response.data.subTitle);
-        setContent(response.data.content);
-        // setImages(
-        //   response.data.images.map((img) => `${axios.defaults.baseURL}${img}`)
-        // );
-        // console.log("Fetched images:", response.data.images);
+
+        setContentSections(response.data.content);
+        console.log(response.data.content);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching blog data:", error);
         Toast.show({
           type: "error",
           position: "top",
-          text1: "Failed to load user data",
+          text1: "Failed to load blog data",
         });
       } finally {
         setLoading(false);
@@ -62,41 +59,41 @@ const EditBlog = () => {
 
   const editBlog = async () => {
     try {
+      // Process contentSections to ensure all "image" values are strings
+      const processedContent = contentSections.map((section) => {
+        if (
+          section.type === "image" &&
+          typeof section.value === "object" &&
+          section.value.uri
+        ) {
+          return { ...section, value: section.value.uri }; // Use the URI string
+        }
+        return section;
+      });
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("subTitle", subtitle);
-      formData.append("content", content);
+      formData.append("content", JSON.stringify(processedContent));
 
-      // if (images === 0) {
-      //   const existingImgs = await axios.get(`/blog/getBlogDetail/${blogId}`);
-      //   existingImgs.data.images.forEach((imageUri) => {
-      //     formData.append("images", {
-      //       uri: `${axios.defaults.baseURL}${imageUri}`,
-      //       type: "image/jpeg",
-      //       name: imageUri.split("/").pop(),
-      //     });
-      //   });
-      // } else {
-      //   images.forEach((imageUri) => {
-      //     if (imageUri) {
-      //       formData.append("images", {
-      //         uri: imageUri,
-      //         type: "image/jpeg",
-      //         name: imageUri.split("/").pop(),
-      //       });
-      //     } else {
-      //       console.error("Image URI is undefined:", imageUri);
-      //     }
-      //   });
-      // }
-
-      images.forEach((image) => {
-        formData.append("images", {
-          uri: image.uri,
-          type: image.mimeType,
-          name: image.fileName || image.uri.split("/").pop(),
-        });
+      contentSections.forEach((section) => {
+        if (section.type === "image") {
+          if (section.value.uri) {
+            // New image or modified image
+            formData.append("image", {
+              uri: section.value.uri,
+              type: section.value.mimeType,
+              name:
+                section.value.fileName || section.value.uri.split("/").pop(),
+            });
+          } else if (section.value) {
+            // Existing image, which is just a URI
+            formData.append("image", section.value);
+          }
+        }
       });
+
+      console.log("Data sent to backend:", contentSections);
 
       await axios.put(`/blog/editBlog/${blogId}`, formData, {
         headers: {
@@ -125,148 +122,159 @@ const EditBlog = () => {
   };
 
   const pickImage = async () => {
-    if (Platform.OS === "android") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-        return;
+    const { status } =
+      Platform.OS === "android"
+        ? await ImagePicker.requestMediaLibraryPermissionsAsync()
+        : { status: "granted" };
+
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length) {
+      const asset = result.assets[0];
+      if (asset.uri) {
+        const newSection = { type: "image", value: asset };
+        setContentSections((prevSections) => [
+          ...prevSections,
+          newSection, // Add image section at the end
+        ]);
+      } else {
+        console.error("Invalid URI", asset);
       }
-
-      try {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        console.log("Image picker result:", result);
-
-        // if (!result.canceled && result.assets && result.assets.length > 0) {
-        //   const selectedImgs = result.assets.map((asset) => asset.uri);
-        //   const totalImgs = images.length + selectedImgs.length;
-
-        //   if (totalImgs > 5) {
-        //     Toast.show({
-        //       type: "error",
-        //       position: "top",
-        //       text1: "You cannot upload more than 5 images.",
-        //     });
-        //     return;
-        //   }
-
-        //   // Log the selected images
-        //   console.log("Selected images:", selectedImgs);
-
-        //   setImages((prevImgs) => [...prevImgs, ...selectedImgs]);
-        // } else {
-        //   alert("No images were selected.");
-        // }
-        if (!result.canceled) {
-          if (images.length < 5) {
-            setImages([...images, result.assets[0]]);
-          } else {
-            alert("You can only upload up to 5 images.");
-          }
-        }
-      } catch (error) {
-        console.error("Error picking image:", error);
-        alert("Error picking image, please try again.");
-      }
-    } else {
-      alert("This feature is only available on Android devices.");
     }
   };
 
-  const removeImage = (index) => {
-    const updatedImages = [...images]; // Create a copy of the images array
-    updatedImages.splice(index, 1); // Remove the image at the specified index
-    setImages(updatedImages); // Update the state with the new array
+  const addTextSection = () => {
+    const newSection = { type: "text", value: "" };
+    setContentSections((prevSections) => [...prevSections, newSection]);
+  };
+
+  const updateText = (text, index) => {
+    setContentSections((prevSections) => {
+      const updatedSections = [...prevSections];
+      updatedSections[index] = { type: "text", value: text };
+      return updatedSections;
+    });
+  };
+
+  const removeSection = (index) => {
+    setContentSections((prevSections) =>
+      prevSections.filter((_, i) => i !== index)
+    );
   };
 
   return (
-    <View className="flex-1 px-6 pt-5">
-      <View className="flex-row justify-end items-center space-x-3">
+    <View className="flex-1 bg-gray-50">
+      <View className="flex-1 px-6 pt-2">
+        <TouchableOpacity>
+          <Ionicons name="close" size={30} color="black" />
+        </TouchableOpacity>
+        <ScrollView className="flex-1">
+          <TextInput
+            className="text-4xl font-black mt-2"
+            placeholder="Title"
+            value={title}
+            onChangeText={setTitle}
+            multiline
+          />
+          <TextInput
+            className="text-2xl font-bold mt-1"
+            placeholder="Subtitle"
+            value={subtitle}
+            onChangeText={setSubtitle}
+            multiline
+          />
+
+          {/* Render content sections */}
+          {contentSections.map((section, index) => (
+            <View key={index} className="mb-3">
+              {section.type === "text" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    placeholder="Add text here..."
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : section.type === "image" ? (
+                <View className="relative mt-2">
+                  {section.value.uri ? (
+                    <Image
+                      source={{ uri: section.value.uri }} // Display previously inserted or new image
+                      className="w-80 h-40 rounded-xl"
+                    />
+                  ) : (
+                    <Image
+                      key={index}
+                      source={{
+                        uri: `${axios.defaults.baseURL}${section.value}`,
+                      }}
+                      className="w-full h-40 rounded-lg mt-2"
+                      resizeMode="cover"
+                    />
+                  )}
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                    accessible
+                    accessibilityLabel="Remove image"
+                  >
+                    <Ionicons name="close" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View className="flex-row bottom-0 px-4 h-20 space-x-2 items-center bg-gray-200 w-full">
         <TouchableOpacity
-          className="p-1 bg-gray-800 rounded-xl"
-          onPress={editBlog}
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={addTextSection}
+          accessible
+          accessibilityLabel="Add text section"
         >
-          <Text className="text-gray-50">Save changes</Text>
+          <Ionicons name="text-outline" size={20} />
         </TouchableOpacity>
         <TouchableOpacity
-          className="p-1 bg-gray-200 rounded-xl"
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
           onPress={pickImage}
         >
-          <Ionicons name="image-outline" size={30} className="text-gray-800" />
+          <Ionicons name="image-outline" size={20} />
         </TouchableOpacity>
+        <View className="flex-1 items-end">
+          <TouchableOpacity
+            className="p-2 bg-gray-800 rounded-xl"
+            onPress={editBlog}
+            accessible
+            accessibilityLabel="Publish the blog"
+          >
+            <Text className="text-gray-50 font-bold text-base">Next</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <ScrollView className="flex-1">
-        <TextInput
-          className="text-3xl font-black mt-5"
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-          multiline
-        />
-        <TextInput
-          className="text-xl font-semibold mt-1"
-          placeholder="Subtitle"
-          value={subtitle}
-          onChangeText={setSubtitle}
-          multiline
-        />
-        <TextInput
-          className="text-justify text-lg font-normal mt-3"
-          placeholder="Blog content"
-          value={content}
-          onChangeText={setContent}
-          multiline
-        />
-
-        {/* {images && images.length > 0 && (
-          <View className="mt-3 mb-3">
-            {images.map((image, index) => (
-              <View key={index} className="flex-row flex-wrap m1">
-                <Image
-                  source={{
-                    uri: image,
-                  }}
-                  className="w-full h-40 rounded-lg mt-2"
-                  resizeMode="cover"
-                />
-                <TouchableOpacity
-                  onPress={() => removeImage(index)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
-                >
-                  <Ionicons name="close" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )} */}
-
-        {images && images.length > 0 && (
-          <View className="flex-row flex-wrap mt-3 mb-3">
-            {images.map((uri, index) => (
-              <View key={index} className="relative m-1">
-                <Image
-                  source={{ uri: images[index].uri }}
-                  className="w-80 h-40 rounded-sm"
-                />
-                <TouchableOpacity
-                  onPress={() => removeImage(index)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
-                >
-                  <Ionicons name="close" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )}
-
-        <View className="h-5" />
-      </ScrollView>
     </View>
   );
 };

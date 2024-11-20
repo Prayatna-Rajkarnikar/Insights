@@ -1,4 +1,5 @@
 import blogModel from "../models/blog.js";
+import mongoose from "mongoose";
 import userModel from "../models/user.js";
 
 export const createBlog = async (req, res) => {
@@ -82,8 +83,11 @@ export const createBlog = async (req, res) => {
 export const editBlog = async (req, res) => {
   try {
     const { title, subTitle, content } = req.body;
+
+    console.log("Request Body:", req.body);
+
     const author = req.user.id;
-    const blogId = req.params.id;
+    const blogId = req.params.id.trim();
 
     const blog = await blogModel.findById(blogId);
 
@@ -98,15 +102,73 @@ export const editBlog = async (req, res) => {
         .json({ error: "You are not authorized to edit this blog" });
     }
 
-    // Update the blog post fields
-    blog.title = title || blog.title;
-    blog.subTitle = subTitle || blog.subTitle;
-    blog.content = content || blog.content;
-
-    // Update images only if new files are provided
-    if (req.files && req.files.length > 0) {
-      blog.images = req.files.map((file) => `/blogImages/${file.filename}`);
+    // Ensure that none of the required fields are empty
+    if (!title || !subTitle || !content) {
+      return res
+        .status(404)
+        .json({ error: "Title, Subtitle, and Content are required." });
     }
+
+    // Parse the `content` field
+    let parsedContent = blog.content; // Use existing content if not provided
+    if (content) {
+      try {
+        parsedContent = JSON.parse(content);
+      } catch (error) {
+        return res.status(400).json({
+          error: "Invalid content format. It should be a valid JSON array.",
+        });
+      }
+
+      // Ensure the content is a non-empty array
+      if (!Array.isArray(parsedContent) || parsedContent.length === 0) {
+        return res
+          .status(400)
+          .json({ error: "Content must be a non-empty array." });
+      }
+    }
+
+    // Process uploaded images and map them to the content array
+    const images = req.files
+      ? req.files.map((file) => `/blogImages/${file.filename}`)
+      : [];
+
+    // // Update the parsed content with the image paths
+    // let imageIndex = 0; // Keep track of image assignment
+    // parsedContent.forEach((item) => {
+    //   if (item.type === "image") {
+    //     if (imageIndex < images.length) {
+    //       // Assign the next available image
+    //       item.value = images[imageIndex];
+    //       imageIndex++; // Move to the next image
+    //     } else {
+    //       item.value = ""; // No image available for this slot
+    //     }
+    //   }
+    // });
+
+    let imageIndex = 0; // Index for new images
+    parsedContent = parsedContent.map((item, idx) => {
+      if (item.type === "image") {
+        if (item.value.startsWith("/blogImages/")) {
+          // Preserve existing image if not replaced
+          return item;
+        } else if (imageIndex < images.length) {
+          // Replace with new image if available
+          item.value = images[imageIndex];
+          imageIndex++;
+        } else {
+          // No image available for this slot
+          item.value = "";
+        }
+      }
+      return item;
+    });
+
+    // Update blog fields
+    if (title) blog.title = title;
+    if (subTitle) blog.subTitle = subTitle;
+    if (content) blog.content = parsedContent;
 
     const updatedBlog = await blog.save();
 

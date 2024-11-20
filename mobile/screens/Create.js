@@ -84,9 +84,6 @@ const Create = () => {
       quality: 1,
     });
 
-    console.log(result);
-    console.log("Image Props", result.assets[0]);
-
     if (!result.canceled && result.assets.length) {
       const asset = result.assets[0];
       if (asset.uri) {
@@ -176,7 +173,7 @@ const Create = () => {
                   {section.type === "image" && section.value.uri ? (
                     <Image
                       source={{ uri: section.value.uri }}
-                      className="w-80 h-40 rounded-sm"
+                      className="w-80 h-40 rounded-xl"
                     />
                   ) : (
                     <Text>No image available</Text> // Fallback text

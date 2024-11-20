@@ -88,9 +88,9 @@ const ProfileBlog = () => {
     : `${axios.defaults.baseURL}/default-user.png`;
 
   return (
-    <View className="flex-1 bg-gray-100">
+    <View className="flex-1 bg-gray-50">
       {/* Header Section */}
-      <View className=" px-4 pt-3">
+      <View className="px-4 pt-3">
         <View className="flex-row justify-end items-center space-x-2">
           <TouchableOpacity
             className="bg-gray-300 rounded-md p-1"
