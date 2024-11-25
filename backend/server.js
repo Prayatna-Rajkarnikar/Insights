@@ -1,16 +1,19 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import { dbConnect } from "./mongo/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
 import commentRoutes from "./routes/commentRoute.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import likeRoutes from "./routes/likeRoutes.js";
 import slangwordRoute from "./routes/slangwordRoute.js";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+import topicRoute from "./routes/topicRoutes.js";
+import searchRoute from "./routes/searchRoute.js";
 
 const app = express();
 dotenv.config();
@@ -39,6 +42,8 @@ app.use("/comments", commentRoutes);
 app.use("/blog", blogRoutes);
 app.use("/like", likeRoutes);
 app.use("/slangword", slangwordRoute);
+app.use("/topic", topicRoute);
+app.use("/search", searchRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server Connected Successfully on PORT ${process.env.PORT}`);

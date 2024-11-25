@@ -13,19 +13,23 @@ import Login from "./screens/Login";
 import Register from "./screens/Register";
 import ForgetPassword from "./screens/ForgetPassword";
 import Home from "./screens/Home";
+import Search from "./screens/Search";
 import ProfileBlog from "./screens/ProfileBlog";
 import UserBlogs from "./screens/UserBlogs";
 import EditBlog from "./screens/EditBlog";
 import UpdateProfile from "./screens/UpdateProfile";
 import BlogDetail from "./screens/BlogDetail";
 import { Create } from "./screens/Create";
+import AddTopics from "./screens/AddTopics";
+import Preview from "./screens/Preview";
 import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import AboutMe from "./screens/AboutMe";
-import Trial from "./screens/Trial";
+import { Trial } from "./screens/Trial";
+import { View } from "react-native";
 
 axios.defaults.baseURL = "http://192.168.1.4:3001";
-// axios.defaults.baseURL = "http://100.64.200.175:3001";
+// axios.defaults.baseURL = "http://100.64.219.232:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -43,7 +47,10 @@ export default function App() {
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
           <Stack.Screen name="Home" component={MainStack} />
+          <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="Create" component={Create} />
+          <Stack.Screen name="AddTopics" component={AddTopics} />
+          <Stack.Screen name="Preview" component={Preview} />
           <Stack.Screen name="ProfileBlog" component={ProfileBlog} />
           <Stack.Screen name="UserBlogs" component={UserBlogs} />
           <Stack.Screen name="BlogDetail" component={BlogDetail} />
@@ -70,10 +77,15 @@ const BottomNav = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 60,
-          backgroundColor: "#2a2a2a",
-          borderTopColor: "#151515",
-          borderTopWidth: 3,
+          height: 62,
+          backgroundColor: "#111827",
+          borderRadius: 25,
+          overflow: "hidden",
+          position: "absolute",
+          bottom: 12,
+          width: 350,
+          left: "50%", // Start at the center horizontally
+          transform: [{ translateX: -175 }],
         },
       }}
     >
@@ -82,11 +94,37 @@ const BottomNav = () => {
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={27}
-              color={focused ? "#fff" : "#d3d3d3"}
-            />
+            <View
+              className={`${
+                focused ? "bg-gray-50" : "bg-gray-900"
+              } rounded-full p-1 items-center justify-center`}
+            >
+              <Ionicons
+                name={focused ? "home" : "home"}
+                size={24}
+                color={focused ? "#111827" : "#9ca3af"}
+              />
+            </View>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              className={`${
+                focused ? "bg-gray-50" : "bg-gray-900"
+              } rounded-full p-1 items-center justify-center`}
+            >
+              <Ionicons
+                name={focused ? "search" : "search"}
+                size={24}
+                color={focused ? "#111827" : "#9ca3af"}
+              />
+            </View>
           ),
         }}
       />
@@ -102,11 +140,17 @@ const BottomNav = () => {
         }}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name={focused ? "add-circle" : "add-circle-outline"}
-              size={27}
-              color={focused ? "#fff" : "#d3d3d3"}
-            />
+            <View
+              className={`${
+                focused ? "bg-gray-50" : "bg-gray-900"
+              } rounded-full p-1 items-center justify-center`}
+            >
+              <Ionicons
+                name={focused ? "add-circle" : "add-circle"}
+                size={26}
+                color={focused ? "#111827" : "#9ca3af"}
+              />
+            </View>
           ),
         }}
       />
@@ -116,11 +160,17 @@ const BottomNav = () => {
         component={ProfileBlog}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name={focused ? "person-circle" : "person-circle-outline"}
-              size={27}
-              color={focused ? "#fff" : "#d3d3d3"}
-            />
+            <View
+              className={`${
+                focused ? "bg-gray-50" : "bg-gray-900"
+              } rounded-full p-1 items-center justify-center`}
+            >
+              <Ionicons
+                name={focused ? "person-circle" : "person-circle-outline"}
+                size={26}
+                color={focused ? "#111827" : "#9ca3af"}
+              />
+            </View>
           ),
         }}
       />

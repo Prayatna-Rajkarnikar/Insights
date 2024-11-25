@@ -10,8 +10,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import axios from "axios";
-import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 
 const Create = () => {
@@ -22,48 +20,18 @@ const Create = () => {
   const [subtitle, setSubtitle] = useState("");
   const navigation = useNavigation();
 
-  const createBlog = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subTitle", subtitle);
-      formData.append("content", JSON.stringify(contentSections));
-
-      contentSections
-        .filter((section) => section.type === "image")
-        .forEach((section) => {
-          formData.append("image", {
-            uri: section.value.uri,
-            type: section.value.mimeType,
-            name: section.value.fileName || section.value.uri.split("/").pop(),
-          });
-        });
-
-      await axios.post("/blog/createBlog", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setTitle("");
-      setSubtitle("");
-      setContentSections([{ type: "text", value: "" }]);
-      Toast.show({
-        type: "success",
-        position: "top",
-        text1: "Yay! You just created a blog",
-      });
-      navigation.navigate("Home");
-    } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.error
-          : error.message || "Something went wrong";
-      Toast.show({
-        type: "error",
-        position: "top",
-        text1: errorMessage,
-      });
+  const goToTopics = () => {
+    if (!title.trim() || !subtitle.trim() || !contentSections) {
+      alert("Please fill all the fields to preview.");
+      return;
     }
+
+    const blogData = {
+      title,
+      subtitle,
+      contentSections,
+    };
+    navigation.navigate("AddTopics", { blogData });
   };
 
   const pickImage = useCallback(async (index) => {
@@ -123,31 +91,44 @@ const Create = () => {
     );
   }, []);
 
+  // Function to add a bullet point section
+  const addBulletPoint = useCallback(() => {
+    const newSection = {
+      type: "bullet",
+      value: "•",
+    }; // Adding a bullet point
+    setContentSections((prevSections) => [...prevSections, newSection]);
+  }, []);
+
   return (
     <View className="flex-1 bg-gray-50">
       <View className="flex-1 px-6 pt-2">
-        <TouchableOpacity>
+        {/* Cross Icon */}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="close" size={30} color="black" />
         </TouchableOpacity>
-        <ScrollView className="flex-1">
+
+        {/* Input section */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Title */}
           <TextInput
-            className="text-4xl font-black mt-2"
+            className="text-4xl font-black mt-3"
             placeholder="Title"
             value={title}
             onChangeText={setTitle}
             multiline
           />
+
+          {/* Subtitle */}
           <TextInput
-            className="text-2xl font-bold mt-1"
+            className="text-2xl font-bold"
             placeholder="Subtitle"
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
           />
-
-          {/* Render content sections */}
           {contentSections.map((section, index) => (
-            <View key={index} className="mb-3">
+            <View key={index} className="">
               {section.type === "text" ? (
                 <View className="relative">
                   <TextInput
@@ -168,32 +149,49 @@ const Create = () => {
                     />
                   </TouchableOpacity>
                 </View>
-              ) : (
+              ) : section.type === "bullet" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : section.type === "image" ? (
                 <View className="relative mt-2">
-                  {section.type === "image" && section.value.uri ? (
+                  {section.value.uri ? (
                     <Image
                       source={{ uri: section.value.uri }}
                       className="w-80 h-40 rounded-xl"
                     />
                   ) : (
-                    <Text>No image available</Text> // Fallback text
+                    <Text>No image available</Text>
                   )}
-
                   <TouchableOpacity
                     onPress={() => removeSection(index)}
                     className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
-                    accessible
-                    accessibilityLabel="Remove image"
                   >
                     <Ionicons name="close" size={20} color="white" />
                   </TouchableOpacity>
                 </View>
-              )}
+              ) : null}
             </View>
           ))}
         </ScrollView>
       </View>
 
+      {/* Buttons */}
       <View className="flex-row bottom-0 px-4 h-20 space-x-2 items-center bg-gray-200 w-full">
         <TouchableOpacity
           className="bg-gray-100 rounded-xl p-2 justify-center h-10"
@@ -203,16 +201,25 @@ const Create = () => {
         >
           <Ionicons name="text-outline" size={20} />
         </TouchableOpacity>
+
         <TouchableOpacity
           className="bg-gray-100 rounded-xl p-2 justify-center h-10"
           onPress={() => pickImage(contentSections.length)}
         >
           <Ionicons name="image-outline" size={20} />
         </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => addBulletPoint(contentSections.length)}
+        >
+          <Ionicons name="list-outline" size={20} />
+        </TouchableOpacity>
+
         <View className="flex-1 items-end">
           <TouchableOpacity
             className="p-2 bg-gray-800 rounded-xl"
-            onPress={createBlog}
+            onPress={goToTopics}
             accessible
             accessibilityLabel="Publish the blog"
           >

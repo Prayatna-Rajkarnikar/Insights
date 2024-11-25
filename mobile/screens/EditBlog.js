@@ -22,6 +22,7 @@ const EditBlog = () => {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [contentSections, setContentSections] = useState([]);
+  const [selectedTopics, setSelectedTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
@@ -75,6 +76,10 @@ const EditBlog = () => {
       formData.append("title", title);
       formData.append("subTitle", subtitle);
       formData.append("content", JSON.stringify(processedContent));
+      formData.append(
+        "topics",
+        JSON.stringify(selectedTopics.map((topic) => topic._id))
+      );
 
       contentSections.forEach((section) => {
         if (section.type === "image") {
@@ -172,10 +177,19 @@ const EditBlog = () => {
     );
   };
 
+  // Function to add a bullet point section
+  const addBulletPoint = () => {
+    const newSection = {
+      type: "bullet",
+      value: "•",
+    }; // Adding a bullet point
+    setContentSections((prevSections) => [...prevSections, newSection]);
+  };
+
   return (
     <View className="flex-1 bg-gray-50">
       <View className="flex-1 px-6 pt-2">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="close" size={30} color="black" />
         </TouchableOpacity>
         <ScrollView className="flex-1">
@@ -243,6 +257,25 @@ const EditBlog = () => {
                     <Ionicons name="close" size={20} color="white" />
                   </TouchableOpacity>
                 </View>
+              ) : section.type === "bullet" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
               ) : null}
             </View>
           ))}
@@ -258,20 +291,27 @@ const EditBlog = () => {
         >
           <Ionicons name="text-outline" size={20} />
         </TouchableOpacity>
+
         <TouchableOpacity
           className="bg-gray-100 rounded-xl p-2 justify-center h-10"
           onPress={pickImage}
         >
           <Ionicons name="image-outline" size={20} />
         </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => addBulletPoint(contentSections.length)}
+        >
+          <Ionicons name="list-outline" size={20} />
+        </TouchableOpacity>
+
         <View className="flex-1 items-end">
           <TouchableOpacity
             className="p-2 bg-gray-800 rounded-xl"
             onPress={editBlog}
-            accessible
-            accessibilityLabel="Publish the blog"
           >
-            <Text className="text-gray-50 font-bold text-base">Next</Text>
+            <Text className="text-gray-50 font-bold text-base">Save</Text>
           </TouchableOpacity>
         </View>
       </View>

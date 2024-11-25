@@ -1,145 +1,283 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
-  TextInput,
+  ScrollView,
+  Platform,
+  Image,
   TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  Modal,
-  Alert,
-  Dimensions,
+  TextInput,
 } from "react-native";
-import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
-const CommentModal = ({ route, navigation }) => {
-  const { blogId } = route.params;
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
-  const [visible, setVisible] = useState(true);
+const Trial = () => {
+  const [contentSections, setContentSections] = useState([
+    { type: "text", value: "" },
+  ]);
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchComments();
+  const goToPreview = () => {
+    if (!title.trim() || !subtitle.trim() || !contentSections) {
+      alert("Please fill all the fields to preview.");
+      return;
+    }
+
+    const blogData = {
+      title,
+      subtitle,
+      contentSections,
+    };
+    navigation.navigate("Preview", { blogData });
+  };
+
+  const pickImage = useCallback(async (index) => {
+    const { status } =
+      Platform.OS === "android"
+        ? await ImagePicker.requestMediaLibraryPermissionsAsync()
+        : { status: "granted" };
+
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length) {
+      const asset = result.assets[0];
+      if (asset.uri) {
+        const newSection = { type: "image", value: asset };
+        setContentSections((prevSections) => {
+          // If the last section is text, add the image after it
+          const updatedSections = [...prevSections];
+          updatedSections.push(newSection); // Push image after existing sections
+          return updatedSections;
+        });
+      } else {
+        console.error("invalid uri", asset);
+      }
+    }
   }, []);
 
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(`/comments/getComments/${blogId}`);
-      setComments(response.data.comments);
-    } catch (error) {
-      console.error("Failed to fetch comments:", error);
-    }
-  };
+  const addTextSection = useCallback((index) => {
+    const newSection = { type: "text", value: "" };
+    setContentSections((prevSections) => [
+      ...prevSections.slice(0, index + 1),
+      newSection,
+      ...prevSections.slice(index + 1),
+    ]);
+  }, []);
 
-  const handleCommentSubmit = async () => {
-    if (comment.trim() === "") return; // Prevent empty comments
+  const updateText = useCallback((text, index) => {
+    setContentSections((prevSections) => {
+      const updatedSections = [...prevSections];
+      updatedSections[index] = { type: "text", value: text };
+      return updatedSections;
+    });
+  }, []);
 
-    try {
-      await axios.post(`/comments/addComment`, { blogId, comment });
-      Alert.alert("Success", "Comment added successfully!");
-      setComment(""); // Clear input field
-      fetchComments(); // Refresh comments
-    } catch (error) {
-      console.error("Failed to add comment:", error);
-      Alert.alert("Error", "Failed to add comment.");
-    }
-  };
+  const removeSection = useCallback((index) => {
+    setContentSections((prevSections) =>
+      prevSections.filter((_, i) => i !== index)
+    );
+  }, []);
+
+  // Function to add a bullet point section
+  const addBulletPoint = useCallback(() => {
+    const newSection = {
+      type: "bullet",
+      value: "•",
+    }; // Adding a bullet point
+    setContentSections((prevSections) => [...prevSections, newSection]);
+  }, []);
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => setVisible(false)} // Handle back press
-    >
-      <View style={styles.modalBackground}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="close" size={30} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Comments</Text>
-          {/* <FlatList
-            data={comments}
-            renderItem={({ item }) => (
-              <View style={styles.commentContainer}>
-                <Text style={styles.commentText}>{item.comment}</Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-          /> */}
+    <View className="flex-1 bg-gray-50">
+      <View className="flex-1 px-6 pt-2">
+        {/* Cross Icon */}
+        <Text>This is Trial</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="close" size={30} color="black" />
+        </TouchableOpacity>
+
+        {/* Input section */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Title */}
           <TextInput
-            value={comment}
-            onChangeText={setComment}
-            placeholder="Type your comment..."
-            style={styles.input}
+            className="text-4xl font-black mt-3"
+            placeholder="Title"
+            value={title}
+            onChangeText={setTitle}
             multiline
           />
+
+          {/* Subtitle */}
+          <TextInput
+            className="text-2xl font-bold"
+            placeholder="Subtitle"
+            value={subtitle}
+            onChangeText={setSubtitle}
+            multiline
+          />
+
+          {/* Render content sections */}
+          {/* {contentSections.map((section, index) => (
+            <View key={index} className="mb-3">
+              {section.type === "text" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    placeholder="Add text here..."
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View className="relative mt-2">
+                  {section.type === "image" && section.value.uri ? (
+                    <Image
+                      source={{ uri: section.value.uri }}
+                      className="w-80 h-40 rounded-xl"
+                    />
+                  ) : (
+                    <Text>No image available</Text>
+                  )}
+
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                    accessible
+                    accessibilityLabel="Remove image"
+                  >
+                    <Ionicons name="close" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          ))} */}
+          {contentSections.map((section, index) => (
+            <View key={index} className="">
+              {section.type === "text" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    placeholder="Add text here..."
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : section.type === "bullet" ? (
+                <View className="relative">
+                  <TextInput
+                    className="text-lg font-normal"
+                    value={section.value}
+                    onChangeText={(text) => updateText(text, index)}
+                    multiline
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons
+                      name="trash-bin-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : section.type === "image" ? (
+                <View className="relative mt-2">
+                  {section.value.uri ? (
+                    <Image
+                      source={{ uri: section.value.uri }}
+                      className="w-80 h-40 rounded-xl"
+                    />
+                  ) : (
+                    <Text>No image available</Text>
+                  )}
+                  <TouchableOpacity
+                    onPress={() => removeSection(index)}
+                    className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+                  >
+                    <Ionicons name="close" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Buttons */}
+      <View className="flex-row bottom-0 px-4 h-20 space-x-2 items-center bg-gray-200 w-full">
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => addTextSection(contentSections.length)}
+          accessible
+          accessibilityLabel="Add text section"
+        >
+          <Ionicons name="text-outline" size={20} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => pickImage(contentSections.length)}
+        >
+          <Ionicons name="image-outline" size={20} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
+          onPress={() => addBulletPoint(contentSections.length)}
+        >
+          <Ionicons name="list-outline" size={20} />
+        </TouchableOpacity>
+
+        <View className="flex-1 items-end">
           <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleCommentSubmit}
+            className="p-2 bg-gray-800 rounded-xl"
+            onPress={goToPreview}
+            accessible
+            accessibilityLabel="Publish the blog"
           >
-            <Text style={styles.submitText}>Submit</Text>
+            <Text className="text-gray-50 font-bold text-base">Next</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  modalBackground: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-  },
-  modalContainer: {
-    height: "75%", // Modal covers 75% of screen height
-    backgroundColor: "white",
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    elevation: 5,
-  },
-  closeButton: {
-    alignSelf: "flex-end",
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  commentContainer: {
-    marginBottom: 10,
-  },
-  commentText: {
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
-    paddingBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  submitButton: {
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    padding: 10,
-    alignItems: "center",
-  },
-  submitText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});
-
-export default CommentModal;
+export { Trial };

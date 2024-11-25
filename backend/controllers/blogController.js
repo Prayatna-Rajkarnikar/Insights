@@ -4,14 +4,28 @@ import userModel from "../models/user.js";
 
 export const createBlog = async (req, res) => {
   try {
-    const { title, subTitle, content } = req.body;
+    let { title, subTitle, content, topics } = req.body;
     const authorId = req.user.id;
+
+    console.log("Request body:", req.body);
 
     // Ensure that none of the required fields are empty
     if (!title || !subTitle || !content) {
       return res
         .status(404)
         .json({ error: "Title, Subtitle, and Content are required." });
+    }
+
+    if (typeof topics === "string") {
+      topics = JSON.parse(topics); // Convert back to an array
+    }
+
+    // Validate topics
+    if (
+      !Array.isArray(topics) ||
+      !topics.every(mongoose.Types.ObjectId.isValid)
+    ) {
+      return res.status(400).json({ error: "Invalid topics format" });
     }
 
     // Parse the `content` field from the request body
@@ -56,6 +70,7 @@ export const createBlog = async (req, res) => {
       subTitle,
       content: parsedContent,
       author: authorId,
+      topics,
     });
 
     // Save the new blog post
@@ -69,20 +84,17 @@ export const createBlog = async (req, res) => {
     author.blogs.push(newBlog._id);
     await author.save();
 
-    // Log and respond with the new blog content
-    console.log("New blog content:", newBlog.content);
-
     // Respond with success
     res.status(200).json({ message: "Blog created successfully", newBlog });
   } catch (error) {
-    console.error("Error while creating blog:", error); // Log the error details
+    console.error("Error while creating blog:", error);
     res.status(500).json({ error: "Failed to create blog" });
   }
 };
 
 export const editBlog = async (req, res) => {
   try {
-    const { title, subTitle, content } = req.body;
+    let { title, subTitle, content, topics } = req.body;
 
     console.log("Request Body:", req.body);
 
@@ -128,6 +140,18 @@ export const editBlog = async (req, res) => {
       }
     }
 
+    if (typeof topics === "string") {
+      topics = JSON.parse(topics); // Convert back to an array
+    }
+
+    // Validate topics
+    if (
+      !Array.isArray(topics) ||
+      !topics.every(mongoose.Types.ObjectId.isValid)
+    ) {
+      return res.status(400).json({ error: "Invalid topics format" });
+    }
+
     // Process uploaded images and map them to the content array
     const images = req.files
       ? req.files.map((file) => `/blogImages/${file.filename}`)
@@ -169,6 +193,7 @@ export const editBlog = async (req, res) => {
     if (title) blog.title = title;
     if (subTitle) blog.subTitle = subTitle;
     if (content) blog.content = parsedContent;
+    if (topics) blog.topics = topics;
 
     const updatedBlog = await blog.save();
 
@@ -208,7 +233,8 @@ export const blogDetail = async (req, res) => {
     const blogId = req.params.id;
     const blog = await blogModel
       .findById(blogId)
-      .populate("author", "name username image");
+      .populate("author", "name username image")
+      .populate("topics", "name");
 
     if (!blog) {
       return res.status(404).json({ message: "Blog not found." });

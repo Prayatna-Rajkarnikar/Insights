@@ -113,6 +113,18 @@ const BlogDetail = () => {
             </Text>
           </View>
         </View>
+        {/* <View className="flex-row space-x-2 w-80">
+          {blog.topics.map((topic, index) => (
+            <View
+              key={topic._id || index} // Use topic._id if available
+              className="bg-gray-200 px-4 py-2 rounded-full w-40"
+            >
+              <Text className="text-sm text-gray-700 font-medium">
+                {topic.name}
+              </Text>
+            </View>
+          ))}
+        </View> */}
         <View className="mt-3">
           {blog.content.map((item, index) => {
             if (item.type === "text") {
