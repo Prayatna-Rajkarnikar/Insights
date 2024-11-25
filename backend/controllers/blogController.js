@@ -262,3 +262,22 @@ export const deleteBlog = async (req, res) => {
     res.status(500).json({ error: "Unable to delete blog" });
   }
 };
+
+export const trendingBlogs = async (req, res) => {
+  try {
+    // Fetch all blogs
+    const blogs = await blogModel.find();
+
+    const trending = blogs
+      .map((blog) => {
+        blog.trendingScore = blog.likes.length + blog.comments.length;
+        return blog;
+      })
+      .sort((a, b) => b.trendingScore - a.trendingScore) //descending order
+      .slice(0, 5); //start at 0 and stop at 5 index of array
+    res.status(200).json(trending);
+  } catch (error) {
+    console.error("Error", error);
+    res.status(500).json({ error: "Failed to get trending blogs" });
+  }
+};

@@ -12,6 +12,8 @@ const UpdateProfile = () => {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -36,34 +38,29 @@ const UpdateProfile = () => {
   }, []);
 
   const pickImage = async () => {
-    // Check if the platform is Android before proceeding
-    if (Platform.OS === "android") {
-      // Request permission to access the gallery
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-        return;
-      }
+    // Request permission to access the media library
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
 
-      // Open the image picker
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: [image],
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+    // Open the image picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-      // Set the image URI if the user picked an image
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-      }
-    } else {
-      alert("This feature is only available on Android devices.");
+    // If the user picked an image, update the state
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
     }
   };
 
   const updateProfile = async () => {
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -87,7 +84,7 @@ const UpdateProfile = () => {
       Toast.show({
         type: "success",
         position: "top",
-        text1: " Details updated successfully!",
+        text1: "Details updated successfully!",
       });
     } catch (error) {
       const errorMessage =
@@ -100,6 +97,8 @@ const UpdateProfile = () => {
         position: "top",
         text1: errorMessage,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,6 +108,7 @@ const UpdateProfile = () => {
         <TouchableOpacity
           className="bg-gray-800 p-1 rounded-xl w-12 items-center"
           onPress={updateProfile}
+          disabled={isLoading}
         >
           <Text className="text-gray-50">Save</Text>
         </TouchableOpacity>
@@ -116,13 +116,14 @@ const UpdateProfile = () => {
           <Text
             className="text-gray-50"
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate("ProfileBlog");
             }}
           >
             Cancel
           </Text>
         </TouchableOpacity>
       </View>
+
       <View className="flex-row flex-wrap justify-center">
         <View className="items-center my-7">
           {image && (
@@ -132,9 +133,10 @@ const UpdateProfile = () => {
             onPress={pickImage}
             className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
           >
-            <Ionicons name="close" size={20} color="white" />
+            <Ionicons name="camera" size={20} color="white" />
           </TouchableOpacity>
         </View>
+
         <TextInput
           className="w-full border-2 border-gray-300 rounded-2xl p-3 mb-3 bg-transparent text-lg"
           value={name}
