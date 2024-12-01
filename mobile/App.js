@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import Login from "./screens/Login";
 import Register from "./screens/Register";
+import CompleteProfile from "./screens/CompleteProfile";
 import ForgetPassword from "./screens/ForgetPassword";
 import Home from "./screens/Home";
 import Search from "./screens/Search";
@@ -28,8 +29,8 @@ import AboutMe from "./screens/AboutMe";
 import { Trial } from "./screens/Trial";
 import { View } from "react-native";
 
-axios.defaults.baseURL = "http://192.168.1.4:3001";
-// axios.defaults.baseURL = "http://100.64.219.232:3001";
+// axios.defaults.baseURL = "http://192.168.1.2:3001";
+axios.defaults.baseURL = "http://100.64.203.221:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -45,6 +46,7 @@ export default function App() {
         >
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
           <Stack.Screen name="Home" component={MainStack} />
           <Stack.Screen name="Search" component={Search} />
@@ -79,13 +81,17 @@ const BottomNav = () => {
         tabBarStyle: {
           height: 62,
           backgroundColor: "#111827",
+          borderColor: "#111827",
+          // borderTopWidth: 2,
+          // borderBottomWidth: 2,
+          // borderWidth: 2,
           borderRadius: 25,
           overflow: "hidden",
           position: "absolute",
-          bottom: 12,
-          width: 350,
+          bottom: 14,
+          width: 205,
           left: "50%", // Start at the center horizontally
-          transform: [{ translateX: -175 }],
+          transform: [{ translateX: -102 }],
         },
       }}
     >
@@ -94,37 +100,11 @@ const BottomNav = () => {
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View
-              className={`${
-                focused ? "bg-gray-50" : "bg-gray-900"
-              } rounded-full p-1 items-center justify-center`}
-            >
-              <Ionicons
-                name={focused ? "home" : "home"}
-                size={24}
-                color={focused ? "#111827" : "#9ca3af"}
-              />
-            </View>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <View
-              className={`${
-                focused ? "bg-gray-50" : "bg-gray-900"
-              } rounded-full p-1 items-center justify-center`}
-            >
-              <Ionicons
-                name={focused ? "search" : "search"}
-                size={24}
-                color={focused ? "#111827" : "#9ca3af"}
-              />
-            </View>
+            <Ionicons
+              name="home"
+              size={24}
+              color={focused ? "#6366f1" : "#4B5563"}
+            />
           ),
         }}
       />
@@ -140,17 +120,11 @@ const BottomNav = () => {
         }}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View
-              className={`${
-                focused ? "bg-gray-50" : "bg-gray-900"
-              } rounded-full p-1 items-center justify-center`}
-            >
-              <Ionicons
-                name={focused ? "add-circle" : "add-circle"}
-                size={26}
-                color={focused ? "#111827" : "#9ca3af"}
-              />
-            </View>
+            <Ionicons
+              name="add-circle"
+              size={26}
+              color={focused ? "#6366f1" : "#4B5563"}
+            />
           ),
         }}
       />
@@ -160,17 +134,11 @@ const BottomNav = () => {
         component={ProfileBlog}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View
-              className={`${
-                focused ? "bg-gray-50" : "bg-gray-900"
-              } rounded-full p-1 items-center justify-center`}
-            >
-              <Ionicons
-                name={focused ? "person-circle" : "person-circle-outline"}
-                size={26}
-                color={focused ? "#111827" : "#9ca3af"}
-              />
-            </View>
+            <Ionicons
+              name="person-circle-outline"
+              size={26}
+              color={focused ? "#6366f1" : "#4B5563"}
+            />
           ),
         }}
       />

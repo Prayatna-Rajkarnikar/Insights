@@ -86,6 +86,7 @@ const AddTopics = ({ route, navigation }) => {
     "Selected Topics:",
     selectedTopics.map((topic) => topic._id)
   );
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1">

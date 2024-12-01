@@ -207,15 +207,6 @@ export const editBlog = async (req, res) => {
   }
 };
 
-export const homeBlogs = async (req, res) => {
-  try {
-    const blogs = await blogModel.find().sort({ createdAt: -1 }).limit(5);
-    res.status(200).json(blogs);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch latest blogs" });
-  }
-};
-
 export const userBlogs = async (req, res) => {
   try {
     const userID = req.user.id;
@@ -223,6 +214,26 @@ export const userBlogs = async (req, res) => {
       .find({ author: userID })
       .sort({ createdAt: -1 });
     res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch latest blogs" });
+  }
+};
+
+export const homeBlogs = async (req, res) => {
+  try {
+    const blogs = await blogModel
+      .find()
+      .populate("author", "name image")
+      .populate("likes", " _id")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const homeBlogs = blogs.map((blog) => ({
+      ...blog,
+      likeCount: blog.likes.length,
+    }));
+
+    res.status(200).json(homeBlogs);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch latest blogs" });
   }
@@ -266,7 +277,7 @@ export const deleteBlog = async (req, res) => {
 export const trendingBlogs = async (req, res) => {
   try {
     // Fetch all blogs
-    const blogs = await blogModel.find();
+    const blogs = await blogModel.find().populate("author", "name image");
 
     const trending = blogs
       .map((blog) => {

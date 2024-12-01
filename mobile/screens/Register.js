@@ -7,9 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import logo from "../assets/Insights.png";
 
 const Register = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordVisible, setIspasswordVisible] = useState(false);
@@ -24,36 +22,13 @@ const Register = () => {
     setIsConfpasswordVisible(!isConfPasswordVisible);
   };
 
-  const registerUser = async () => {
+  const goToRegTwo = () => {
     try {
-      await axios.post("/auth/register", {
-        name,
-        email,
-        username,
-        password,
-        verifyPassword: confirmPassword,
-      });
-      setName("");
-      setEmail("");
-      setUsername("");
-      setPassword("");
-      setConfirmPassword("");
-      Toast.show({
-        type: "success",
-        position: "bottom",
-        text1: "Register Successful",
-      });
-      navigation.navigate("Login");
+      const userData = { email, password, confirmPassword };
+      console.log(userData);
+      navigation.navigate("RegisterTwo", { userData });
     } catch (error) {
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: error.response.data.error || "Something went wrong",
-        text1Style: {
-          color: "black", // Text color for better contrast
-          fontSize: 8, // Increase font size if needed
-        },
-      });
+      console.error(error);
     }
   };
 
@@ -75,12 +50,6 @@ const Register = () => {
           <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
             <Ionicons name="person-outline" size={20} color="white" />
           </View>
-          <TextInput
-            placeholder="Your Full Name"
-            value={name}
-            onChangeText={setName}
-            className="w-full"
-          />
         </View>
         <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
           <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
@@ -90,17 +59,6 @@ const Register = () => {
             placeholder="Youremail@gmail.com"
             value={email}
             onChangeText={setEmail}
-            className="w-full"
-          />
-        </View>
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="at-outline" size={20} color="white" />
-          </View>
-          <TextInput
-            placeholder="Your_username"
-            value={username}
-            onChangeText={setUsername}
             className="w-full"
           />
         </View>
@@ -152,7 +110,7 @@ const Register = () => {
         </View>
         <TouchableOpacity
           className="bg-gray-900 my-4 rounded-full py-4"
-          onPress={registerUser}
+          onPress={goToRegTwo}
         >
           <Text className="text-gray-50 text-center text-lg font-semibold">
             Join Now
