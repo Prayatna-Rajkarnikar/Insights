@@ -13,11 +13,13 @@ import {
   getUserList,
   deleteUser,
   editProfile,
+  validDetails,
 } from "../controllers/authController.js";
 
 const router = Router();
 router.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 router.post("/register", registerUser);
+router.post("/validDetails", validDetails);
 router.post("/login", loginUser);
 router.put("/forgetPassword", forgetPassword);
 router.get("/profile", authMiddleware, getUser);

@@ -29,8 +29,8 @@ import AboutMe from "./screens/AboutMe";
 import { Trial } from "./screens/Trial";
 import { View } from "react-native";
 
-// axios.defaults.baseURL = "http://192.168.1.2:3001";
-axios.defaults.baseURL = "http://100.64.203.221:3001";
+axios.defaults.baseURL = "http://192.168.1.7:3001";
+// axios.defaults.baseURL = "http://100.64.203.221:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();

@@ -4,7 +4,9 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import logo from "../assets/Insights.png";
+
+import InputField from "../helpers/InputField";
+import Button from "../helpers/Button";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -22,110 +24,108 @@ const Register = () => {
     setIsConfpasswordVisible(!isConfPasswordVisible);
   };
 
-  const goToRegTwo = () => {
+  const goToRegTwo = async () => {
     try {
+      if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+        alert("Please fill all the fields.");
+        return;
+      }
+
+      await axios.post("/auth/validDetails", {
+        email,
+        password,
+        confirmPassword,
+      });
+
       const userData = { email, password, confirmPassword };
       console.log(userData);
-      navigation.navigate("RegisterTwo", { userData });
+      navigation.navigate("CompleteProfile", { userData });
     } catch (error) {
-      console.error(error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+      });
     }
   };
 
   return (
-    <View className="bg-gray-50 flex-1">
-      <TouchableOpacity className="ml-5 mt-10">
-        <Ionicons name="close" size={30} />
+    <View className="bg-gray-900 flex-1 px-5">
+      {/* close icon */}
+      <TouchableOpacity className="mt-12">
+        <Ionicons name="close" size={30} color="#9CA3AF" />
       </TouchableOpacity>
-      <View className="items-end">
-        <Image source={logo} className="h-16 w-48" />
+
+      {/* heading */}
+      <View className="mt-5">
+        <Text className="text-3xl font-bold text-gray-50">Register</Text>
       </View>
-      <View className="mt-4 mx-4">
-        <Text className="text-right text-5xl text-gray-800">
-          Create a new account
+
+      <View className="mt-1">
+        <Text className="text-sm font-normal text-gray-400">
+          Password must be at least 8 characters long and must include 1
+          uppercase, 1 lowercase, 1 number, and @ or _ .
         </Text>
       </View>
-      <View className="mt-5 mx-4">
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="person-outline" size={20} color="white" />
-          </View>
-        </View>
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="mail-outline" size={20} color="white" />
-          </View>
-          <TextInput
-            placeholder="Youremail@gmail.com"
-            value={email}
-            onChangeText={setEmail}
-            className="w-full"
+
+      {/* Input Fields */}
+      <View className="mt-6">
+        <InputField
+          placeholder="Enter email address"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <View className="relative">
+          <InputField
+            placeholder="Enter Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!isPasswordVisible}
           />
-        </View>
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="key-outline" size={20} color="white" />
-          </View>
-          <View className="flex-1 justify-center w-full">
-            <TextInput
-              placeholder="Passsword"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!isPasswordVisible}
-            />
-          </View>
           <TouchableOpacity
             onPress={togglePasswordVisiblity}
-            className="justify-center"
+            className="absolute right-4 top-1/4 w-7 h-7 justify-center items-center"
           >
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="gray"
+              color="#F3F4F6"
             />
           </TouchableOpacity>
         </View>
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="lock-closed-outline" size={20} color="white" />
-          </View>
-          <View className="flex-1 justify-center className w-full">
-            <TextInput
-              placeholder="Confirm Password"
-              secureTextEntry={!isConfPasswordVisible}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-          </View>
+
+        <View className="relative">
+          <InputField
+            placeholder="Enter Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!isConfPasswordVisible}
+          />
           <TouchableOpacity
             onPress={toggleConfPasswordVisiblity}
-            className="justify-center"
+            className="absolute right-4 top-1/4 w-7 h-7 justify-center items-center"
           >
             <Ionicons
               name={isConfPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="gray"
+              color="#F3F4F6"
             />
           </TouchableOpacity>
         </View>
+
+        {/* Btn */}
+        <Button onPress={goToRegTwo} label="Next" />
+
+        {/* Login Navigation */}
         <TouchableOpacity
-          className="bg-gray-900 my-4 rounded-full py-4"
-          onPress={goToRegTwo}
+          onPress={() => navigation.navigate("Login")}
+          className="mt-[278px]"
         >
-          <Text className="text-gray-50 text-center text-lg font-semibold">
-            Join Now
+          <Text className="text-purple-800 text-xl font-bold  text-center">
+            Go back to Login
           </Text>
         </TouchableOpacity>
-        <View className="flex-row justify-center mt-3 space-x-1">
-          <Text className="text-gray-500 text-sm">
-            Already have an account?
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text className="text-gray-800 font-medium underline">
-              Continue here
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );

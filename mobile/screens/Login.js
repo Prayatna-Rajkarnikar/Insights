@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
-import logo from "../assets/Insights.png";
+import InputField from "../helpers/InputField";
+import Button from "../helpers/Button";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -40,79 +41,67 @@ const LoginScreen = () => {
   };
 
   return (
-    <View className="bg-gray-50 flex-1">
+    <View className="bg-gray-900 flex-1 px-5">
       {/* close icon */}
-      <TouchableOpacity className="ml-5 mt-10">
-        <Ionicons name="close" size={30} />
+      <TouchableOpacity className="mt-12">
+        <Ionicons name="close" size={30} color="#9CA3AF" />
       </TouchableOpacity>
 
-      {/* logo */}
-      <View className="items-end">
-        <Image source={logo} className="h-16 w-48" />
+      {/* heading */}
+      <View className="mt-5">
+        <Text className="text-3xl font-bold text-gray-50">Login</Text>
       </View>
 
-      <Text className="text-right mt-4 mx-4 text-5xl text-gray-800">
-        Welcome to Insights
-      </Text>
-      <View className="mt-5 mx-4">
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="mail-outline" size={20} color="white" />
-          </View>
-          <TextInput
-            placeholder="Youremail@gmail.com"
-            value={email}
-            onChangeText={setEmail}
-            className="w-full"
-          />
-        </View>
+      {/* Input Fields */}
+      <View className="mt-6">
+        <InputField
+          placeholder="Enter email address"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-        <View className="flex-row w-full rounded-full bg-gray-100 px-4 py-3 text-base font-medium space-x-4 mb-4">
-          <View className="bg-gray-800 rounded-full p-2 h-10 w-10 items-center justify-center">
-            <Ionicons name="key-outline" size={20} color="white" />
-          </View>
-          <View className="flex-1 justify-center">
-            <TextInput
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!isPasswordVisible}
-            />
-          </View>
+        <View className="relative">
+          <InputField
+            placeholder="Enter Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!isPasswordVisible}
+          />
           <TouchableOpacity
             onPress={togglePasswordVisiblity}
-            className="justify-center"
+            className="absolute right-4 top-1/4 w-7 h-7 justify-center items-center"
           >
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="gray"
+              color="#F3F4F6"
             />
           </TouchableOpacity>
         </View>
+      </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
-          <Text className="text-indigo-400 font-medium text-right underline">
-            Forget Password ?
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="bg-indigo-400 my-4 rounded-full py-4"
-          onPress={handleLogin}
-        >
-          <Text className="text-gray-50 text-center text-lg font-semibold">
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View className="flex-row justify-center mt-56 space-x-1">
-        <Text className="text-gray-500 text-sm">Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text className="text-indigo-400 font-medium underline">
-            Start Here
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* Forget password */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("ForgetPassword")}
+        className="mt-1 mb-6"
+      >
+        <Text className="text-gray-400 font-medium  text-base text-right">
+          Forget Password ?
+        </Text>
+      </TouchableOpacity>
+
+      {/* Login Btn */}
+      <Button onPress={handleLogin} label="Login" />
+
+      {/* Go to Register Btn */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Register")}
+        className="rounded-full py-5 border-2 border-purple-800 mt-64"
+      >
+        <Text className="text-gray-50 text-xl font-bold  text-center">
+          Create new account
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

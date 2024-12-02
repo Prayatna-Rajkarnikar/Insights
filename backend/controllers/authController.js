@@ -3,6 +3,52 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.js";
 import { validate } from "email-validator";
 
+export const validDetails = async (req, res) => {
+  try {
+    const { email, password, confirmPassword } = req.body;
+    const trimmedEmail = email.trim();
+    //It ensures that email is in correct format.
+    const emailValidation = validate(trimmedEmail);
+    if (!emailValidation) {
+      return res.status(400).json({ error: "Email is not valid." });
+    }
+
+    //It checks if same email exist in database.
+    const emailExist = await userModel.findOne({ email: trimmedEmail });
+    if (emailExist) {
+      return res.status(400).json({ error: "Email already exists." });
+    }
+
+    //It ensures the length of password is greater or equal to 8.
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters long." });
+    }
+
+    //It ensures that password can must contain at least one uppercase, one lowercase and one number.
+    //It ensures that only @ or underscores are allowed.
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=[A-Za-z\d@_]*$)[A-Za-z\d@_]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        error: "Invalid Password.",
+      });
+    }
+
+    // It ensures that passoword and confirm passoword field matches.
+    if (password !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ error: "Password and Confirm password doesn't match." });
+    }
+
+    return res.status(202).json({ message: "Valid details." });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export const registerUser = async (req, res) => {
   try {
     // This pulls the user's input data directly from the request body,
@@ -27,25 +73,6 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    //It ensures that email is in correct format.
-    const emailValidation = validate(trimmedEmail);
-    if (!emailValidation) {
-      return res.status(400).json({ error: "Email is not valid." });
-    }
-
-    //It checks if same email exist in database.
-    const emailExist = await userModel.findOne({ email: trimmedEmail });
-    if (emailExist) {
-      return res.status(400).json({ error: "Email already exists." });
-    }
-
-    //It ensures the length of username
-    if (username.length < 4 || username.length > 20) {
-      return res
-        .status(400)
-        .json({ error: "Username must range from 4 to 20 characters." });
-    }
-
     //It ensures that username can contain only uppercase, lowercase and underscores.
     const usernameRegex = /^[a-zA-Z0-9_]*$/;
     if (!usernameRegex.test(trimmedUsername)) {
@@ -60,31 +87,6 @@ export const registerUser = async (req, res) => {
     });
     if (userNameExist) {
       return res.status(400).json({ error: "Username already exists." });
-    }
-
-    //It ensures the length of password is greater or equal to 8.
-    if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: "Password must be at least 8 characters long." });
-    }
-
-    //It ensures that password can must contain at least one uppercase, one lowercase and one number.
-    //It ensures that only @ or underscores are allowed.
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=[A-Za-z\d@_]*$)[A-Za-z\d@_]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        error:
-          "Password must include 1 uppercase, 1 lowercase, 1 number, and @ or _.",
-      });
-    }
-
-    // It ensures that passoword and confirm passoword field matches.
-    if (password !== verifyPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and Confirm password doesn't match." });
     }
 
     // It ensures that passoword and confirm passoword field matches.
@@ -199,8 +201,7 @@ export const forgetPassword = async (req, res) => {
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=[a-zA-Z\d@_]*$)[a-zA-Z\d@_]{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
-        error:
-          "Password must contain at least one uppercase, one lowercase and one number. Password can only contain @ or underscores(_).",
+        error: "Invalid Password",
       });
     }
     // It ensures that passoword and confirm passoword field matches.
