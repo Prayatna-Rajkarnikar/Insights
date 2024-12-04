@@ -57,29 +57,56 @@ const Home = () => {
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <View className=" w-60 pt-2 bg-indigo-500 rounded-3xl border-2 border-indigo-400 mr-4">
-          <View className="flex-row pl-3  space-x-2 items-center">
+        <StyledView
+          colors={["#312E81", "#4E2894", "#111827"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className=" w-[300px] h-36 mb-4 rounded-3xl mr-4"
+        >
+          <View className="m-[2px]">
+            {firstImg && (
+              <Image
+                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
+                className="w-full h-[70px] rounded-2xl"
+              />
+            )}
+          </View>
+          <View className="flex-row space-x-2 items-center justify-center">
             <Image
               source={{
                 uri: `${axios.defaults.baseURL}${item.author.image}`,
               }}
-              className="rounded-full w-8 h-8"
+              className="rounded-full w-6 h-6"
             />
-            <Text className="text-sm font-medium">{item.author.name}</Text>
+
+            <Text className="text-xs font-medium text-gray-400">
+              {item.author.name}
+            </Text>
           </View>
-          <View className="">
-            <Text className="text-xl font-bold text-gray-50">{item.title}</Text>
+          <View className="px-2">
+            <Text
+              className="text-xl font-bold text-gray-50"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {item.title}
+            </Text>
           </View>
-          {/* <View className="h-[100px]">
-            {firstImg && (
-              <Image
-                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                className="w-[236px] h-[100px] rounded-xl mt-1"
-                resizeMode="cover"
-              />
-            )}
-          </View> */}
-        </View>
+          <View className="flex-row space-x-7 justify-center">
+            <View className="flex-row space-x-1 items-center">
+              <Ionicons name="heart" size={12} color="#8b5cf6" />
+              <Text className="text-xs text-violet-500">
+                {item.likes.length}
+              </Text>
+            </View>
+            <View className="flex-row space-x-1 items-center">
+              <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
+              <Text className="text-xs text-violet-500">
+                {item.likes.length}
+              </Text>
+            </View>
+          </View>
+        </StyledView>
       </TouchableOpacity>
     );
   };
@@ -93,7 +120,7 @@ const Home = () => {
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
         <StyledView
-          colors={["#818cf8", "#6366f1"]}
+          colors={["#312E81", "#4E2894", "#111827"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           className="h-48 p-3 mb-4 rounded-3xl"
@@ -103,9 +130,10 @@ const Home = () => {
               source={{
                 uri: `${axios.defaults.baseURL}${item.author.image}`,
               }}
-              className="rounded-full w-8 h-8"
+              className="rounded-full w-6 h-6"
             />
-            <Text className="text-sm font-medium text-gray-600">
+
+            <Text className="text-xs font-medium text-gray-400">
               {item.author.name}
             </Text>
           </View>
@@ -119,18 +147,18 @@ const Home = () => {
                 {item.title}
               </Text>
               <Text
-                className="text-base font-normal text-gray-600"
+                className="text-xs font-normal text-gray-400"
                 numberOfLines={2}
                 ellipsizeMode="tail"
               >
                 {item.subTitle}
               </Text>
             </View>
-            <View className="w-36 h-28 ">
+            <View className="w-36 h-28">
               {firstImg && (
                 <Image
                   source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                  className="w-36 h-28 rounded-3xl"
+                  className="w-[145px] h-28 rounded-2xl"
                   resizeMode="cover"
                 />
               )}
@@ -138,9 +166,9 @@ const Home = () => {
           </View>
 
           {/* Footer section */}
-          <View className="absolute mt-auto bottom-2 ml-3">
+          <View className="absolute mt-auto bottom-2 ml-4">
             <View className="flex-row space-x-11 items-center">
-              <Text className="text-gray-600 text-xs">
+              <Text className="text-gray-400 text-xs font-bold">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -149,14 +177,14 @@ const Home = () => {
               </Text>
               <View className="flex-row space-x-4">
                 <View className="flex-row space-x-1">
-                  <Ionicons name="heart" size={15} color="#4B5563" />
-                  <Text className="text-xs text-gray-600">
+                  <Ionicons name="heart" size={12} color="#8b5cf6" />
+                  <Text className="text-xs text-violet-500 font-bold">
                     {item.likes.length}
                   </Text>
                 </View>
                 <View className="flex-row space-x-1">
-                  <Ionicons name="chatbubble" size={15} color="#4B5563" />
-                  <Text className="text-xs text-gray-600">
+                  <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
+                  <Text className="text-xs text-violet-500 font-bold">
                     {item.likes.length}
                   </Text>
                 </View>
@@ -169,14 +197,14 @@ const Home = () => {
   };
 
   return (
-    <View className="flex-1 bg-gray-900 px-5 pt-8">
-      <View className=" flex-row justify-between items-center">
+    <View className="flex-1 bg-gray-900 px-5">
+      <View className=" flex-row justify-between items-center mt-8">
         <Text className="text-gray-50 font-bold text-3xl ">Insights</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Search")}>
           <Ionicons name="search-outline" size={30} color="#f9fafb" />
         </TouchableOpacity>
       </View>
-      <Text className="text-lg font-bold text-gray-100 mt-5 mb-3">
+      <Text className="text-lg font-bold text-gray-400 mt-5 mb-4">
         Trending
       </Text>
       <FlatList
@@ -185,9 +213,9 @@ const Home = () => {
         keyExtractor={(item) => item._id} // Assuming _id is the unique identifier for each blog
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        className="mb-5 h-[286px]"
+        className="mb-7 h-[238px]"
       />
-      <Text className="text-lg font-bold text-gray-100  mb-3">Latest</Text>
+      <Text className="text-lg font-bold text-gray-400  mb-4">Latest</Text>
       <FlatList
         data={latest}
         renderItem={renderLatest}

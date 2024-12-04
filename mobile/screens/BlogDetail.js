@@ -22,6 +22,7 @@ const BlogDetail = () => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
+  //Function to get total comments
   const getTotalComments = async (blogId) => {
     try {
       const response = await axios.get(`/comments/getTotalComments/${blogId}`);
@@ -31,6 +32,7 @@ const BlogDetail = () => {
     }
   };
 
+  // Function to get like status of blog.
   const likeStatus = async (blogId) => {
     try {
       const response = await axios.get(`/like/getTotalLikes/${blogId}`);
@@ -41,6 +43,7 @@ const BlogDetail = () => {
     }
   };
 
+  // FUnction to toggle like in the blog
   const toggleLike = async (blogId) => {
     try {
       const response = await axios.post(`/like/toggleLike/${blogId}`);
@@ -51,6 +54,7 @@ const BlogDetail = () => {
     }
   };
 
+  //
   useFocusEffect(
     useCallback(() => {
       getTotalComments(blogId);
@@ -83,28 +87,31 @@ const BlogDetail = () => {
   }
 
   return (
-    <View className="flex-1">
-      <View className="mb-3 px-7 pt-4">
+    <View className="flex-1 bg-gray-900 px-5">
+      <View className="mt-8">
         <TouchableOpacity
-          className="bg-gray-800 p-1 rounded-xl w-14 items-center"
           onPress={() => {
             navigation.goBack();
           }}
         >
-          <Text className="text-gray-50">Back</Text>
+          <Ionicons name="close" size={30} color="#9CA3AF" />
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} className="px-7">
-        <Text className="text-3xl font-bold m-1">{blog.title}</Text>
-        <Text className="text-lg text-gray-500 ml-1 mb-5">{blog.subTitle}</Text>
-        <View className="flex-row justify-start space-x-3">
+      <ScrollView showsVerticalScrollIndicator={false} className="mt-5">
+        <Text className="text-3xl font-bold text-gray-50">{blog.title}</Text>
+        <Text className="text-lg text-gray-400 mt-1 italic">
+          {blog.subTitle}
+        </Text>
+        <View className="flex-row justify-start space-x-3 mt-4">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${blog.author.image}` }}
             className="rounded-full w-14 h-14"
           />
           <View>
-            <Text className="text-lg font-medium">{blog.author.name}</Text>
-            <Text className="text-gray-500 text-xs">
+            <Text className="text-lg font-medium text-gray-100">
+              {blog.author.name}
+            </Text>
+            <Text className="text-gray-400 text-xs">
               {new Date(blog.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -125,31 +132,36 @@ const BlogDetail = () => {
             </View>
           ))}
         </View> */}
-        <View className="mt-3">
+        <View className="mt-6">
           {blog.content.map((item, index) => {
             if (item.type === "text") {
               return (
-                <Text key={index} className="text-lg text-justify mt-3">
+                <Text
+                  key={index}
+                  className="text-base justify-start text-gray-200 mt-2"
+                >
                   {item.value}
                 </Text>
               );
             }
             if (item.type === "image") {
               return (
-                <Image
-                  key={index}
-                  source={{ uri: `${axios.defaults.baseURL}${item.value}` }}
-                  className="w-full h-40 rounded-lg mt-2"
-                  resizeMode="cover"
-                />
+                <View className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden">
+                  <Image
+                    key={index}
+                    source={{ uri: `${axios.defaults.baseURL}${item.value}` }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                  />
+                </View>
               );
             }
             return null;
           })}
         </View>
-        <View className="h-5" />
+        <View className="h-2" />
       </ScrollView>
-      <View className="flex-row justify-evenly h-14">
+      <View className="flex-row justify-evenly h-16">
         <TouchableOpacity
           onPress={() => navigation.navigate("Like", { blogId })}
         >
@@ -158,10 +170,10 @@ const BlogDetail = () => {
               <Ionicons
                 name={isLiked ? "heart" : "heart-outline"}
                 size={30}
-                color={isLiked ? "red" : "black"}
+                color={isLiked ? "#8b5cf6" : "#9ca3af"}
               />
             </TouchableOpacity>
-            <Text className="w-10 text-start text-base font-semibold">
+            <Text className="w-10 text-start text-base font-semibold text-gray-400">
               {likes}
             </Text>
           </View>
@@ -170,8 +182,8 @@ const BlogDetail = () => {
           onPress={() => navigation.navigate("Comment", { blogId })}
         >
           <View className="flex-row items-center space-x-2">
-            <Ionicons name="chatbubble-outline" size={30} />
-            <Text className="w-10 text-start text-base font-semibold">
+            <Ionicons name="chatbubble-outline" size={30} color="#9ca3af" />
+            <Text className="w-10 text-start text-base font-semibold text-gray-400">
               {totalComments}
             </Text>
           </View>

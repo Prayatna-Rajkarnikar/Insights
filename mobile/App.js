@@ -27,9 +27,8 @@ import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import AboutMe from "./screens/AboutMe";
 import { Trial } from "./screens/Trial";
-import { View } from "react-native";
 
-axios.defaults.baseURL = "http://192.168.1.7:3001";
+axios.defaults.baseURL = "http://192.168.1.5:3001";
 // axios.defaults.baseURL = "http://100.64.203.221:3001";
 axios.defaults.withCredentials = true;
 
@@ -103,7 +102,7 @@ const BottomNav = () => {
             <Ionicons
               name="home"
               size={24}
-              color={focused ? "#6366f1" : "#4B5563"}
+              color={focused ? "#4E2894" : "#4B5563"}
             />
           ),
         }}
@@ -123,7 +122,7 @@ const BottomNav = () => {
             <Ionicons
               name="add-circle"
               size={26}
-              color={focused ? "#6366f1" : "#4B5563"}
+              color={focused ? "#4E2894" : "#4B5563"}
             />
           ),
         }}
@@ -137,7 +136,7 @@ const BottomNav = () => {
             <Ionicons
               name="person-circle-outline"
               size={26}
-              color={focused ? "#6366f1" : "#4B5563"}
+              color={focused ? "#4E2894" : "#4B5563"}
             />
           ),
         }}
