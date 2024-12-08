@@ -215,7 +215,7 @@ export const userBlogs = async (req, res) => {
       .sort({ createdAt: -1 });
     res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch latest blogs" });
+    res.status(500).json({ error: "Failed to fetch user blogs" });
   }
 };
 
@@ -225,12 +225,14 @@ export const homeBlogs = async (req, res) => {
       .find()
       .populate("author", "name image")
       .populate("likes", " _id")
+      .populate("comments", "_id")
       .sort({ createdAt: -1 })
       .lean();
 
     const homeBlogs = blogs.map((blog) => ({
       ...blog,
       likeCount: blog.likes.length,
+      commentCount: blog.comments.length,
     }));
 
     res.status(200).json(homeBlogs);

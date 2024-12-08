@@ -120,7 +120,7 @@ const Register = () => {
         {/* Login Navigation */}
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
-          className="mt-[278px]"
+          className="mt-[210px]"
         >
           <Text className="text-purple-800 text-xl font-bold  text-center">
             Go back to Login

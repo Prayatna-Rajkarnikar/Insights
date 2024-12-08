@@ -28,8 +28,8 @@ import Like from "./screens/Likes";
 import AboutMe from "./screens/AboutMe";
 import { Trial } from "./screens/Trial";
 
-axios.defaults.baseURL = "http://192.168.1.5:3001";
-// axios.defaults.baseURL = "http://100.64.203.221:3001";
+axios.defaults.baseURL = "http://192.168.1.12:3001";
+// axios.defaults.baseURL = "http://100.64.223.73:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();

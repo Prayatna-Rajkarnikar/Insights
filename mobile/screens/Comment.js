@@ -6,7 +6,6 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +13,8 @@ import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { styled } from "nativewind";
 
 const Comment = () => {
   const route = useRoute();
@@ -22,6 +23,7 @@ const Comment = () => {
   const [userComment, setUserComment] = useState("");
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+  const StyledView = styled(LinearGradient);
 
   useEffect(() => {
     try {
@@ -58,21 +60,25 @@ const Comment = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View className="flex-row bg-white rounded-lg p-4 my-1 shadow-md">
+    <View className="flex-row bg-gray-800 rounded-lg p-2 mt-3">
       <Image
         source={{ uri: `${axios.defaults.baseURL}${item.author.image}` }}
-        className="rounded-full h-12 w-12"
+        className="rounded-full h-9 w-9"
       />
       <View className="ml-3 flex-1">
-        <Text className="text-gray-800 font-semibold">{item.author.name}</Text>
-        <Text className="text-gray-500 text-xs">
+        <Text className="text-gray-50 font-bold text-base">
+          {item.author.name}
+        </Text>
+        <Text className="text-gray-400 text-xs font-semibold">
           {new Date(item.createdAt).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             year: "2-digit",
           })}
         </Text>
-        <Text className="text-gray-700 mt-1 text-base">{item.content}</Text>
+        <Text className="text-gray-100 mt-1 text-base font-medium">
+          {item.content}
+        </Text>
       </View>
     </View>
   );
@@ -85,87 +91,57 @@ const Comment = () => {
     );
   }
 
-  if (comments.length == 0) {
-    return (
-      <View className="flex-1 p-4 bg-gray-100">
-        <TouchableOpacity
-          className="items-end"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="close" size={30} />
-        </TouchableOpacity>
-        <Text
-          className="text-center font-semibold text-gray-800 text-base
-         mb-3"
-        >
-          Comments
-        </Text>
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-gray-800">No comments yet.</Text>
-        </View>
-        <View className="flex-row items-center bg-white p-3 rounded-full shadow-lg mt-4">
-          <TextInput
-            className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2 bg-gray-50"
-            placeholder="Add a comment..."
-            value={userComment}
-            onChangeText={setUserComment}
-            multiline
-          />
-          <TouchableOpacity
-            onPress={addComment}
-            className="bg-violet-500 rounded-full p-2"
-          >
-            <Ionicons name="arrow-up-circle" size={28} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <Modal
-      visible={true}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => navigation.goBack()}
-    >
-      <View className="flex-1 p-4 bg-gray-100">
-        <TouchableOpacity
-          className="items-end"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="close" size={30} />
-        </TouchableOpacity>
-        <Text
-          className="text-center font-semibold text-gray-800 text-base
+    <View className="flex-1 bg-gray-900 px-5 pb-4">
+      {/* close icon */}
+      <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
+        <Ionicons name="close" size={30} color="#9CA3AF" />
+      </TouchableOpacity>
+
+      {/* heading */}
+      <Text
+        className="text-center font-bold text-gray-400 text-base
          mb-3"
-        >
-          Comments
-        </Text>
+      >
+        Comments
+      </Text>
+
+      {comments.length === 0 ? (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-lg text-gray-100">No Comments yet.</Text>
+        </View>
+      ) : (
         <FlatList
           data={comments}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
-          className="flex-1"
+          className="mt-3"
           showsVerticalScrollIndicator={false}
         />
-        <View className="flex-row items-center bg-white p-3 rounded-full shadow-lg mt-4">
-          <TextInput
-            className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2 bg-gray-50"
-            placeholder="Add a comment..."
-            value={userComment}
-            onChangeText={setUserComment}
-            multiline
-          />
-          <TouchableOpacity
-            onPress={addComment}
-            className="bg-violet-500 rounded-full p-2"
-          >
+      )}
+
+      <View className="flex-row items-center bg-gray-800 p-3 rounded-full mt-4">
+        <TextInput
+          className="flex-1 border border-gray-400 rounded-full px-4 py-2 mr-2 bg-gray-800 text-gray-100 text-sm font-semibold"
+          placeholder="Add a comment..."
+          placeholderTextColor="#f3f4f6"
+          value={userComment}
+          onChangeText={setUserComment}
+          multiline
+        />
+
+        <StyledView
+          colors={["#312E81", "#4E2894"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className="rounded-full p-2"
+        >
+          <TouchableOpacity onPress={addComment}>
             <Ionicons name="arrow-up-circle" size={28} color="white" />
           </TouchableOpacity>
-        </View>
+        </StyledView>
       </View>
-    </Modal>
+    </View>
   );
 };
 

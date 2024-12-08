@@ -136,19 +136,20 @@ const BlogDetail = () => {
           {blog.content.map((item, index) => {
             if (item.type === "text") {
               return (
-                <Text
-                  key={index}
-                  className="text-base justify-start text-gray-200 mt-2"
-                >
-                  {item.value}
-                </Text>
+                <View key={index}>
+                  <Text className="text-base justify-start text-gray-200 mt-2">
+                    {item.value}
+                  </Text>
+                </View>
               );
             }
             if (item.type === "image") {
               return (
-                <View className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden">
+                <View
+                  className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden"
+                  key={index}
+                >
                   <Image
-                    key={index}
                     source={{ uri: `${axios.defaults.baseURL}${item.value}` }}
                     className="w-full h-full"
                     resizeMode="cover"

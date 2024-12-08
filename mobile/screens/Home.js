@@ -102,7 +102,7 @@ const Home = () => {
             <View className="flex-row space-x-1 items-center">
               <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
               <Text className="text-xs text-violet-500">
-                {item.likes.length}
+                {item.comments.length}
               </Text>
             </View>
           </View>
@@ -185,7 +185,7 @@ const Home = () => {
                 <View className="flex-row space-x-1">
                   <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
                   <Text className="text-xs text-violet-500 font-bold">
-                    {item.likes.length}
+                    {item.comments.length}
                   </Text>
                 </View>
               </View>
@@ -213,7 +213,7 @@ const Home = () => {
         keyExtractor={(item) => item._id} // Assuming _id is the unique identifier for each blog
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        className="mb-7 h-[238px]"
+        className="mb-7 h-[248px]"
       />
       <Text className="text-lg font-bold text-gray-400  mb-4">Latest</Text>
       <FlatList

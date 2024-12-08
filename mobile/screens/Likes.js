@@ -45,40 +45,18 @@ const Likes = () => {
     );
   }
 
-  if (likeList.length == 0) {
-    return (
-      <View className="flex-1 p-4 bg-gray-100">
-        <TouchableOpacity
-          className="items-end"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="close" size={30} />
-        </TouchableOpacity>
-        <Text
-          className="text-center font-semibold text-gray-800 text-base
-         mb-3"
-        >
-          Likes
-        </Text>
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-gray-800">No Likes yet.</Text>
-        </View>
-      </View>
-    );
-  }
-
   const renderItem = ({ item }) => {
     return (
-      <View className="flex-row space-x-2 mt-2">
+      <View className="flex-row space-x-4 mb-4">
         <Image
           source={{ uri: `${axios.defaults.baseURL}${item.user.image}` }}
-          className="rounded-full h-14 w-14"
+          className="rounded-full h-12 w-12"
         />
         <View>
-          <Text className="text-base text-gray-800 font-medium">
+          <Text className="text-xl text-gray-50 font-bold">
             {item.user.name}
           </Text>
-          <Text className="text-base text-gray-500 font-medium">
+          <Text className="text-xs text-gray-400 font-bold">
             {item.user.username}
           </Text>
         </View>
@@ -86,29 +64,29 @@ const Likes = () => {
     );
   };
   return (
-    <Modal
-      transparent={true}
-      visible={true}
-      animationType="slide"
-      onRequestClose={() => navigation.goBack()}
-    >
-      <View className="flex-1 p-4 bg-gray-100">
-        <TouchableOpacity
-          className="items-end"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="close" size={30} />
-        </TouchableOpacity>
-        <Text className="text-center font-semibold text-gray-800 text-base mb-3">
-          Likes
-        </Text>
+    <View className="flex-1 bg-gray-900 px-5">
+      {/* close icon */}
+      <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
+        <Ionicons name="close" size={30} color="#9CA3AF" />
+      </TouchableOpacity>
+      <Text
+        className="text-center font-bold text-gray-400 text-base
+         mb-4"
+      >
+        Likes
+      </Text>
+      {likeList.length === 0 ? (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-lg text-gray-100">No Comments yet.</Text>
+        </View>
+      ) : (
         <FlatList
           data={likeList}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
         />
-      </View>
-    </Modal>
+      )}
+    </View>
   );
 };
 
