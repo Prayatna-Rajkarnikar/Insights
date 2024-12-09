@@ -84,7 +84,7 @@ const UserBlogs = () => {
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <View className="h-44 p-4 m-2 bg-gray-50 rounded-xl shadow-md shadow-gray-500">
+        <View className="h-44 p-4 mb-2 bg-gray-50 rounded-xl shadow-md shadow-gray-500">
           <View className="flex-row justify-between">
             <View className="w-44 ">
               <Text

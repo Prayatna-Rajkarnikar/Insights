@@ -5,57 +5,20 @@ import {
   View,
   Image,
   TouchableOpacity,
-  useWindowDimensions,
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import UserBlogs from "./UserBlogs";
-import AboutMe from "./AboutMe";
+import { LinearGradient } from "expo-linear-gradient";
+import { styled } from "nativewind";
 
 const ProfileBlog = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-
-  const BlogRoute = () => (
-    <View className="flex-1 bg-gray-100 p-2">
-      <UserBlogs />
-    </View>
-  );
-
-  const BioRoute = () => (
-    <View className="flex-1 bg-gray-100">
-      <AboutMe />
-    </View>
-  );
-
-  const renderScene = SceneMap({
-    blog: BlogRoute,
-    bio: BioRoute,
-  });
-
-  const layout = useWindowDimensions();
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "blog", title: "Blogs" },
-    { key: "bio", title: "About Me" },
-  ]);
-
-  const renderTabBar = (props) => {
-    const { key, ...filteredProps } = props;
-    return (
-      <TabBar
-        key={key}
-        {...filteredProps}
-        indicatorStyle={{ backgroundColor: "white" }}
-        className="bg-gray-600"
-      />
-    );
-  };
+  const StyledView = styled(LinearGradient);
 
   useFocusEffect(
     useCallback(() => {
@@ -88,49 +51,61 @@ const ProfileBlog = () => {
     : `${axios.defaults.baseURL}/default-user.png`;
 
   return (
-    <View className="flex-1 bg-gray-50">
-      {/* Header Section */}
-      <View className="px-4 pt-3">
-        <View className="flex-row justify-end items-center space-x-2">
-          <TouchableOpacity
-            className="bg-gray-300 rounded-md p-1"
-            onPress={() => navigation.navigate("Create")}
-          >
-            <Ionicons name="add" size={25} />
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-gray-800 rounded-lg p-1">
-            <Text className="text-gray-50">Logout</Text>
-          </TouchableOpacity>
-        </View>
+    <View className="flex-1 bg-gray-900 px-5 pt-8">
+      {/* Profile Section */}
+      <View className="flex-row space-x-9 items-center">
+        <Image
+          source={{ uri: imageUrl }}
+          className="w-36 h-36 rounded-full border-4 border-gray-100"
+          style={{
+            borderWidth: 4,
+            borderColor: "#f3f4f6",
+          }}
+        />
 
-        {/* Profile Section */}
-        <View className="items-center gap-y-1 mt-1.5 p-1">
-          <Image
-            source={{ uri: imageUrl }}
-            className="w-32 h-32 rounded-full"
-          />
-          <Text className="text-2xl font-bold">{user.name}</Text>
-          <Text className="text-base font-normal">@{user.username}</Text>
-          <TouchableOpacity
-            className="bg-gray-300 rounded-lg p-1 items-center w-40"
-            onPress={() => {
-              navigation.navigate("UpdateProfile");
-            }}
+        <View className="space-y-4">
+          <StyledView
+            colors={["#312E81", "#4E2894"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="rounded-full w-32 h-12 justify-center items-center"
           >
-            <Text className="text-gray-800">Edit Profile</Text>
-          </TouchableOpacity>
+            <TouchableOpacity>
+              <Text className="text-gray-50 text-sm font-bold">Logout</Text>
+            </TouchableOpacity>
+          </StyledView>
+
+          <StyledView
+            colors={["#312E81", "#4E2894"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="rounded-full w-32 h-12 justify-center items-center"
+          >
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("UpdateProfile");
+              }}
+            >
+              <Text className="text-gray-50 text-sm font-bold">
+                Edit Profile
+              </Text>
+            </TouchableOpacity>
+          </StyledView>
         </View>
       </View>
 
-      {/* TabView Section */}
-      <View className=" flex-1 mt-4">
-        <TabView
-          renderTabBar={renderTabBar}
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-        />
+      <View className="bg-gray-800 p-4 space-y-2 mt-4 rounded-xl">
+        <Text className="text-gray-100 text-xl font-bold">{user.name}</Text>
+        <Text className="text-gray-100 text-base font-medium">
+          @{user.username}
+        </Text>
+      </View>
+      <View className="items-center justify-center mt-6 mb-3">
+        <Ionicons name="grid" size={25} color="#F9FAFB" />
+      </View>
+
+      <View className="flex-1 bg-gray-900">
+        <UserBlogs />
       </View>
     </View>
   );
