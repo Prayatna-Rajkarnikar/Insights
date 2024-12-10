@@ -138,7 +138,7 @@ const Home = () => {
             </Text>
           </View>
           <View className="flex-row space-x-2">
-            <View className="w-44">
+            <View className="w-44 space-y-1">
               <Text
                 className="text-xl font-bold text-gray-50"
                 numberOfLines={2}

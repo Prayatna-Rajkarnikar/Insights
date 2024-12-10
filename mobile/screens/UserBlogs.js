@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+
 import {
   View,
   Text,
@@ -9,54 +11,39 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { LinearGradient } from "expo-linear-gradient";
+import { styled } from "nativewind";
+import { Swipeable } from "react-native-gesture-handler";
 
 const UserBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUserBlogs = async () => {
-      try {
-        const response = await axios.get("/blog/getUserBlogs");
-        setBlogs(response.data);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const StyledView = styled(LinearGradient);
 
-    fetchUserBlogs();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserBlogs = async () => {
+        try {
+          const response = await axios.get("/blog/getUserBlogs");
+          setBlogs(response.data);
+        } catch (error) {
+          console.error("Error fetching blogs:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (blogs.length == 0) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-lg text-gray-800">
-          You haven't created any blog yet.
-        </Text>
-      </View>
-    );
-  }
+      fetchUserBlogs();
+    }, [])
+  );
 
   const deleteBlog = async (blogId) => {
     try {
       await axios.delete(`/blog/deleteBlog/${blogId}`);
-      // This is the condition that determines whether a blog will stay in the updated blogs array.
-      // For each blog object in prevBlogs, it checks
-      //if the blog's unique ID (blog._id) is not equal to the blogId of the blog that was just deleted.
-      // If the condition blog._id !== blogId is true, the blog remains in the new array.
       setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
       Toast.show({
         type: "success",
@@ -76,79 +63,106 @@ const UserBlogs = () => {
     }
   };
 
+  const renderRightActions = (blogId) => (
+    <View className="flex-1 justify-center items-end pr-4">
+      <TouchableOpacity
+        onPress={() => deleteBlog(blogId)}
+        className="bg-red-500 p-4 rounded-md"
+      >
+        <Ionicons name="trash-bin-outline" size={24} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderItem = ({ item }) => {
     const firstImg =
       item.content.find((contentItem) => contentItem.type === "image")?.value ||
       null;
+
     return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
-      >
-        <View className="h-44 p-4 mb-2 bg-gray-50 rounded-xl shadow-md shadow-gray-500">
-          <View className="flex-row justify-between">
-            <View className="w-44 ">
-              <Text
-                className="text-xl font-bold text-gray-800"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {item.title}
-              </Text>
-              <Text
-                className="text-base font-normal text-gray-600"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {item.subTitle}
-              </Text>
+      <Swipeable renderRightActions={() => renderRightActions(item._id)}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("BlogDetail", { blogId: item._id })
+          }
+        >
+          <StyledView
+            colors={["#312E81", "#4E2894", "#111827"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="h-48 p-3 mb-4 rounded-3xl"
+          >
+            <View className="flex-row space-x-2">
+              <View className="w-44 space-y-1">
+                <Text
+                  className="text-xl font-bold text-gray-50"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {item.title}
+                </Text>
+                <Text
+                  className="text-xs font-normal text-gray-400"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {item.subTitle}
+                </Text>
+              </View>
+
+              <View className="w-36 h-28">
+                {firstImg && (
+                  <Image
+                    source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
+                    className="w-[145px] h-32 rounded-2xl"
+                    resizeMode="cover"
+                  />
+                )}
+              </View>
             </View>
-            {firstImg && (
-              <Image
-                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                className="w-36 h-28 rounded-xl"
-                resizeMode="cover"
-              />
-            )}
-          </View>
-          <View className="flex-row justify-between mt-2 items-center">
-            <Text className="text-gray-500 text-xs">
-              {new Date(item.createdAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </Text>
-            <View className="flex-row justify-between items-center">
-              <TouchableOpacity className="p-1 bg-gray-200 rounded-md">
-                <Ionicons
-                  name="trash-bin-outline"
-                  size={20}
-                  onPress={() => deleteBlog(item._id)}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1 bg-gray-200 rounded-md ml-2 mr-2">
-                <Ionicons
-                  name="create-outline"
-                  size={20}
-                  onPress={() =>
-                    navigation.navigate("EditBlog", { blogId: item._id })
-                  }
-                />
-              </TouchableOpacity>
+            <View className="absolute mt-auto bottom-2 ml-4">
+              <View className="flex-row space-x-52 items-center">
+                <Text className="text-gray-400 text-xs font-bold">
+                  {new Date(item.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </Text>
+
+                <TouchableOpacity>
+                  <Ionicons
+                    name="create-outline"
+                    size={26}
+                    color="#F3F4F6"
+                    onPress={() =>
+                      navigation.navigate("EditBlog", { blogId: item._id })
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+          </StyledView>
+        </TouchableOpacity>
+      </Swipeable>
     );
   };
 
   return (
-    <FlatList
-      data={blogs}
-      renderItem={renderItem}
-      keyExtractor={(item) => item._id} // Assuming _id is the unique identifier for each blog
-      className="flex-1"
-    />
+    <View className="flex-1 bg-gray-900">
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <FlatList
+          data={blogs}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </View>
   );
 };
 

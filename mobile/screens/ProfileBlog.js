@@ -17,6 +17,7 @@ import { styled } from "nativewind";
 const ProfileBlog = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const navigation = useNavigation();
   const StyledView = styled(LinearGradient);
 
@@ -94,12 +95,30 @@ const ProfileBlog = () => {
         </View>
       </View>
 
-      <View className="bg-gray-800 p-4 space-y-2 mt-4 rounded-xl">
+      <View className="bg-gray-800 p-4 space-y-2 mt-4 rounded-xl h-36">
         <Text className="text-gray-100 text-xl font-bold">{user.name}</Text>
         <Text className="text-gray-100 text-base font-medium">
           @{user.username}
         </Text>
+        {user.bio ? (
+          <Text
+            className="text-gray-100 text-base font-normal"
+            numberOfLines={2}
+          >
+            {user.bio}
+          </Text>
+        ) : (
+          <TouchableOpacity
+            className="w-36 bg-gray-100 p-2 rounded-lg"
+            onPress={() => navigation.navigate("UpdateProfile")}
+          >
+            <Text className="text-gray-900 text-sm font-normal text-center">
+              + Add a Bio
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
+
       <View className="items-center justify-center mt-6 mb-3">
         <Ionicons name="grid" size={25} color="#F9FAFB" />
       </View>

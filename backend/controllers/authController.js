@@ -328,7 +328,7 @@ export const editProfile = async (req, res) => {
 
     user.name = name || user.name;
     user.username = username || user.username;
-    user.bio = bio || user.bio;
+    if (bio !== undefined) user.bio = bio;
 
     if (req.file) {
       user.image = `/images/${req.file.filename}`;

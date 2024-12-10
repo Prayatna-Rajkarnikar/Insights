@@ -17,6 +17,10 @@ const UpdateProfile = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    ImagePicker.requestMediaLibraryPermissionsAsync();
+  }, []);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get("/auth/profile");
@@ -65,7 +69,7 @@ const UpdateProfile = () => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("username", username);
-      formData.append("bio", bio);
+      formData.append("bio", bio || "");
 
       if (image) {
         formData.append("image", {

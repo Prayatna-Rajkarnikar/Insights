@@ -269,6 +269,16 @@ export const deleteBlog = async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
+    const author = await userModel.findById(blog.author);
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    // Remove the blog ID from the author's blogs array
+    author.blogs = author.blogs.filter((id) => id.toString() !== blogId);
+    await author.save();
+
     await blogModel.findByIdAndDelete(blogId);
     res.status(201).json({ message: "Blog Deleted Successfully" });
   } catch (error) {
