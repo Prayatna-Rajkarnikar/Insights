@@ -25,7 +25,6 @@ import AddTopics from "./screens/AddTopics";
 import Preview from "./screens/Preview";
 import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
-import AboutMe from "./screens/AboutMe";
 import { Trial } from "./screens/Trial";
 
 axios.defaults.baseURL = "http://192.168.1.8:3001";
@@ -59,7 +58,6 @@ export default function App() {
           <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
           <Stack.Screen name="Comment" component={Comment} />
           <Stack.Screen name="Like" component={Like} />
-          <Stack.Screen name="AboutMe" component={AboutMe} />
           <Stack.Screen name="Trial" component={Trial} />
         </Stack.Navigator>
         <Toast />

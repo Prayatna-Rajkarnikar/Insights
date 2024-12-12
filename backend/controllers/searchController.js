@@ -1,5 +1,6 @@
 import topicModel from "../models/topics.js";
 import blogModel from "../models/blog.js";
+import userModel from "../models/user.js";
 
 export const searchTopic = async (req, res) => {
   try {
@@ -17,10 +18,30 @@ export const searchBlogs = async (req, res) => {
   try {
     const { query } = req.query;
     const blog = await blogModel.find({
-      title: { $regex: query, $options: "i" },
+      // $or Operator:
+      // Combines multiple conditions.
+      // At least one of the conditions in the $or array must be true for a document to match.
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { subTitle: { $regex: query, $options: "i" } },
+      ],
     });
     res.json(blog);
   } catch (error) {
     res.status(500).json({ error: "Failed to get blogs." });
   }
+};
+
+export const searchUsers = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const user = await userModel.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { username: { $regex: query, $options: "i" } },
+      ],
+    });
+    res.json(user);
+  } catch (error) {}
 };

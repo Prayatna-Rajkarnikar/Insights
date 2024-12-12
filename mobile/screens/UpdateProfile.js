@@ -6,6 +6,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+import Button from "../helpers/Button";
 
 const UpdateProfile = () => {
   const [name, setName] = useState("");
@@ -107,62 +108,62 @@ const UpdateProfile = () => {
   };
 
   return (
-    <View className="flex-1 px-6 pt-5">
-      <View className=" flex-row space-x-3 justify-end">
-        <TouchableOpacity
-          className="bg-gray-800 p-1 rounded-xl w-12 items-center"
-          onPress={updateProfile}
-          disabled={isLoading}
-        >
-          <Text className="text-gray-50">Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="bg-gray-800 p-1 rounded-xl w-20 items-center">
-          <Text
-            className="text-gray-50"
-            onPress={() => {
-              navigation.navigate("ProfileBlog");
-            }}
-          >
-            Cancel
-          </Text>
-        </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-gray-900 px-5">
+      {/* close icon */}
+      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={30} color="#9CA3AF" />
+      </TouchableOpacity>
 
+      {/* Image */}
       <View className="flex-row flex-wrap justify-center">
-        <View className="items-center my-7">
+        <View className="items-center m-7">
           {image && (
-            <Image className="w-32 h-32 rounded-full" source={{ uri: image }} />
+            <Image
+              source={{ uri: image }}
+              className="w-36 h-36 rounded-full border-4 border-gray-100"
+              style={{
+                borderWidth: 4,
+                borderColor: "#f3f4f6",
+              }}
+            />
           )}
           <TouchableOpacity
             onPress={pickImage}
-            className="absolute top-1 right-1 p-1 bg-red-600 rounded-full"
+            className="absolute top-1 right-1 p-1 bg-gray-100 rounded-full"
           >
-            <Ionicons name="camera" size={20} color="white" />
+            <Ionicons name="camera" size={20} color="black" />
           </TouchableOpacity>
         </View>
-
-        <TextInput
-          className="w-full border-2 border-gray-300 rounded-2xl p-3 mb-3 bg-transparent text-lg"
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter your name"
-        />
-        <TextInput
-          className="w-full border-2 border-gray-300 rounded-2xl p-3 mb-3 bg-transparent text-lg"
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Enter your username"
-        />
-        <TextInput
-          className="w-full border-2 border-gray-300 rounded-2xl p-3 mb-3 bg-transparent text-lg"
-          value={bio}
-          onChangeText={setBio}
-          placeholder="About me section"
-          multiline
-          numberOfLines={10}
-          textAlignVertical="top"
-        />
       </View>
+      {/* Text Fields */}
+      <TextInput
+        className="bg-gray-800 rounded-xl p-3 items-center mb-2 text-xl font-bold text-gray-400"
+        value={name}
+        onChangeText={setName}
+        placeholder="Enter your name"
+        placeholderTextColor="#9CA3AF"
+      />
+      <TextInput
+        className="bg-gray-800 rounded-xl p-3 items-center mb-2 text-xl font-bold text-gray-400"
+        value={username}
+        onChangeText={setUsername}
+        placeholder="Enter your username"
+        placeholderTextColor="#9CA3AF"
+      />
+      <TextInput
+        className="bg-gray-800 rounded-xl p-3 items-center  text-xl font-bold text-gray-400"
+        value={bio}
+        onChangeText={setBio}
+        placeholder="About me section"
+        placeholderTextColor="#9CA3AF"
+        multiline
+        numberOfLines={10}
+        textAlignVertical="top"
+      />
+
+      <TouchableOpacity disabled={isLoading}>
+        <Button onPress={updateProfile} label="Save" />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -66,7 +66,7 @@ const Likes = () => {
   return (
     <View className="flex-1 bg-gray-900 px-5">
       {/* close icon */}
-      <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
+      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
         <Ionicons name="close" size={30} color="#9CA3AF" />
       </TouchableOpacity>
       <Text
