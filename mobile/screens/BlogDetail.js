@@ -88,6 +88,7 @@ const BlogDetail = () => {
 
   return (
     <View className="flex-1 bg-gray-900 px-5">
+      {/* Back Icon */}
       <View className="mt-8">
         <TouchableOpacity
           onPress={() => {

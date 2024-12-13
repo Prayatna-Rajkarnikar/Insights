@@ -5,12 +5,11 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
+import Button from "../helpers/Button";
 
 const AddTopics = ({ route, navigation }) => {
   const { blogData } = route.params;
@@ -82,72 +81,83 @@ const AddTopics = ({ route, navigation }) => {
     }
   }, [query]);
 
-  console.log(
-    "Selected Topics:",
-    selectedTopics.map((topic) => topic._id)
-  );
-
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1">
+    <View className="flex-1 bg-gray-900 px-5">
+      {/* Back Icon */}
+      <View className="mt-8">
         <TouchableOpacity onPress={() => navigation.navigate("Create")}>
-          <Ionicons name="arrow-back-outline" size={30} />
+          <Ionicons name="arrow-back-outline" size={30} color="#9CA3AF" />
         </TouchableOpacity>
-        <Text>AddTopics</Text>
-        {/* Search bar */}
+      </View>
+
+      {/* heading */}
+      <View className="mt-5">
+        <Text className="text-3xl font-bold text-gray-50">Add Topics</Text>
+      </View>
+
+      {/*sub heading */}
+      <View className="mt-1">
+        <Text className="text-sm font-normal text-gray-400">
+          Add topics to let readers know what your topic is about.
+        </Text>
+      </View>
+
+      {/* Search bar */}
+      <View className="flex-row bg-gray-800 rounded-xl px-2 py-1 items-center mt-4">
+        <Ionicons name="search-outline" size={30} color="#9CA3AF" />
         <TextInput
-          className="text-base py-2 px-3 bg-gray-200 rounded-xl"
-          placeholder="Search topics..."
+          className="text-xl font-bold text-gray-400 w-full"
+          placeholder="Search topics"
+          placeholderTextColor="#9CA3AF"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchTopics}
         />
-
-        <Text className="text-base font-medium mb-2">Selected Topics:</Text>
-        {/* Selected topic */}
-        {selectedTopics && (
-          <View className=" px-2 mb-2 min-h-20">
-            <View className="flex-row flex-wrap gap-2">
-              {selectedTopics.map((topic) => (
-                <View key={topic._id} className="flex-row">
-                  <View className="bg-gray-300 rounded-lg p-2">
-                    <Text>{topic.name}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => handleDeselectedTopic(topic)}
-                    className="bg-gray-600 rounded-full items-center justify-center w-4 h-4"
-                  >
-                    <Ionicons name="close" size={15} color="gray" />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Search Result */}
-        {results.length > 0 && (
-          <FlatList
-            className="bg-gray-200 p-1 max-h-48"
-            data={results}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleSelectedTopics(item)}
-                className="p-2"
-              >
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        )}
-
-        <TouchableOpacity className="bg-slate-600" onPress={goToPreview}>
-          <Text>Preview</Text>
-        </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+
+      {/* Selected topic */}
+      {selectedTopics && (
+        <View className="mt-2 px-2 mb-2 min-h-20">
+          <View className="flex-row flex-wrap gap-1">
+            {selectedTopics.map((topic) => (
+              <View key={topic._id} className="flex-row">
+                <View className="bg-gray-800 rounded-full p-2">
+                  <Text className="text-gray-100 text-xs font-medium">
+                    {topic.name}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => handleDeselectedTopic(topic)}
+                  className="bg-gray-100 rounded-full  w-4 h-4"
+                >
+                  <Ionicons name="close" size={15} color="black" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Search Result */}
+      {results.length > 0 && (
+        <FlatList
+          className="bg-gray-800 p-1 max-h-48"
+          data={results}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => handleSelectedTopics(item)}
+              className="p-2"
+            >
+              <Text className="text-gray-400 text-base">{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      )}
+
+      <Button onPress={goToPreview} label="Save" />
+    </View>
   );
 };
 
