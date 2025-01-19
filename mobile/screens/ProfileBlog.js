@@ -25,7 +25,7 @@ const ProfileBlog = () => {
     useCallback(() => {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get("/auth/profile");
+          const response = await axios.get("/user/profile");
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -46,6 +46,18 @@ const ProfileBlog = () => {
       </View>
     );
   }
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/auth/logout");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   const imageUrl = user.image
     ? `${axios.defaults.baseURL}${user.image}`
@@ -71,7 +83,7 @@ const ProfileBlog = () => {
             end={{ x: 1, y: 1 }}
             className="rounded-full w-32 h-12 justify-center items-center"
           >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout}>
               <Text className="text-gray-50 text-sm font-bold">Logout</Text>
             </TouchableOpacity>
           </StyledView>

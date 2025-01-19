@@ -24,7 +24,7 @@ const UpdateProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("/auth/profile");
+        const response = await axios.get("/user/profile");
         setName(response.data.name);
         setUsername(response.data.username);
         setBio(response.data.bio);
@@ -80,7 +80,7 @@ const UpdateProfile = () => {
         });
       }
 
-      await axios.put("/auth/updateProfile", formData, {
+      await axios.put("/user/updateProfile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -142,6 +142,7 @@ const UpdateProfile = () => {
         onChangeText={setName}
         placeholder="Enter your name"
         placeholderTextColor="#9CA3AF"
+        scrollEnabled={false}
       />
       <TextInput
         className="bg-gray-800 rounded-xl p-3 items-center mb-2 text-xl font-bold text-gray-400"
@@ -149,16 +150,18 @@ const UpdateProfile = () => {
         onChangeText={setUsername}
         placeholder="Enter your username"
         placeholderTextColor="#9CA3AF"
+        scrollEnabled={false}
       />
       <TextInput
-        className="bg-gray-800 rounded-xl p-3 items-center  text-xl font-bold text-gray-400"
+        className="bg-gray-800 text-gray-200 rounded-xl p-4 text-xl h-24"
         value={bio}
         onChangeText={setBio}
-        placeholder="About me section"
+        placeholder="Write something about yourself..."
         placeholderTextColor="#9CA3AF"
         multiline
-        numberOfLines={10}
+        numberOfLines={2}
         textAlignVertical="top"
+        scrollEnabled={false}
       />
 
       <TouchableOpacity disabled={isLoading}>

@@ -170,7 +170,8 @@ const Search = () => {
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchBlogs}
-          className="text-xl font-bold text-gray-400"
+          className="text-xl font-bold text-gray-400 flex-1"
+          scrollEnabled={false}
         />
       </View>
 

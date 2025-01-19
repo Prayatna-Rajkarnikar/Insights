@@ -128,6 +128,7 @@ const Comment = () => {
           value={userComment}
           onChangeText={setUserComment}
           multiline
+          scrollEnabled={false}
         />
 
         <StyledView

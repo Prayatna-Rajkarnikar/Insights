@@ -2,11 +2,11 @@ import { Router } from "express";
 import {
   createBlog,
   editBlog,
-  homeBlogs,
+  getLatestBlogs,
   userBlogs,
-  blogDetail,
+  getBlogDetail,
   deleteBlog,
-  trendingBlogs,
+  getTrendingBlogs,
 } from "../controllers/blogController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/imgMiddleware.js";
@@ -17,10 +17,10 @@ router.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 router.post("/createBlog", authMiddleware, upload.array("image"), createBlog);
 router.put("/editBlog/:id", authMiddleware, upload.array("image"), editBlog);
-router.get("/getLatestBlogs", homeBlogs);
+router.get("/getLatestBlogs", getLatestBlogs);
 router.get("/getUserBlogs", authMiddleware, userBlogs);
-router.get("/getBlogDetail/:id", authMiddleware, blogDetail);
+router.get("/getBlogDetail/:id", authMiddleware, getBlogDetail);
 router.delete("/deleteBlog/:blogId", deleteBlog);
-router.get("/trending", trendingBlogs);
+router.get("/trending", getTrendingBlogs);
 
 export default router;

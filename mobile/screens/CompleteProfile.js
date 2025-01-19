@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,7 +23,7 @@ const CompleteProfile = ({ route, navigation }) => {
         return;
       }
 
-      const response = await axios.post("/auth/register", {
+      await axios.post("/auth/register", {
         name,
         email,
         username,

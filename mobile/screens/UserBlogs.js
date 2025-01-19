@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -63,13 +64,39 @@ const UserBlogs = () => {
     }
   };
 
+  const confirmDelete = (blogId) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this blog?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteBlog(blogId),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const renderRightActions = (blogId) => (
-    <View className="flex-1 justify-center items-end pr-4">
+    <View className="flex-row justify-center items-end pr-4 space-x-2 mb-2">
       <TouchableOpacity
-        onPress={() => deleteBlog(blogId)}
+        onPress={() => confirmDelete(blogId)}
         className="bg-red-500 p-4 rounded-md"
       >
         <Ionicons name="trash-bin-outline" size={24} color="#fff" />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("EditBlog", { blogId: blogId })}
+        className="bg-purple-900 p-4 rounded-md"
+      >
+        <Ionicons name="create-outline" size={26} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -120,27 +147,14 @@ const UserBlogs = () => {
                 )}
               </View>
             </View>
-            <View className="absolute mt-auto bottom-2 ml-4">
-              <View className="flex-row space-x-52 items-center">
-                <Text className="text-gray-400 text-xs font-bold">
-                  {new Date(item.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </Text>
-
-                <TouchableOpacity>
-                  <Ionicons
-                    name="create-outline"
-                    size={26}
-                    color="#F3F4F6"
-                    onPress={() =>
-                      navigation.navigate("EditBlog", { blogId: item._id })
-                    }
-                  />
-                </TouchableOpacity>
-              </View>
+            <View className="absolute mt-auto bottom-4 ml-4">
+              <Text className="text-gray-400 text-xs font-bold">
+                {new Date(item.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </Text>
             </View>
           </StyledView>
         </TouchableOpacity>

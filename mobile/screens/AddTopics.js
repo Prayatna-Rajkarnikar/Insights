@@ -112,6 +112,7 @@ const AddTopics = ({ route, navigation }) => {
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchTopics}
+          scrollEnabled={false}
         />
       </View>
 

@@ -219,7 +219,7 @@ export const userBlogs = async (req, res) => {
   }
 };
 
-export const homeBlogs = async (req, res) => {
+export const getLatestBlogs = async (req, res) => {
   try {
     const blogs = await blogModel
       .find()
@@ -241,7 +241,7 @@ export const homeBlogs = async (req, res) => {
   }
 };
 
-export const blogDetail = async (req, res) => {
+export const getBlogDetail = async (req, res) => {
   try {
     const blogId = req.params.id;
     const blog = await blogModel
@@ -286,7 +286,7 @@ export const deleteBlog = async (req, res) => {
   }
 };
 
-export const trendingBlogs = async (req, res) => {
+export const getTrendingBlogs = async (req, res) => {
   try {
     // Fetch all blogs
     const blogs = await blogModel.find().populate("author", "name image");

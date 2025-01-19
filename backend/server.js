@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 
 import { dbConnect } from "./mongo/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import commentRoutes from "./routes/commentRoute.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import likeRoutes from "./routes/likeRoutes.js";
@@ -20,10 +22,12 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
+
+app.options("*", cors());
 
 app.use(express.json());
 app.use(morgan("combined"));
@@ -38,6 +42,8 @@ app.use(express.static(path.join(__dirname, "./public")));
 dbConnect();
 
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
 app.use("/comments", commentRoutes);
 app.use("/blog", blogRoutes);
 app.use("/like", likeRoutes);

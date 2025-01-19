@@ -28,7 +28,7 @@ import Like from "./screens/Likes";
 import { Trial } from "./screens/Trial";
 
 axios.defaults.baseURL = "http://192.168.1.8:3001";
-// axios.defaults.baseURL = "http://100.64.223.73:3001";
+// axios.defaults.baseURL = "http://100.64.207.248:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -78,10 +78,10 @@ const BottomNav = () => {
         tabBarStyle: {
           height: 62,
           backgroundColor: "#111827",
-          borderColor: "#111827",
-          // borderTopWidth: 2,
+          borderColor: "#9ca3af",
+          borderTopWidth: 2,
           // borderBottomWidth: 2,
-          // borderWidth: 2,
+          borderWidth: 2,
           borderRadius: 25,
           overflow: "hidden",
           position: "absolute",

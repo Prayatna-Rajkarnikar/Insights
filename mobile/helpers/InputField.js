@@ -10,6 +10,7 @@ const InputField = ({ placeholder, value, onChangeText, ...props }) => {
         value={value}
         placeholderTextColor="#9CA3AF"
         onChangeText={onChangeText}
+        scrollEnabled={false}
         {...props}
         className=" w-full text-xl font-semibold text-gray-400"
       />

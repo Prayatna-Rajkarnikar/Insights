@@ -4,66 +4,16 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { styled } from "nativewind";
+import Button from "../helpers/Button";
 
 const Preview = ({ route }) => {
   const { blogData } = route.params;
   const { title, subtitle, contentSections, selectedTopics } = blogData;
   const navigation = useNavigation();
 
-  // const [results, setResults] = useState([]);
-  // const [query, setQuery] = useState("");
-  // const [selectedTopics, setSelectedTopics] = useState([]);
-
-  // const fetchTopics = async () => {
-  //   try {
-  //     const response = await axios.get(`/search/searchTopic?query=${query}`);
-  //     setResults(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching topics:", error);
-  //     setError("Failed to fetch topics. Please try again.");
-  //   }
-  // };
-
-  // const handleSelectedTopics = (topic) => {
-  //   if (selectedTopics.some((selectedItem) => selectedItem._id === topic._id)) {
-  //     Toast.show({
-  //       type: "error",
-  //       position: "top",
-  //       text1: "This topic is already selected.",
-  //     });
-  //     return;
-  //   }
-
-  //   if (selectedTopics.length >= 5) {
-  //     Toast.show({
-  //       type: "error",
-  //       position: "top",
-  //       text1: "You can select up to 5 topics only.",
-  //     });
-  //     return;
-  //   }
-
-  //   setSelectedTopics((prevTopics) => [...prevTopics, topic]);
-  // };
-
-  // const handleDeselectedTopic = (topic) => {
-  //   setSelectedTopics((prevTopics) =>
-  //     prevTopics.filter((item) => item._id !== topic._id)
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (query.trim()) {
-  //     fetchTopics();
-  //   } else {
-  //     setResults([]);
-  //   }
-  // }, [query]);
-
-  // console.log(
-  //   "Selected Topics:",
-  //   selectedTopics.map((topic) => topic._id)
-  // );
+  const StyledView = styled(LinearGradient);
 
   const createBlog = async () => {
     try {
@@ -118,74 +68,51 @@ const Preview = ({ route }) => {
   );
 
   return (
-    <View className="flex-1 bg-gray-50 p-4">
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AddTopics", { blogData })}
-      >
-        <Ionicons name="arrow-back-outline" size={30} />
-      </TouchableOpacity>
+    <View className="flex-1 bg-gray-900 px-5">
+      {/* Back Icon */}
+      <View className="mt-8">
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AddTopics", { blogData })}
+        >
+          <Ionicons name="arrow-back-outline" size={30} color="#9CA3AF" />
+        </TouchableOpacity>
+      </View>
 
       {/* Heading */}
-      <Text className="text-3xl font-bold">Preview</Text>
+      <View className="mt-5">
+        <Text className="text-3xl font-bold text-gray-50">Preview</Text>
+      </View>
 
-      {/* Search bar */}
-      {/* <TextInput
-          className="text-base py-2 px-3 bg-gray-200 rounded-xl"
-          placeholder="Search topics..."
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={fetchTopics}
-        />
-
-        <Text className="text-base font-medium mb-2">Selected Topics:</Text> */}
-      {/* Selected topic */}
-      {/* {selectedTopics && (
-          <View className=" px-2 mb-2 min-h-20">
-            <View className="flex-row flex-wrap gap-2">
-              {selectedTopics.map((topic) => (
-                <View key={topic._id} className="flex-row">
-                  <View className="bg-gray-300 rounded-lg p-2">
-                    <Text>{topic.name}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => handleDeselectedTopic(topic)}
-                    className="bg-gray-600 rounded-full items-center justify-center w-4 h-4"
-                  >
-                    <Ionicons name="close" size={15} color="gray" />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          </View>
-        )} */}
-
-      {/* Search Result */}
-      {/* {results.length > 0 && (
-          <FlatList
-            className="bg-gray-200 p-1 max-h-48"
-            data={results}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleSelectedTopics(item)}
-                className="p-2"
-              >
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        )} */}
-      <Text className="text-sm font-extralight">
-        This is how the blog will be shown to readers in public places.
-      </Text>
+      {/* SubHeading */}
+      <View className="mt-1 mb-3">
+        <Text className="text-sm font-normal text-gray-400">
+          This is how the blog will be shown to readers in public places.
+        </Text>
+      </View>
 
       {/* Card for Preview */}
-      <View className="h-36 p-4 m-2 bg-gray-50 rounded-xl shadow-md shadow-gray-500">
-        <View className="flex-row justify-between">
-          <View className="w-44">
-            <Text className="text-xl font-semibold mb-2">{title}</Text>
-            <Text className="text-gray-600">{subtitle}</Text>
+      <StyledView
+        colors={["#312E81", "#4E2894", "#111827"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="h-36 p-3 mb-4 rounded-3xl"
+      >
+        <View className="flex-row space-x-2">
+          <View className="w-44 space-y-1">
+            <Text
+              className="text-xl font-bold text-gray-50"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {title}
+            </Text>
+            <Text
+              className="text-xs font-normal text-gray-400"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {subtitle}
+            </Text>
           </View>
 
           {contentSections.some((section) => section.type === "image") && (
@@ -202,20 +129,25 @@ const Preview = ({ route }) => {
             </View>
           )}
         </View>
+      </StyledView>
+
+      <Text className="text-base font-medium text-gray-100">
+        Selected Topics:
+      </Text>
+
+      {/* Selected Topics */}
+      <View className="flex-row flex-wrap gap-1">
+        {selectedTopics.map((topic) => (
+          <View key={topic._id} className="bg-gray-800 rounded-full p-2">
+            <Text className="text-gray-100 text-xs font-medium text-center">
+              {topic.name}
+            </Text>
+          </View>
+        ))}
       </View>
 
-      {selectedTopics.map((topic) => (
-        <Text key={topic._id}>{topic.name}</Text>
-      ))}
-
       {/* Publish button */}
-
-      <TouchableOpacity
-        onPress={createBlog}
-        className="bg-gray-900 py-3 rounded-lg items-center justify-center"
-      >
-        <Text className="text-lg font-semibold text-gray-50">Create Blog</Text>
-      </TouchableOpacity>
+      <Button onPress={createBlog} label="Publish" />
     </View>
   );
 };

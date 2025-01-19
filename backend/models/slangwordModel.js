@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const slangwordSchema = new mongoose.Schema({
   word: { type: String, unique: true, required: true },

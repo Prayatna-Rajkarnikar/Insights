@@ -1,4 +1,3 @@
-import CommentModel from "../models/commentModel.js";
 import blogModel from "../models/blog.js";
 import commentModel from "../models/commentModel.js";
 import mongoose from "mongoose";
@@ -72,7 +71,8 @@ export const createComment = async (req, res) => {
 export const getComments = async (req, res) => {
   try {
     const { blogId } = req.params;
-    const comments = await CommentModel.find({ blog: blogId })
+    const comments = await commentModel
+      .find({ blog: blogId })
       .populate("author", "name image")
       .sort({ createdAt: -1 })
       .exec();

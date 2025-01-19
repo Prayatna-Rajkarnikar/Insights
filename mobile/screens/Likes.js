@@ -3,7 +3,6 @@ import {
   Text,
   Image,
   FlatList,
-  Modal,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -77,7 +76,7 @@ const Likes = () => {
       </Text>
       {likeList.length === 0 ? (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-gray-100">No Comments yet.</Text>
+          <Text className="text-lg text-gray-100">No Likes yet.</Text>
         </View>
       ) : (
         <FlatList

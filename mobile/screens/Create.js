@@ -67,7 +67,7 @@ const Create = () => {
           updatedSections.push(newSection); // Push image after existing sections
           return updatedSections;
         });
-        scrollViewRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
+        scrollViewRef.current?.scrollToEnd({ animated: true });
       } else {
         console.error("invalid uri", asset);
       }
@@ -136,6 +136,7 @@ const Create = () => {
             value={title}
             onChangeText={setTitle}
             multiline
+            scrollEnabled={false}
           />
 
           {/* Subtitle */}
@@ -146,6 +147,7 @@ const Create = () => {
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
+            scrollEnabled={false}
           />
           {contentSections.map((section, index) => (
             <View key={index} className="">
@@ -158,6 +160,7 @@ const Create = () => {
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
+                    scrollEnabled={false}
                   />
                   <TouchableOpacity
                     onPress={() => removeSection(index)}
@@ -177,6 +180,7 @@ const Create = () => {
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
+                    scrollEnabled={false}
                   />
                   <TouchableOpacity
                     onPress={() => removeSection(index)}
