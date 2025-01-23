@@ -1,13 +1,17 @@
 import { Router } from "express";
 import {
-  getUserNumbers,
-  deleteUser,
+  getTotalUsers,
+  deactivateUser,
   getUserList,
+  getTotalBlogs,
+  getBlogList,
 } from "../controllers/adminController.js";
 
 const router = Router();
-router.get("/getTotalUser", getUserNumbers);
-router.delete("/deleteUser", deleteUser);
+router.get("/getTotalUser", getTotalUsers);
+router.patch("/deactivateUser", deactivateUser); //Updates only the specified fields.
 router.get("/getUserList", getUserList);
+router.get("/getTotalBlogs", getTotalBlogs);
+router.get("/getBlogList", getBlogList);
 
 export default router;

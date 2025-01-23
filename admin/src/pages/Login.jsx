@@ -20,7 +20,7 @@ export default function Login() {
       });
       setEmail("");
       setPassword("");
-      navigate("/forgetPassword");
+      navigate("/dashboard");
       alert("Login Successful");
       console.log("Login Successful");
     } catch (error) {

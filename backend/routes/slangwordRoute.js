@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { addWord } from "../controllers/slangwordController.js";
+import {
+  addSlangWord,
+  deleteWords,
+  getTotalWords,
+} from "../controllers/slangwordController.js";
 
 const router = Router();
 
-router.post("/addSlangword", addWord);
+router.post("/addSlangword", addSlangWord);
+router.post("/deleteWords", deleteWords);
+router.post("/getTotalWords", getTotalWords);
 
 export default router;
