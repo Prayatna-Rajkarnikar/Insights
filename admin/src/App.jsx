@@ -7,7 +7,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import Dashboard from "./pages/Dashboard";
 import ManageBlogs from "./pages/ManageBlogs";
 
-axios.defaults.baseURL = "http://192.168.1.8:3001";
+axios.defaults.baseURL = "http://192.168.1.7:3001";
 // axios.defaults.baseURL = "http://100.64.223.109:3001";
 axios.defaults.withCredentials = true;
 

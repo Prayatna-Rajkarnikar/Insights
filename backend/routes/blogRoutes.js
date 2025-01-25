@@ -13,7 +13,7 @@ import upload from "../middlewares/imgMiddleware.js";
 import cors from "cors";
 
 const router = Router();
-router.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+router.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 
 router.post("/createBlog", authMiddleware, upload.array("image"), createBlog);
 router.put("/editBlog/:id", authMiddleware, upload.array("image"), editBlog);
