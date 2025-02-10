@@ -53,9 +53,9 @@ export default function Dashboard() {
       {/* Cards */}
       <div className="flex flex-wrap gap-6 mb-7 items-center justify-center">
         {/* First Card */}
-        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg p-4">
+        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-[#E9ECEF] p-4">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70 rounded-xl"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${BlogBG})` }}
           ></div>
           <div className="relative space-y-8">
@@ -69,9 +69,9 @@ export default function Dashboard() {
         </div>
 
         {/* Second Card */}
-        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg p-4">
+        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-[#E9ECEF] p-4">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70 rounded-xl"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${UserBG})` }}
           ></div>
           <div className="relative space-y-8">
@@ -112,7 +112,7 @@ export default function Dashboard() {
           <h3 className="font-medium text-base text-[#2D3135] ml-10">
             Top Blogs
           </h3>
-          <div className="gap-4 flex flex-wrap justify-center items-center p-4">
+          <div className="gap-4 flex flex-wrap justify-start items-center p-4">
             {trendings.map((blog, index) => {
               const firstImage = blog.content.find(
                 (contentItem) => contentItem.type === "image"
@@ -124,7 +124,7 @@ export default function Dashboard() {
               return (
                 <div
                   key={blog._id || index}
-                  className="bg-[#E9ECEF] p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-lg"
+                  className="bg-[#E9ECEF] p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-lg shadow-[#E9ECEF]"
                 >
                   <div className="flex space-x-4">
                     <div className="w-28 space-y-1">

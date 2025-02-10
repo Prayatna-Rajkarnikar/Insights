@@ -1,14 +1,22 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Logo from "../assets/Logo.svg";
+import toast from "react-hot-toast";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+
+import Logo from "../assets/Logo.svg";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIspasswordVisible] = useState(false);
 
   const navigate = useNavigate();
+
+  const togglePasswordVisiblity = () => {
+    setIspasswordVisible(!isPasswordVisible);
+  };
 
   const login = async (e) => {
     e.preventDefault();
@@ -21,11 +29,10 @@ export default function Login() {
       setEmail("");
       setPassword("");
       navigate("/dashboard");
-      alert("Login Successful");
-      console.log("Login Successful");
+      toast.success("Login Successful");
     } catch (error) {
       console.error(error);
-      alert("Login Failed");
+      toast.error(error.response.data.error || "Something went wrong");
     }
   };
 
@@ -54,13 +61,25 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <input
-                className="w-full bg-[#F1F3F5] border border-[#E9ECEF] rounded-lg p-4 text-sm text-[#2D3135] focus:outline-none focus:ring-2 focus:ring-[#212529]"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  className="w-full bg-[#F1F3F5] border border-[#E9ECEF] rounded-lg p-4 text-sm text-[#2D3135] focus:outline-none focus:ring-2 focus:ring-[#212529] pr-10"
+                  type={isPasswordVisible ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <span
+                  className="absolute right-4 top-4 cursor-pointer text-[#8B8F92]"
+                  onClick={togglePasswordVisiblity}
+                >
+                  {isPasswordVisible ? (
+                    <IoEyeOffOutline size={18} />
+                  ) : (
+                    <IoEyeOutline size={18} />
+                  )}
+                </span>
+              </div>
             </div>
             <div className="text-end mt-4">
               <Link

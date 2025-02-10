@@ -188,7 +188,7 @@ export const forgetPassword = async (req, res) => {
       return res.status(404).json({ error: "Email doesn't exist." });
     }
 
-    //It ensures the length of password is greater or equal to 8.
+    //It ensures the length of password is greater than 8.
     if (newPassword.length < 8) {
       return res
         .status(400)

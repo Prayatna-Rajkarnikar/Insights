@@ -53,7 +53,7 @@ export const getTotalBlogs = async (req, res) => {
 
 export const getBlogList = async (req, res) => {
   try {
-    const blogList = await blogModel.find();
+    const blogList = await blogModel.find().populate("author", "name");
     res.status(200).json({ list: blogList });
   } catch (error) {
     res.status(500).json({ message: "Failed to get blog list." });
