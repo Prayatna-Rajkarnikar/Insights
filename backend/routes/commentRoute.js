@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
   getComments,
   createComment,
@@ -6,9 +6,8 @@ import {
 } from "../controllers/commentController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
-const router = express.Router();
+const router = Router();
 router.post("/createComment", authMiddleware, createComment);
-// router.post("/submit", submitComment);
 router.get("/getcomments/:blogId", authMiddleware, getComments);
 router.get("/getTotalComments/:blogId", authMiddleware, getTotalComments);
 

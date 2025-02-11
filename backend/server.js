@@ -16,6 +16,7 @@ import likeRoutes from "./routes/likeRoutes.js";
 import slangwordRoute from "./routes/slangwordRoute.js";
 import topicRoute from "./routes/topicRoutes.js";
 import searchRoute from "./routes/searchRoute.js";
+import flagRoute from "./routes/flagRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -50,6 +51,7 @@ app.use("/like", likeRoutes);
 app.use("/slangword", slangwordRoute);
 app.use("/topic", topicRoute);
 app.use("/search", searchRoute);
+app.use("/flag", flagRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server Connected Successfully on PORT ${process.env.PORT}`);
