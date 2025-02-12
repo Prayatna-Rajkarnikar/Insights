@@ -69,7 +69,7 @@ const ProfileBlog = () => {
       <View className="flex-row space-x-9 items-center">
         <Image
           source={{ uri: imageUrl }}
-          className="w-36 h-36 rounded-full border-4 border-gray-100"
+          className="w-36 h-36 rounded-full border-4 border-gray-100 bg-gray-100"
           style={{
             borderWidth: 4,
             borderColor: "#f3f4f6",

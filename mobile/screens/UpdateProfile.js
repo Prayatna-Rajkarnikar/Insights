@@ -120,7 +120,7 @@ const UpdateProfile = () => {
           {image && (
             <Image
               source={{ uri: image }}
-              className="w-36 h-36 rounded-full border-4 border-gray-100"
+              className="w-36 h-36 rounded-full border-4 border-gray-100 bg-gray-100"
               style={{
                 borderWidth: 4,
                 borderColor: "#f3f4f6",

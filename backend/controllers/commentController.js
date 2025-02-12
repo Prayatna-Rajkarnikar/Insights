@@ -1,6 +1,7 @@
 import blogModel from "../models/blog.js";
 import commentModel from "../models/commentModel.js";
 import userModel from "../models/user.js";
+
 import { filterSlangword } from "./slangwordController.js";
 
 export const createComment = async (req, res) => {
@@ -29,9 +30,9 @@ export const createComment = async (req, res) => {
     await blogPost.save();
 
     if (isBlurred && author) {
-      // Increment the flaggedComments count for the user
+      // Add the comment's ID to the user's flaggedComments array
       await userModel.findByIdAndUpdate(author, {
-        $inc: { flaggedComments: 1 },
+        $push: { flaggedComments: newComment.id },
       });
 
       // Increment the flags.count for the new comment

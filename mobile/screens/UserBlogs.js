@@ -42,6 +42,14 @@ const UserBlogs = () => {
     }, [])
   );
 
+  if (blogs.length === 0) {
+    return (
+      <Text className=" text-center text-xl text-gray-400 mt-4">
+        You have not created any blogs yet.
+      </Text>
+    );
+  }
+
   const deleteBlog = async (blogId) => {
     try {
       await axios.delete(`/blog/deleteBlog/${blogId}`);

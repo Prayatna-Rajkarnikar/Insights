@@ -24,7 +24,12 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  flaggedComments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  flaggedComments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   isActive: { type: Boolean, default: true },
 });
 
