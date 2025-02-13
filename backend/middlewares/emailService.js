@@ -1,46 +1,52 @@
 import nodemailer from "nodemailer";
 import userModel from "../models/user.js";
 import dotenv from "dotenv";
-
+import mongoose from "mongoose";
 dotenv.config();
 
-// Set up the transporter
 const transporter = nodemailer.createTransport({
-  service: "Gmail", // You can use other email services like SMTP
+  service: "Gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Your email (e.g., your-email@gmail.com)
-    pass: process.env.EMAIL_PASS, // Your email password or App password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-export const sendEmail = async () => {
+export const sendEmail = async (authorId) => {
   try {
-    // Fetch the user from the database
-    // const user = await userModel.findById(userId);
+    const user = await userModel.findById(authorId);
 
-    // if (!mongoose.Types.ObjectId.isValid(userId)) {
-    //   console.error("Invalid userId");
-    //   return;
-    // }
-    // if (!user) {
-    //   console.error("User not found");
-    //   return;
-    // }
+    if (!mongoose.Types.ObjectId.isValid(authorId)) {
+      console.error("Invalid userId");
+      return;
+    }
+    if (!user) {
+      console.error("User not found");
+      return;
+    }
 
-    // Check if the user's warnings exceed the threshold (3)
-    // if (user.warnings % 3 === 0 && user.warnings > 0) {
-    const subject = "Warning: Your account has received multiple flags";
-    const text =
-      "Hello \n\nYour account has received multiple flags on comments, and your warning count has exceeded the limit. Please review your actions.";
+    const subject = "Important Notice: Multiple Flags on Your Account";
+
+    const text = `Dear ${user.name},  
+      
+      We hope this email finds you well.  
+      
+      We would like to inform you that your account has received multiple flags due to reported comments. As a result, your warning count has exceeded the allowed limit.  
+      
+      We kindly request you to review your recent activity and ensure compliance with our platform's guidelines. Continued violations may result in further actions, including temporary suspension or account restrictions.  
+      
+      If you believe this was a mistake or require any clarification, please do not hesitate to contact our support team.  
+      
+      Best regards,  
+      Insights`;
 
     const mailOptions = {
-      from: process.env.EMAIL_USER, // sender address
-      to: "prayatna.rajkarnikar@gmail.com", // recipient address
-      subject, // email subject
-      text, // email content
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject,
+      text,
     };
 
-    // Send the email
     await transporter.sendMail(mailOptions);
     console.log("Warning email sent to user");
     // }
