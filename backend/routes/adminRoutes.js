@@ -11,7 +11,7 @@ import {
 const router = Router();
 router.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 router.get("/getTotalUser", getTotalUsers);
-router.patch("/deactivateUser", deactivateUser); //Updates only the specified fields.
+router.patch("/deactivateUser", deactivateUser);
 router.get("/getUserList", getUserList);
 router.get("/getTotalBlogs", getTotalBlogs);
 router.get("/getBlogList", getBlogList);

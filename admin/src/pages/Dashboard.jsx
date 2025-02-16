@@ -8,6 +8,7 @@ export default function Dashboard() {
   const [totalUser, setTotalUser] = useState(0);
   const [totalBlog, setTotalBlog] = useState(0);
   const [trendings, setTrendings] = useState([]);
+  const [topics, setTopics] = useState([]);
 
   const fetchTotalUser = async () => {
     try {
@@ -36,80 +37,92 @@ export default function Dashboard() {
     }
   };
 
+  const fetchTopics = async () => {
+    try {
+      const response = await axios.get("/topic/getMostUsedTopics");
+      setTopics(response.data || []);
+      console.log("Fetched topics:", response.data); // Log the data
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+      setTopics([]);
+    }
+  };
+
   useEffect(() => {
     fetchTotalUser();
     fetchTotalBlog();
     fetchBlogs();
+    fetchTopics();
   }, []);
 
   return (
-    <div className="h-screen px-6 py-7 bg-[#F8F9FA]">
+    <div className="h-screen px-6 py-7 bg-primaryWhite">
       {/* Header */}
       <div className="mb-7">
-        <h1 className="font-bold text-4xl text-[#212529]">Dashboard</h1>
-        <h3 className="font-normal text-base text-[#8B8F92]">Welcome Admin</h3>
+        <h1 className="font-bold text-4xl text-primaryBlack">Dashboard</h1>
+        <h3 className="font-normal text-base text-darkGray">Welcome Admin</h3>
       </div>
 
       {/* Cards */}
       <div className="flex flex-wrap gap-6 mb-7 items-center justify-center">
         {/* First Card */}
-        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-[#E9ECEF] p-4">
+        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${BlogBG})` }}
           ></div>
           <div className="relative space-y-8">
-            <h1 className="font-bold text-6xl md:text-8xl text-[#F8F9FA] text-center">
+            <h1 className="font-bold text-6xl md:text-8xl text-primaryWhite text-center">
               {totalBlog}
             </h1>
-            <h5 className="font-normal text-base text-[#E9ECEF] text-end">
+            <h5 className="font-normal text-base text-lightGray text-end">
               Blogs successfully created
             </h5>
           </div>
         </div>
 
         {/* Second Card */}
-        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-[#E9ECEF] p-4">
+        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${UserBG})` }}
           ></div>
           <div className="relative space-y-8">
-            <h1 className="font-bold text-6xl md:text-8xl text-[#F8F9FA] text-center">
+            <h1 className="font-bold text-6xl md:text-8xl text-primaryWhite text-center">
               {totalUser}
             </h1>
-            <h5 className="font-normal text-base text-[#E9ECEF] text-end">
+            <h5 className="font-normal text-base text-lightGray text-end">
               Users
             </h5>
           </div>
         </div>
       </div>
 
-      {/* Top users and blog section */}
+      {/* Top topics and blog section */}
       <div className="w-full h-[280px] mb-7 flex p-3 gap-6">
-        {/* Users section */}
+        {/* Topics section */}
         <div className="lg:w-[25%] h-full">
-          <h3 className="font-medium text-base text-[#2D3135]">Top Users</h3>
-          <div className="space-y-3 mt-4 p-4 bg-[#E9ECEF] rounded-xl">
-            <div className="flex items-center gap-4">
-              <div>
-                <img
-                  src={UserBG}
-                  alt="User"
-                  className="h-10 w-10 rounded-full"
-                />
+          <h3 className="font-medium text-base text-secondaryBlack">
+            Most Used Topics
+          </h3>
+          {topics.map((topic) => {
+            return (
+              <div
+                key={topic.name}
+                className="p-4 bg-lightGray rounded-xl flex justify-between shadow-lg shadow-darkGray"
+              >
+                <h5 className="text-base text-secondaryBlack">{topic.name}</h5>
+                <span className="text-base font-bold text-primaryBlack">
+                  {topic.count}
+                </span>
               </div>
-              <div>
-                <h5 className="font-semibold text-base">John Doe</h5>
-                <p className="font-light text-xs">abhishek_parel1111</p>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
 
         {/* Blog Section */}
         <div className="lg:w-[75%] h-full">
-          <h3 className="font-medium text-base text-[#2D3135] ml-10">
+          <h3 className="font-medium text-base text-secondaryBlack ml-10">
             Top Blogs
           </h3>
           <div className="gap-4 flex flex-wrap justify-start items-center p-4">
@@ -124,14 +137,14 @@ export default function Dashboard() {
               return (
                 <div
                   key={blog._id || index}
-                  className="bg-[#E9ECEF] p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-lg shadow-[#E9ECEF]"
+                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-lg shadow-darkGray"
                 >
                   <div className="flex space-x-4">
                     <div className="w-28 space-y-1">
-                      <h3 className="text-base font-bold text-[#212529] truncate">
+                      <h3 className="text-base font-bold text-primaryBlack truncate">
                         {blog.title}
                       </h3>
-                      <p className="text-xs font-normal text-[#2D3135] truncate">
+                      <p className="text-xs font-normal text-secondaryBlack truncate">
                         {blog.subTitle}
                       </p>
                     </div>
@@ -144,11 +157,7 @@ export default function Dashboard() {
                           className="w-32 h-16 rounded-xl object-cover"
                         />
                       ) : (
-                        <div className="w-32 h-16 rounded-xl bg-gray-300 flex items-center justify-center">
-                          <span className="text-sm text-gray-500">
-                            No Image
-                          </span>
-                        </div>
+                        <span className="text-sm text-darkGray">No Image</span>
                       )}
                     </div>
                   </div>

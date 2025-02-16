@@ -1,4 +1,5 @@
 import topicModel from "../models/topics.js";
+import blogModel from "../models/blog.js";
 
 export const addTopic = async (req, res) => {
   try {
@@ -25,5 +26,31 @@ export const addTopic = async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Failed to add topic" });
+  }
+};
+
+export const getMostUsedTopics = async (req, res) => {
+  try {
+    const blogs = await blogModel.find({}, "topics").populate("topics", "name");
+
+    const topicCount = {}; // Object to store topic occurrences
+
+    // Count occurrences of each topic in the blogs
+    blogs.forEach((blog) => {
+      blog.topics.forEach((topic) => {
+        topicCount[topic.name] = (topicCount[topic.name] || 0) + 1;
+      });
+    });
+
+    // Convert the object to an array, sort by count, and get the top 5
+    const sortedTopics = Object.entries(topicCount)
+      .sort((a, b) => b[1] - a[1]) // Sort in descending order of frequency
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }));
+
+    res.status(200).json(sortedTopics);
+  } catch (error) {
+    console.error("Error fetching topics:", error);
+    res.status(500).json({ error: "Failed to get most used topic" });
   }
 };

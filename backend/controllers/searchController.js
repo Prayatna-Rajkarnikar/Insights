@@ -17,15 +17,17 @@ export const searchTopic = async (req, res) => {
 export const searchBlogs = async (req, res) => {
   try {
     const { query } = req.query;
-    const blog = await blogModel.find({
-      // $or Operator:
-      // Combines multiple conditions.
-      // At least one of the conditions in the $or array must be true for a document to match.
-      $or: [
-        { title: { $regex: query, $options: "i" } },
-        { subTitle: { $regex: query, $options: "i" } },
-      ],
-    });
+    const blog = await blogModel
+      .find({
+        // $or Operator:
+        // Combines multiple conditions.
+        // At least one of the conditions in the $or array must be true for a document to match.
+        $or: [
+          { title: { $regex: query, $options: "i" } },
+          // { subTitle: { $regex: query, $options: "i" } },
+        ],
+      })
+      .populate("author", "name");
     res.json(blog);
   } catch (error) {
     res.status(500).json({ error: "Failed to get blogs." });

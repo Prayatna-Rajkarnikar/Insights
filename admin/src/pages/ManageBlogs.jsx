@@ -10,7 +10,15 @@ const truncateStyle = {
 
 export default function ManageBlogs() {
   const [blogs, setBlogs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [selectedDate, setSelectedDate] = useState("");
 
+  useEffect(() => {
+    fetchAllBlogs();
+  }, []);
+
+  // Fetch all blogs initially
   const fetchAllBlogs = async () => {
     try {
       const response = await axios.get("/admin/getBlogList");
@@ -20,40 +28,111 @@ export default function ManageBlogs() {
     }
   };
 
-  useEffect(() => {
-    fetchAllBlogs();
-  }, []);
+  // Search Blogs via API
+  const fetchSearchedBlogs = async (query) => {
+    try {
+      const response = await axios.get(`/search/searchBlogs?query=${query}`);
+      setBlogs(response.data);
+    } catch (error) {
+      console.error("Error searching blogs:", error);
+    }
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value.trim() === "") {
+      fetchAllBlogs(); // Reset to all blogs when search input is cleared
+    } else {
+      fetchSearchedBlogs(e.target.value);
+    }
+  };
+
+  // Date filter
+  const dateFilteredBlogs = selectedDate
+    ? blogs.filter((blog) => {
+        const blogDate = new Date(blog.createdAt).toISOString().split("T")[0];
+        return blogDate === selectedDate;
+      })
+    : blogs;
+
+  // Sorting by date
+  const sortedBlogs = [...dateFilteredBlogs].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
   return (
-    <div className="h-full px-6 py-7 bg-[#F8F9FA] overflow-x-hidden">
+    <div className="h-full px-6 py-7 bg-primaryWhite overflow-x-hidden">
       {/* Header */}
-      <div className="mb-7">
-        <h1 className="font-bold text-4xl text-[#212529]">Blogs</h1>
-        <h3 className="font-normal text-base text-[#8B8F92]">Welcome Admin</h3>
+      <div className="mb-7 flex justify-between items-center">
+        <div>
+          <h1 className="font-bold text-4xl text-primaryBlack">Blogs</h1>
+          <h3 className="font-normal text-base text-darkGray">Welcome Admin</h3>
+        </div>
+
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search by title or subtitle..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="border border-gray-300 px-4 py-2 rounded-lg"
+        />
       </div>
+
+      {/* Filters & Sorting */}
+      <div className="flex justify-between items-center mb-4">
+        {/* Date Picker Filter */}
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="border border-gray-300 px-4 py-2 rounded-lg"
+        />
+
+        {/* Sort Button */}
+        <button
+          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
+        >
+          Sort by Date ({sortOrder === "asc" ? "⬆️" : "⬇️"})
+        </button>
+      </div>
+
+      {/* Table */}
       <div className="overflow-x-hidden">
         <table className="w-full">
           <thead>
-            <tr>
-              <th className="text-lg font-semibold">Title</th>
-              <th className="text-lg font-semibold">Author</th>
-              <th className="text-lg font-semibold">Created at</th>
-              <th className="text-lg font-semibold">Action</th>
+            <tr className="bg-secondaryWhite">
+              <th className="text-base font-normal text-secondaryBlack">
+                Title
+              </th>
+              <th className="text-base font-normal text-secondaryBlack">
+                Author
+              </th>
+              <th className="text-base font-normal text-secondaryBlack">
+                Created at
+              </th>
+              <th className="text-base font-normal text-secondaryBlack">
+                Action
+              </th>
             </tr>
           </thead>
-          {blogs.map((blog) => (
-            <tbody key={blog._id}>
-              <tr>
+          <tbody>
+            {sortedBlogs.map((blog) => (
+              <tr key={blog._id}>
                 <td
-                  className="text-base font-normal w-[496px] px-4 py-2"
+                  className="text-lg font-medium w-[496px] px-4 py-2 text-secondaryBlack"
                   style={truncateStyle}
                 >
                   {blog.title}
                 </td>
-                <td className="text-base font-normal text-center w-[280px]  px-4 py-2">
+                <td className="text-lg font-medium text-center w-[280px] px-4 py-2 text-secondaryBlack">
                   {blog.author.name}
                 </td>
-                <td className="text-base font-normal w-[180px] text-center px-4 py-2">
+                <td className="text-lg font-medium w-[180px] text-center px-4 py-2 text-secondaryBlack">
                   {new Date(blog.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -61,13 +140,13 @@ export default function ManageBlogs() {
                   })}
                 </td>
                 <td className="flex justify-center items-center px-4 py-2">
-                  <button className="bg-[#212529] text-[#F8F9FA] px-6 py-2 rounded-xl">
+                  <button className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl">
                     Delete
                   </button>
                 </td>
               </tr>
-            </tbody>
-          ))}
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

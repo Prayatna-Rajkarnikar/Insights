@@ -24,7 +24,7 @@ export default function SideNav({ children }) {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#212529] text-white p-6 flex flex-col justify-between">
+      <aside className="w-64 bg-darkGray p-6 flex flex-col justify-between">
         <div>
           <div className="mb-8">
             <img src={Logo} alt="Logo" className="w-24 mx-auto" />
@@ -34,8 +34,8 @@ export default function SideNav({ children }) {
               to="/dashboard"
               className={({ isActive }) =>
                 isActive
-                  ? "block py-2 px-4 rounded-lg bg-[#343A40]"
-                  : "block py-2 px-4 rounded-lg hover:bg-[#343A40]"
+                  ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
               }
             >
               Dashboard
@@ -44,8 +44,8 @@ export default function SideNav({ children }) {
               to="/manageBlogs"
               className={({ isActive }) =>
                 isActive
-                  ? "block py-2 px-4 rounded-lg bg-[#343A40]"
-                  : "block py-2 px-4 rounded-lg hover:bg-[#343A40]"
+                  ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
               }
             >
               Blogs
@@ -54,8 +54,8 @@ export default function SideNav({ children }) {
               to="/manageUsers"
               className={({ isActive }) =>
                 isActive
-                  ? "block py-2 px-4 rounded-lg bg-[#343A40]"
-                  : "block py-2 px-4 rounded-lg hover:bg-[#343A40]"
+                  ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
               }
             >
               Users
@@ -64,8 +64,8 @@ export default function SideNav({ children }) {
               to="/manageSlangwords"
               className={({ isActive }) =>
                 isActive
-                  ? "block py-2 px-4 rounded-lg bg-[#343A40]"
-                  : "block py-2 px-4 rounded-lg hover:bg-[#343A40]"
+                  ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
               }
             >
               Slangwords
