@@ -18,7 +18,6 @@ export default function ManageBlogs() {
     fetchAllBlogs();
   }, []);
 
-  // Fetch all blogs initially
   const fetchAllBlogs = async () => {
     try {
       const response = await axios.get("/admin/getBlogList");
@@ -28,7 +27,6 @@ export default function ManageBlogs() {
     }
   };
 
-  // Search Blogs via API
   const fetchSearchedBlogs = async (query) => {
     try {
       const response = await axios.get(`/search/searchBlogs?query=${query}`);
@@ -38,11 +36,10 @@ export default function ManageBlogs() {
     }
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
-      fetchAllBlogs(); // Reset to all blogs when search input is cleared
+      fetchAllBlogs();
     } else {
       fetchSearchedBlogs(e.target.value);
     }

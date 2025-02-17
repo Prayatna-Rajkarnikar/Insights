@@ -109,7 +109,7 @@ export default function Dashboard() {
             return (
               <div
                 key={topic.name}
-                className="p-4 bg-lightGray rounded-xl flex justify-between shadow-lg shadow-darkGray"
+                className="p-4 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-darkGray"
               >
                 <h5 className="text-base text-secondaryBlack">{topic.name}</h5>
                 <span className="text-base font-bold text-primaryBlack">
@@ -137,7 +137,7 @@ export default function Dashboard() {
               return (
                 <div
                   key={blog._id || index}
-                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-lg shadow-darkGray"
+                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-darkGray"
                 >
                   <div className="flex space-x-4">
                     <div className="w-28 space-y-1">
