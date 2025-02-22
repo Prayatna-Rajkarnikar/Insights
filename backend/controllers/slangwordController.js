@@ -54,7 +54,7 @@ export const filterSlangword = async (content, author) => {
     let foundSlangs = false;
 
     if (!words || words.length === 0) {
-      return { filteredText: content, isBlurred: false }; // No bad words found, return original content
+      return { filteredText: content, isBlurred: false };
     }
 
     words.forEach(({ word }) => {
@@ -74,5 +74,16 @@ export const filterSlangword = async (content, author) => {
   } catch (error) {
     console.error("Error filtering slang words:", error);
     return { filteredText: content, isBlurred: false };
+  }
+};
+
+export const getSlangwordList = async (req, res) => {
+  try {
+    const wordsList = await slangwordModel.find();
+    res.status(200).json({ list: wordsList });
+  } catch (error) {
+    res
+      .satus(500)
+      .json({ error: "Failed to create comment", details: error.message });
   }
 };

@@ -81,7 +81,7 @@ const Create = () => {
       newSection,
       ...prevSections.slice(index + 1),
     ]);
-    scrollViewRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   }, []);
 
   const updateText = useCallback((text, index) => {

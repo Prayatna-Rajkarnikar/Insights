@@ -210,7 +210,7 @@ const Home = () => {
       <FlatList
         data={trendings}
         renderItem={renderTrendings}
-        keyExtractor={(item) => item._id} // Assuming _id is the unique identifier for each blog
+        keyExtractor={(item) => item._id}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         className="mb-7 h-[248px]"

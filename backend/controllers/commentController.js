@@ -56,7 +56,7 @@ export const getComments = async (req, res) => {
     const { blogId } = req.params;
     const comments = await commentModel
       .find({ blog: blogId })
-      .populate("author", "name image")
+      .populate("author", "email name image")
       .sort({ createdAt: -1 })
       .exec();
     res.status(200).json({ comments });

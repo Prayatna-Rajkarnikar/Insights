@@ -5,7 +5,9 @@ import {
   Image,
   FlatList,
   TextInput,
+  Modal,
   TouchableOpacity,
+  TouchableHighlight,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -18,19 +20,18 @@ import { styled } from "nativewind";
 
 const Comment = () => {
   const route = useRoute();
-  const { blogId } = route.params;
+  const { blogId, user } = route.params;
+
   const [comments, setComments] = useState([]);
   const [userComment, setUserComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment
   const navigation = useNavigation();
   const StyledView = styled(LinearGradient);
 
   useEffect(() => {
-    try {
-      fetchComments();
-    } finally {
-      setLoading(false);
-    }
+    fetchComments();
   }, []);
 
   const fetchComments = async () => {
@@ -39,6 +40,8 @@ const Comment = () => {
       setComments(response.data.comments);
     } catch (error) {
       console.error("Failed to fetch comments");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,28 +62,57 @@ const Comment = () => {
     }
   };
 
+  const handleLongPress = (comment) => {
+    setSelectedComment(comment); // Set the selected comment
+    setShowModal(true); // Show the modal
+  };
+
+  const handleDeleteComment = async () => {
+    try {
+      await axios.delete(`/comments/deleteComment/${selectedComment._id}`);
+      fetchComments();
+      setShowModal(false);
+      Toast.show({
+        type: "success",
+        position: "top",
+        text1: "Comment deleted successfully",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Failed to delete comment",
+      });
+    }
+  };
+
   const renderItem = ({ item }) => (
-    <View className="flex-row bg-gray-800 rounded-lg p-2 mt-3">
-      <Image
-        source={{ uri: `${axios.defaults.baseURL}${item.author.image}` }}
-        className="rounded-full h-9 w-9"
-      />
-      <View className="ml-3 flex-1">
-        <Text className="text-gray-50 font-bold text-base">
-          {item.author.name}
-        </Text>
-        <Text className="text-gray-400 text-xs font-semibold">
-          {new Date(item.createdAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "2-digit",
-          })}
-        </Text>
-        <Text className="text-gray-100 mt-1 text-base font-medium">
-          {item.content}
-        </Text>
+    <TouchableHighlight
+      onLongPress={() => handleLongPress(item)}
+      underlayColor="white"
+    >
+      <View className="flex-row bg-gray-800 rounded-lg p-2 mt-3">
+        <Image
+          source={{ uri: `${axios.defaults.baseURL}${item.author.image}` }}
+          className="rounded-full h-9 w-9 bg-gray-100"
+        />
+        <View className="ml-3 flex-1">
+          <Text className="text-gray-50 font-bold text-base">
+            {item.author.name}
+          </Text>
+          <Text className="text-gray-400 text-xs font-semibold">
+            {new Date(item.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "2-digit",
+            })}
+          </Text>
+          <Text className="text-gray-100 mt-1 text-base font-medium">
+            {item.content}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableHighlight>
   );
 
   if (loading) {
@@ -99,10 +131,7 @@ const Comment = () => {
       </TouchableOpacity>
 
       {/* heading */}
-      <Text
-        className="text-center font-bold text-gray-400 text-base
-         mb-3"
-      >
+      <Text className="text-center font-bold text-gray-400 text-base mb-3">
         Comments
       </Text>
 
@@ -130,7 +159,6 @@ const Comment = () => {
           multiline
           scrollEnabled={false}
         />
-
         <StyledView
           colors={["#312E81", "#4E2894"]}
           start={{ x: 0, y: 0 }}
@@ -142,6 +170,43 @@ const Comment = () => {
           </TouchableOpacity>
         </StyledView>
       </View>
+
+      {/* Modal for deleting or flagging comment */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={showModal}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black opacity-50">
+          <View className="bg-white p-5 rounded-lg">
+            <Text className="text-center font-semibold text-lg mb-3">
+              {user.email === selectedComment?.author.email
+                ? "Delete this comment?"
+                : "Flag this comment?"}
+            </Text>
+            <View className="flex-row justify-around">
+              {user.email === selectedComment?.author.email ? (
+                <TouchableOpacity onPress={handleDeleteComment}>
+                  <Ionicons name="trash-bin" size={30} color="red" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("Flagged comment:", selectedComment._id);
+                    setShowModal(false);
+                  }}
+                >
+                  <Ionicons name="flag" size={30} color="orange" />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={() => setShowModal(false)}>
+                <Ionicons name="close-circle" size={30} color="gray" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

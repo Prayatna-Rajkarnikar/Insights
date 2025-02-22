@@ -16,6 +16,7 @@ const BlogDetail = () => {
   const route = useRoute();
   const { blogId } = route.params;
   const [blog, setBlog] = useState(null);
+  const [user, setUser] = useState(null);
   const [totalComments, setTotalComments] = useState(0);
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(null);
@@ -74,7 +75,17 @@ const BlogDetail = () => {
       }
     };
 
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/user/profile");
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch data", error.response.data);
+      }
+    };
+
     fetchBlogDetail();
+    fetchUser();
     getTotalComments(blogId);
   }, [blogId]);
 
@@ -181,7 +192,7 @@ const BlogDetail = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Comment", { blogId })}
+          onPress={() => navigation.navigate("Comment", { blogId, user })}
         >
           <View className="flex-row items-center space-x-2">
             <Ionicons name="chatbubble-outline" size={30} color="#9ca3af" />

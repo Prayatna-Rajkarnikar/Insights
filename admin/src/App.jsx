@@ -7,9 +7,10 @@ import Login from "./pages/Login";
 import ForgetPassword from "./pages/ForgetPassword";
 import Dashboard from "./pages/Dashboard";
 import ManageBlogs from "./pages/ManageBlogs";
-import ManaheUser from "./pages/ManageUser";
+import ManageUser from "./pages/ManageUser";
+import ManageSlangword from "./pages/ManageSlangword";
 
-axios.defaults.baseURL = "http://192.168.1.6:3001";
+axios.defaults.baseURL = "http://192.168.1.74:3001";
 // axios.defaults.baseURL = "http://100.64.223.109:3001";
 axios.defaults.withCredentials = true;
 
@@ -41,7 +42,15 @@ function App() {
           path="/manageUsers"
           element={
             <SideNav>
-              <ManaheUser />
+              <ManageUser />
+            </SideNav>
+          }
+        />
+        <Route
+          path="/manageSlangWords"
+          element={
+            <SideNav>
+              <ManageSlangword />
             </SideNav>
           }
         />

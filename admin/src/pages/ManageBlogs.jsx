@@ -27,6 +27,15 @@ export default function ManageBlogs() {
     }
   };
 
+  const deleteBlogs = async (blogId) => {
+    try {
+      await axios.delete(`/blog/deleteBlog/${blogId}`);
+      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
+  };
+
   const fetchSearchedBlogs = async (query) => {
     try {
       const response = await axios.get(`/search/searchBlogs?query=${query}`);
@@ -137,7 +146,10 @@ export default function ManageBlogs() {
                   })}
                 </td>
                 <td className="flex justify-center items-center px-4 py-2">
-                  <button className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl">
+                  <button
+                    className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
+                    onClick={() => deleteBlogs(blog._id)}
+                  >
                     Delete
                   </button>
                 </td>

@@ -4,35 +4,32 @@ import jwt from "jsonwebtoken";
 export const getUserInfo = async (req, res) => {
   const { token } = req.cookies;
 
-  if (token) {
-    try {
-      jwt.verify(token, process.env.JWT_SECRET, async (error, userInfo) => {
-        if (error) {
-          console.error("Token Verification Error:", error);
-          return res.status(401).json({ error: "Invalid token" });
-        }
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
 
-        // Fetch user from the database
-        const user = await userModel.findById(userInfo.id);
-        if (!user) {
-          return res.status(404).json({ error: "User not found" });
-        }
+  try {
+    // Verify token synchronously
+    const userInfo = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Send user data
-        res.json({
-          name: user.name,
-          email: user.email,
-          username: user.username,
-          image: `${user.image}`,
-          role: user.role,
-          bio: user.bio,
-        });
-      });
-    } catch (error) {
-      return res.status(500).json({ error: "Failed to provide user info" });
+    // Fetch user from the database
+    const user = await userModel.findById(userInfo.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-  } else {
-    res.status(401).json({ error: "No token provided" });
+
+    // Send user data
+    res.json({
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      image: `${user.image}`,
+      role: user.role,
+      bio: user.bio,
+    });
+  } catch (error) {
+    console.error("Token Verification/Error Fetching User:", error);
+    return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
