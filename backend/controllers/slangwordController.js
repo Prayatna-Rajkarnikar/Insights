@@ -1,6 +1,10 @@
-import commentModel from "../models/commentModel.js";
-import slangwordModel from "../models/slangwordModel.js";
-import userModel from "../models/user.js";
+let slangwords = [];
+let slangSet = new Set();
+
+export const setSlangwords = (words) => {
+  slangwords = words;
+  slangSet = new Set(words);
+};
 
 export const addSlangWord = async (req, res) => {
   try {
@@ -19,6 +23,49 @@ export const addSlangWord = async (req, res) => {
     await newWord.save();
     res.status(201).json({ message: "Slang word added successfully", newWord });
   } catch (error) {}
+};
+
+export const filterSlangword = async (content) => {
+  try {
+    if (slangSet.size === 0) {
+      return { filteredText: content, isBlurred: false };
+    }
+
+    // Split by word boundaries to ensure punctuation is handled properly
+    let words = content.split(/\b/);
+    let foundSlangs = false;
+
+    for (let i = 0; i < words.length; i++) {
+      const lowerWord = words[i].toLowerCase();
+
+      // If the word is in the slangSet, apply filtering
+      if (slangSet.has(lowerWord)) {
+        foundSlangs = true;
+        words[i] =
+          lowerWord.length > 2
+            ? lowerWord[0] +
+              "*".repeat(lowerWord.length - 2) +
+              lowerWord[lowerWord.length - 1]
+            : "*".repeat(lowerWord.length);
+      }
+    }
+
+    return { filteredText: words.join(""), isBlurred: foundSlangs };
+  } catch (error) {
+    console.error("Error filtering slang words:", error);
+    return { filteredText: content, isBlurred: false };
+  }
+};
+
+export const getSlangwordList = async (req, res) => {
+  try {
+    const wordsList = await slangwordModel.find();
+    res.status(200).json({ list: wordsList });
+  } catch (error) {
+    res
+      .satus(500)
+      .json({ error: "Failed to create comment", details: error.message });
+  }
 };
 
 export const getTotalWords = async (req, res) => {
@@ -44,46 +91,5 @@ export const deleteWords = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to delete word", error: error.message });
-  }
-};
-
-export const filterSlangword = async (content, author) => {
-  try {
-    const words = await slangwordModel.find({}, "word"); // To get all slang words from db
-    let filteredText = content;
-    let foundSlangs = false;
-
-    if (!words || words.length === 0) {
-      return { filteredText: content, isBlurred: false };
-    }
-
-    words.forEach(({ word }) => {
-      const regex = new RegExp(`\\b${word}\\b`, "gi"); // To match whole word
-      if (regex.test(filteredText)) {
-        foundSlangs = true;
-
-        const censoredWord =
-          word.length > 2
-            ? word[0] + "*".repeat(word.length - 2) + word[word.length - 1]
-            : "*".repeat(word.length);
-
-        filteredText = filteredText.replace(regex, censoredWord);
-      }
-    });
-    return { filteredText: filteredText || content, isBlurred: foundSlangs };
-  } catch (error) {
-    console.error("Error filtering slang words:", error);
-    return { filteredText: content, isBlurred: false };
-  }
-};
-
-export const getSlangwordList = async (req, res) => {
-  try {
-    const wordsList = await slangwordModel.find();
-    res.status(200).json({ list: wordsList });
-  } catch (error) {
-    res
-      .satus(500)
-      .json({ error: "Failed to create comment", details: error.message });
   }
 };

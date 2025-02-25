@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 import { dbConnect } from "./mongo/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -17,6 +18,7 @@ import slangwordRoute from "./routes/slangwordRoute.js";
 import topicRoute from "./routes/topicRoutes.js";
 import searchRoute from "./routes/searchRoute.js";
 import flagRoute from "./routes/flagRoutes.js";
+import { setSlangwords } from "./controllers/slangwordController.js";
 
 const app = express();
 dotenv.config();
@@ -38,7 +40,6 @@ app.use(express.urlencoded({ extended: false }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// app.use(express.static(path.join(__dirname, "../client/public")));
 app.use(express.static(path.join(__dirname, "./public")));
 dbConnect();
 
@@ -52,6 +53,15 @@ app.use("/slangword", slangwordRoute);
 app.use("/topic", topicRoute);
 app.use("/search", searchRoute);
 app.use("/flag", flagRoute);
+
+fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (data) => {
+  try {
+    let words = JSON.parse(data);
+    setSlangwords(words);
+  } catch (error) {
+    console.error("Error parsing slangwords.json:", error.message);
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server Connected Successfully on PORT ${process.env.PORT}`);

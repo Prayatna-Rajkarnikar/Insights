@@ -41,7 +41,6 @@ export default function Dashboard() {
     try {
       const response = await axios.get("/topic/getMostUsedTopics");
       setTopics(response.data || []);
-      console.log("Fetched topics:", response.data); // Log the data
     } catch (error) {
       console.error("Error fetching topics:", error);
       setTopics([]);

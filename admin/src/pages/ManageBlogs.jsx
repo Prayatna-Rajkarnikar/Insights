@@ -11,7 +11,7 @@ const truncateStyle = {
 export default function ManageBlogs() {
   const [blogs, setBlogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function ManageBlogs() {
   const sortedBlogs = [...dateFilteredBlogs].sort((a, b) => {
     const dateA = new Date(a.createdAt);
     const dateB = new Date(b.createdAt);
-    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
   });
 
   return (
@@ -77,19 +77,9 @@ export default function ManageBlogs() {
           <h1 className="font-bold text-4xl text-primaryBlack">Blogs</h1>
           <h3 className="font-normal text-base text-darkGray">Welcome Admin</h3>
         </div>
-
-        {/* Search Bar */}
-        <input
-          type="text"
-          placeholder="Search by title or subtitle..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="border border-gray-300 px-4 py-2 rounded-lg"
-        />
       </div>
 
-      {/* Filters & Sorting */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex space-x-7 justify-end items-center mb-4">
         {/* Date Picker Filter */}
         <input
           type="date"
@@ -100,11 +90,20 @@ export default function ManageBlogs() {
 
         {/* Sort Button */}
         <button
-          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
           className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
         >
-          Sort by Date ({sortOrder === "asc" ? "⬆️" : "⬇️"})
+          ({sortOrder === "desc" ? "Descending" : "Ascending"})
         </button>
+
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="border border-gray-300 px-4 py-2 rounded-lg"
+        />
       </div>
 
       {/* Table */}

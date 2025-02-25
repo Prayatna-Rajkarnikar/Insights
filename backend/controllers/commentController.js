@@ -14,7 +14,7 @@ export const createComment = async (req, res) => {
       return res.status(404).json({ error: "Blog not found" });
     }
 
-    const { filteredText, isBlurred } = await filterSlangword(content, author);
+    const { filteredText, isBlurred } = await filterSlangword(content);
 
     const newComment = new commentModel({
       content: filteredText,
