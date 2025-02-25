@@ -25,8 +25,8 @@ const Comment = () => {
   const [comments, setComments] = useState([]);
   const [userComment, setUserComment] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment
+  const [showModal, setShowModal] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
   const navigation = useNavigation();
   const StyledView = styled(LinearGradient);
 
@@ -178,13 +178,28 @@ const Comment = () => {
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black opacity-50">
+        <View className="flex-1 justify-center items-center bg-black">
           <View className="bg-white p-5 rounded-lg">
             <Text className="text-center font-semibold text-lg mb-3">
               {user.email === selectedComment?.author.email
                 ? "Delete this comment?"
                 : "Flag this comment?"}
             </Text>
+
+            {selectedComment && (
+              <View className="bg-gray-100 p-3 rounded-md mb-4">
+                <Text className="text-gray-700 font-bold">
+                  {selectedComment.author.name}
+                </Text>
+                <Text
+                  className="text-gray-600 mt-1 "
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {selectedComment.content}
+                </Text>
+              </View>
+            )}
             <View className="flex-row justify-around">
               {user.email === selectedComment?.author.email ? (
                 <TouchableOpacity onPress={handleDeleteComment}>

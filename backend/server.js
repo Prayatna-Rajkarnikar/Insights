@@ -54,7 +54,7 @@ app.use("/topic", topicRoute);
 app.use("/search", searchRoute);
 app.use("/flag", flagRoute);
 
-fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (data) => {
+fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (error, data) => {
   try {
     let words = JSON.parse(data);
     setSlangwords(words);
