@@ -2,7 +2,7 @@ import { Router } from "express";
 import cors from "cors";
 import {
   getTotalUsers,
-  deactivateUser,
+  toggleUserStatus,
   getUserList,
   getTotalBlogs,
   getBlogList,
@@ -11,7 +11,7 @@ import {
 const router = Router();
 router.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 router.get("/getTotalUser", getTotalUsers);
-router.patch("/deactivateUser", deactivateUser);
+router.patch("/toggleUserStatus", toggleUserStatus);
 router.get("/getUserList", getUserList);
 router.get("/getTotalBlogs", getTotalBlogs);
 router.get("/getBlogList", getBlogList);

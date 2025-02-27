@@ -10,9 +10,8 @@ const truncateStyle = {
 
 export default function ManageUser() {
   const [users, setUsers] = useState([]);
-  //   const [searchQuery, setSearchQuery] = useState("");
-  //   const [sortOrder, setSortOrder] = useState("asc");
-  //   const [selectedDate, setSelectedDate] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     fetchAllUsers();
@@ -27,38 +26,48 @@ export default function ManageUser() {
     }
   };
 
-  //   const fetchSearchedBlogs = async (query) => {
-  //     try {
-  //       const response = await axios.get(`/search/searchBlogs?query=${query}`);
-  //       setBlogs(response.data);
-  //     } catch (error) {
-  //       console.error("Error searching blogs:", error);
-  //     }
-  //   };
+  const toggleUserStatus = async (email) => {
+    try {
+      await axios.patch("/admin/toggleUserStatus", { email });
 
-  //   const handleSearchChange = (e) => {
-  //     setSearchQuery(e.target.value);
-  //     if (e.target.value.trim() === "") {
-  //       fetchAllBlogs();
-  //     } else {
-  //       fetchSearchedBlogs(e.target.value);
-  //     }
-  //   };
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.email === email ? { ...user, isActive: !user.isActive } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling user status:", error);
+    }
+  };
 
-  //   // Date filter
-  //   const dateFilteredBlogs = selectedDate
-  //     ? blogs.filter((blog) => {
-  //         const blogDate = new Date(blog.createdAt).toISOString().split("T")[0];
-  //         return blogDate === selectedDate;
-  //       })
-  //     : blogs;
+  const fetchSearchedUsers = async (query) => {
+    try {
+      const response = await axios.get(`/search/searchUsers?query=${query}`);
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error searching users:", error);
+    }
+  };
 
-  //   // Sorting by date
-  //   const sortedBlogs = [...dateFilteredBlogs].sort((a, b) => {
-  //     const dateA = new Date(a.createdAt);
-  //     const dateB = new Date(b.createdAt);
-  //     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-  //   });
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value.trim() === "") {
+      fetchAllUsers();
+    } else {
+      fetchSearchedUsers(e.target.value);
+    }
+  };
+
+  //   Sorting by date
+  const sortedUsers = [...users].sort((a, b) => {
+    const userA = a.username.toLowerCase();
+    const userB = b.username.toLowerCase();
+    if (sortOrder === "asc") {
+      return userA < userB ? -1 : userA > userB ? 1 : 0; // Ascending order
+    } else {
+      return userA > userB ? -1 : userA < userB ? 1 : 0; // Descending order
+    }
+  });
 
   return (
     <div className="h-full px-6 py-7 bg-primaryWhite overflow-x-hidden">
@@ -68,34 +77,25 @@ export default function ManageUser() {
           <h1 className="font-bold text-4xl text-primaryBlack">Users</h1>
           <h3 className="font-normal text-base text-darkGray">Welcome Admin</h3>
         </div>
+      </div>
 
-        {/* Search Bar
+      <div className="flex space-x-7 justify-end items-center mb-4">
+        {/* Sort Button */}
+        <button
+          onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+          className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
+        >
+          ({sortOrder === "desc" ? "Descending" : "Ascending"})
+        </button>
+
+        {/* Search Bar */}
         <input
           type="text"
-          placeholder="Search by title or subtitle..."
+          placeholder="Search by username..."
           value={searchQuery}
           onChange={handleSearchChange}
           className="border border-gray-300 px-4 py-2 rounded-lg"
         />
-      </div>
-
-      {/* Filters & Sorting */}
-        {/* <div className="flex justify-between items-center mb-4"> */}
-        {/* Date Picker Filter */}
-        {/* <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="border border-gray-300 px-4 py-2 rounded-lg"
-        /> */}
-
-        {/* Sort Button */}
-        {/* <button
-          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-          className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
-        >
-          Sort by Date ({sortOrder === "asc" ? "⬆️" : "⬇️"})
-        </button>*/}
       </div>
 
       {/* Table */}
@@ -118,7 +118,7 @@ export default function ManageUser() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {sortedUsers.map((user) => (
               <tr key={user._id}>
                 <td
                   className="text-lg font-medium w-[300px] px-6 py-2 text-secondaryBlack"
@@ -133,8 +133,15 @@ export default function ManageUser() {
                   {user.email}
                 </td>
                 <td className="flex justify-center items-center px-4 py-2">
-                  <button className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl">
-                    Deactivate
+                  <button
+                    onClick={() => toggleUserStatus(user.email)}
+                    className={`px-6 py-2 rounded-xl ${
+                      user.isActive
+                        ? "bg-red-600 text-primaryWhite"
+                        : "bg-green-600 text-primaryWhite"
+                    }`}
+                  >
+                    {user.isActive ? "Deactivate" : "Activate"}
                   </button>
                 </td>
               </tr>

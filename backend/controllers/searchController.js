@@ -40,7 +40,7 @@ export const searchUsers = async (req, res) => {
 
     const user = await userModel.find({
       $or: [
-        { name: { $regex: query, $options: "i" } },
+        // { name: { $regex: query, $options: "i" } },
         { username: { $regex: query, $options: "i" } },
       ],
     });

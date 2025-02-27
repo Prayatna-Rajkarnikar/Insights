@@ -63,7 +63,7 @@ export const getSlangwordList = async (req, res) => {
     res.status(200).json({ list: wordsList });
   } catch (error) {
     res
-      .satus(500)
+      .status(500)
       .json({ error: "Failed to create comment", details: error.message });
   }
 };
