@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -11,6 +11,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIspasswordVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
   const togglePasswordVisiblity = () => {
@@ -32,11 +33,15 @@ const LoginScreen = () => {
       });
       navigation.navigate("Home");
     } catch (error) {
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: error.response.data.error || "Something went wrong",
-      });
+      if (error.response.status === 403) {
+        setModalVisible(true);
+      } else {
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: error.response.data.error || "Something went wrong",
+        });
+      }
     }
   };
 
@@ -102,6 +107,27 @@ const LoginScreen = () => {
           Create new account
         </Text>
       </TouchableOpacity>
+
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View className="flex-1 justify-center items-center bg-gray-700">
+          <View className="w-3/4 p-5 bg-black rounded-xl">
+            <Text className="text-center text-lg font-bold text-gray-100">
+              Account Deactivated
+            </Text>
+            <Text className="text-center text-sm font-light text-gray-400 mt-3">
+              Your account has been deactivated due to a policy violation. It
+              will be reactivated in a few days.
+            </Text>
+
+            <TouchableOpacity
+              className="items-center mt-4 p-3 rounded-lg bg-[#4E2894]"
+              onPress={() => setModalVisible(false)}
+            >
+              <Text className="font-bold text-gray-100">OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -11,7 +11,7 @@ export const toggleUserStatus = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.isActive = !user.isActive; // Toggle the status
+    user.isActive = !user.isActive;
     await user.save();
 
     res.status(200).json({
@@ -40,7 +40,7 @@ export const getTotalUsers = async (req, res) => {
 
 export const getUserList = async (req, res) => {
   try {
-    const userList = await userModel.find();
+    const userList = await userModel.find({ role: "Reader" });
     res.status(200).json({ list: userList });
   } catch (error) {
     res.status(500).json({ message: "Failed to get user list." });

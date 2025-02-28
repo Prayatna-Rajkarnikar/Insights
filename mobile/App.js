@@ -27,7 +27,7 @@ import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import { Trial } from "./screens/Trial";
 
-axios.defaults.baseURL = "http://192.168.1.7:3001";
+axios.defaults.baseURL = "http://192.168.1.4:3001";
 // axios.defaults.baseURL = "http://100.64.223.109:3001";
 axios.defaults.withCredentials = true;
 

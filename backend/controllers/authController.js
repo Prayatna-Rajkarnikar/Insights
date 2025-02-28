@@ -141,6 +141,14 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid Password" });
     }
 
+    if (!user.isActive) {
+      return res
+        .status(403)
+        .json({
+          error: "Your account has been deactivated. Please contact support.",
+        });
+    }
+
     // Generate JWT token
     const token = jwt.sign(
       {
