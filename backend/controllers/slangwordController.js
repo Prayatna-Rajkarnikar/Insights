@@ -1,3 +1,9 @@
+import path from "path";
+import fs from "fs";
+
+const __dirname = path.resolve();
+const filePath = path.join(__dirname, "slangwords.json");
+
 let slangwords = [];
 let slangSet = new Set();
 
@@ -13,16 +19,33 @@ export const addSlangWord = async (req, res) => {
       return res.status(400).json({ error: "The word field is required." });
     }
 
-    const wordExist = await slangwordModel.findOne({ word });
-    if (wordExist) {
+    const lowerWord = word.toLowerCase();
+
+    if (slangSet.has(lowerWord)) {
       return res.status(400).json({ error: "This word already exists." });
     }
 
-    const newWord = new slangwordModel({ word });
+    slangwords.push(lowerWord);
+    slangSet.add(lowerWord);
 
-    await newWord.save();
-    res.status(201).json({ message: "Slang word added successfully", newWord });
-  } catch (error) {}
+    fs.writeFile(
+      filePath,
+      JSON.stringify(slangwords, null, 2),
+      "utf8",
+      (err) => {
+        if (err) {
+          console.error("Error writing to slangwords.json:", err);
+          return res.status(500).json({ error: "Failed to save slang word." });
+        }
+        res
+          .status(201)
+          .json({ message: "Slang word added successfully", word: lowerWord });
+      }
+    );
+  } catch (error) {
+    console.error("Error adding slang word:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 export const filterSlangword = async (content) => {
@@ -59,37 +82,98 @@ export const filterSlangword = async (content) => {
 
 export const getSlangwordList = async (req, res) => {
   try {
-    const wordsList = await slangwordModel.find();
+    if (!fs.existsSync(filePath)) {
+      return res.status(200).json({ list: [] });
+    }
+
+    const data = fs.readFileSync(filePath, "utf8");
+    const wordsList = JSON.parse(data);
+
     res.status(200).json({ list: wordsList });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to create comment", details: error.message });
+    console.error("Error reading slangwords.json:", error.message);
+    res.status(500).json({
+      error: "Failed to retrieve slang words",
+      details: error.message,
+    });
   }
 };
 
 export const getTotalWords = async (req, res) => {
   try {
-    const totalWords = await slangwordModel.countDocuments();
-    res.status(200).json({ totalWords });
+    if (!fs.existsSync(filePath)) {
+      return res.status(200).json({ totalWords: 0 });
+    }
+
+    const data = fs.readFileSync(filePath, "utf8");
+    const wordsList = JSON.parse(data);
+
+    res.status(200).json({ totalWords: wordsList.length });
   } catch (error) {
-    res.status(500).json({ message: "Failed to get total words" });
+    console.error("Error reading slangwords.json:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to get total words", details: error.message });
   }
 };
 
-export const deleteWords = async (req, res) => {
+export const deleteSlangword = async (req, res) => {
   try {
     const { word } = req.body;
-    const slangword = await slangwordModel.findOneAndDelete({ word });
 
-    if (!slangword) {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "No slang words found" });
+    }
+
+    const data = fs.readFileSync(filePath, "utf8");
+    let wordsList = JSON.parse(data);
+
+    const filteredWords = wordsList.filter(
+      (w) => w.toLowerCase() !== word.toLowerCase()
+    );
+
+    if (wordsList.length === filteredWords.length) {
       return res.status(404).json({ message: "Word not found" });
     }
 
-    res.status(200).json({ message: "Word deleted successfully", slangword });
+    fs.writeFileSync(filePath, JSON.stringify(filteredWords, null, 2), "utf8");
+
+    res
+      .status(200)
+      .json({ message: "Word deleted successfully", deletedWord: word });
   } catch (error) {
+    console.error("Error deleting slang word:", error.message);
     res
       .status(500)
       .json({ message: "Failed to delete word", error: error.message });
+  }
+};
+
+export const searchSlangword = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ error: "Search query is required." });
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "No slang words found." });
+    }
+
+    const data = fs.readFileSync(filePath, "utf8");
+    const wordsList = JSON.parse(data);
+
+    // Filter words that match the query (case-insensitive)
+    const matchedWords = wordsList.filter((word) =>
+      word.toLowerCase().includes(query.toLowerCase())
+    );
+
+    res.json(matchedWords);
+  } catch (error) {
+    console.error("Error searching slang words:", error.message);
+    res
+      .status(500)
+      .json({ error: "Failed to search slang words.", details: error.message });
   }
 };

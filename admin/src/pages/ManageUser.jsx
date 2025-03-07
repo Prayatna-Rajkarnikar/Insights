@@ -58,7 +58,7 @@ export default function ManageUser() {
     }
   };
 
-  //   Sorting by date
+  //   Sorting aplhabetically
   const sortedUsers = [...users].sort((a, b) => {
     const userA = a.username.toLowerCase();
     const userB = b.username.toLowerCase();
