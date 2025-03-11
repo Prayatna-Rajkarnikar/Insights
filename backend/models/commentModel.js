@@ -16,6 +16,7 @@ const commentSchema = new mongoose.Schema(
       count: { type: Number, default: 0 }, // Number of times this comment has been flagged
       isBlurred: { type: Boolean, default: false }, // True if the comment contains slang words and should be blurred
     },
+    isHidden: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

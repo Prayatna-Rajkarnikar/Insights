@@ -96,8 +96,6 @@ export const editBlog = async (req, res) => {
   try {
     let { title, subTitle, content, topics } = req.body;
 
-    console.log("Request Body:", req.body);
-
     const author = req.user.id;
     const blogId = req.params.id.trim();
 
@@ -156,20 +154,6 @@ export const editBlog = async (req, res) => {
     const images = req.files
       ? req.files.map((file) => `/blogImages/${file.filename}`)
       : [];
-
-    // // Update the parsed content with the image paths
-    // let imageIndex = 0; // Keep track of image assignment
-    // parsedContent.forEach((item) => {
-    //   if (item.type === "image") {
-    //     if (imageIndex < images.length) {
-    //       // Assign the next available image
-    //       item.value = images[imageIndex];
-    //       imageIndex++; // Move to the next image
-    //     } else {
-    //       item.value = ""; // No image available for this slot
-    //     }
-    //   }
-    // });
 
     let imageIndex = 0; // Index for new images
     parsedContent = parsedContent.map((item, idx) => {

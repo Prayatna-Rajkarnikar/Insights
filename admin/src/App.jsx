@@ -10,8 +10,8 @@ import ManageBlogs from "./pages/ManageBlogs";
 import ManageUser from "./pages/ManageUser";
 import ManageSlangword from "./pages/ManageSlangword";
 
-axios.defaults.baseURL = "http://192.168.1.6:3001";
-// axios.defaults.baseURL = "http://100.64.219.33:3001";
+// axios.defaults.baseURL = "http://192.168.1.6:3001";
+axios.defaults.baseURL = "http://100.64.208.200:3001";
 axios.defaults.withCredentials = true;
 
 function App() {

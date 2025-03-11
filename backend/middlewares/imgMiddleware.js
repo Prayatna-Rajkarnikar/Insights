@@ -7,7 +7,6 @@ const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     // Dynamically set the folder based on the request or route
-    // let folder = "../client/public/images"; // Default folder (for registration, etc.)
     let folder = "./public/images"; // Default folder (for registration, etc.)
 
     if (req.baseUrl.includes("/blog")) {
@@ -33,7 +32,10 @@ const fileFilter = (req, file, callback) => {
   }
 };
 
-// Initialize multer with the dynamic storage and file filter
-const upload = multer({ storage, fileFilter });
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 1 * 1024 * 1024 },
+});
 
 export default upload;

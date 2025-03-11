@@ -100,7 +100,7 @@ export default function Dashboard() {
       {/* Top topics and blog section */}
       <div className="w-full h-[280px] mb-7 flex p-3 gap-6">
         {/* Topics section */}
-        <div className="lg:w-[25%] h-full">
+        <div className="lg:w-[28%] h-full">
           <h3 className="font-medium text-base text-secondaryBlack">
             Most Used Topics
           </h3>
@@ -108,9 +108,9 @@ export default function Dashboard() {
             return (
               <div
                 key={topic.name}
-                className="p-4 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-gray-300 m-4"
+                className="p-3 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-gray-300 m-4"
               >
-                <h5 className="text-base text-secondaryBlack">{topic.name}</h5>
+                <h5 className="text-sm text-secondaryBlack">{topic.name}</h5>
                 <span className="text-base font-bold text-primaryBlack">
                   {topic.count}
                 </span>

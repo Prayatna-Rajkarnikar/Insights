@@ -117,7 +117,7 @@ const BlogDetail = () => {
         <View className="flex-row justify-start space-x-3 mt-4">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${blog.author.image}` }}
-            className="rounded-full w-14 h-14"
+            className="rounded-full w-14 h-14 bg-gray-100"
           />
           <View>
             <Text className="text-lg font-medium text-gray-100">

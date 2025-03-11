@@ -63,13 +63,13 @@ const Comment = () => {
   };
 
   const handleLongPress = (comment) => {
-    setSelectedComment(comment); // Set the selected comment
-    setShowModal(true); // Show the modal
+    setSelectedComment(comment);
+    setShowModal(true);
   };
 
   const handleDeleteComment = async () => {
     try {
-      await axios.delete(`/comments/deleteComment/${selectedComment._id}`);
+      await axios.patch(`/comments/hideComment/${selectedComment._id}`);
       fetchComments();
       setShowModal(false);
       Toast.show({
@@ -82,6 +82,24 @@ const Comment = () => {
         type: "error",
         position: "top",
         text1: "Failed to delete comment",
+      });
+    }
+  };
+
+  const flagComment = async () => {
+    try {
+      await axios.post(`/flag/flagComment/${selectedComment._id}`);
+      setShowModal(false);
+      Toast.show({
+        type: "success",
+        position: "top",
+        text1: "Comment flagged successfully",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Failed to flag comment",
       });
     }
   };
@@ -202,13 +220,18 @@ const Comment = () => {
             )}
             <View className="flex-row justify-around">
               {user.email === selectedComment?.author.email ? (
-                <TouchableOpacity onPress={handleDeleteComment}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleDeleteComment();
+                    setShowModal(false);
+                  }}
+                >
                   <Ionicons name="trash-bin" size={30} color="red" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Flagged comment:", selectedComment._id);
+                    flagComment();
                     setShowModal(false);
                   }}
                 >

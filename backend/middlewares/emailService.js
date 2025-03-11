@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (authorId) => {
+export const sendCommentRemovalEmail = async (authorId) => {
   try {
     const user = await userModel.findById(authorId);
 
@@ -50,6 +50,53 @@ export const sendEmail = async (authorId) => {
     await transporter.sendMail(mailOptions);
     console.log("Warning email sent to user");
     // }
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+export const sendUserDeactivateEmail = async (authorId) => {
+  try {
+    const user = await userModel.findById(authorId);
+
+    if (!mongoose.Types.ObjectId.isValid(authorId)) {
+      console.error("Invalid userId");
+      return;
+    }
+    if (!user) {
+      console.error("User not found");
+      return;
+    }
+
+    const subject = "Important Notice: Deactivate the User";
+
+    const text = `Dear admin,  
+
+    Name: ${user.name}
+    Email: ${user.email}
+    Username: ${user.username}
+    Warnings: ${user.warnings}
+      
+      We hope this email finds you well.  
+      
+      We would like to inform you that your account has received multiple flags due to reported comments. As a result, your warning count has exceeded the allowed limit.  
+      
+      We kindly request you to review your recent activity and ensure compliance with our platform's guidelines. Continued violations may result in further actions, including temporary suspension or account restrictions.  
+      
+      If you believe this was a mistake or require any clarification, please do not hesitate to contact our support team.  
+      
+      Best regards,  
+      Insights`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: "rajkarnikarprayatna9@gmail.com",
+      subject,
+      text,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(" email sent to admin");
   } catch (error) {
     console.error("Error sending email:", error);
   }
