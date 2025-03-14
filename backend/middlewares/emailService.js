@@ -25,17 +25,18 @@ export const sendCommentRemovalEmail = async (authorId) => {
       return;
     }
 
-    const subject = "Important Notice: Multiple Flags on Your Account";
+    const subject =
+      "Action Required: Comment Removal Due to Use of Slang Words";
 
     const text = `Dear ${user.name},  
       
-      We hope this email finds you well.  
-      
-      We would like to inform you that your account has received multiple flags due to reported comments. As a result, your warning count has exceeded the allowed limit.  
-      
-      We kindly request you to review your recent activity and ensure compliance with our platform's guidelines. Continued violations may result in further actions, including temporary suspension or account restrictions.  
-      
-      If you believe this was a mistake or require any clarification, please do not hesitate to contact our support team.  
+     We hope you're doing well.  
+
+We would like to inform you that one of your recent comments contains slang words that do not align with our platform's community guidelines.  
+
+To maintain a respectful and professional environment for all users, we kindly request you to remove or edit the comment at your earliest convenience.  
+
+Please note that repeated use of inappropriate language may lead to further actions, including temporary restrictions on your account.  
       
       Best regards,  
       Insights`;
@@ -49,7 +50,6 @@ export const sendCommentRemovalEmail = async (authorId) => {
 
     await transporter.sendMail(mailOptions);
     console.log("Warning email sent to user");
-    // }
   } catch (error) {
     console.error("Error sending email:", error);
   }
@@ -67,23 +67,17 @@ export const sendUserDeactivateEmail = async (authorId) => {
       console.error("User not found");
       return;
     }
+    const subject =
+      "Urgent: User Deactivation Request Due to Exceeded Warnings";
 
-    const subject = "Important Notice: Deactivate the User";
+    const text = `Dear Admin,  
 
-    const text = `Dear admin,  
+The following user has exceeded the allowed warning limit and requires deactivation review:  
 
-    Name: ${user.name}
-    Email: ${user.email}
-    Username: ${user.username}
-    Warnings: ${user.warnings}
-      
-      We hope this email finds you well.  
-      
-      We would like to inform you that your account has received multiple flags due to reported comments. As a result, your warning count has exceeded the allowed limit.  
-      
-      We kindly request you to review your recent activity and ensure compliance with our platform's guidelines. Continued violations may result in further actions, including temporary suspension or account restrictions.  
-      
-      If you believe this was a mistake or require any clarification, please do not hesitate to contact our support team.  
+- **Name:** ${user.name}  
+- **Email:** ${user.email}  
+- **Username:** ${user.username}  
+- **Warning Count:** ${user.warnings}  
       
       Best regards,  
       Insights`;
