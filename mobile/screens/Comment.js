@@ -197,14 +197,14 @@ const Comment = () => {
       >
         <View className="flex-1 justify-center items-center bg-darkGray">
           <View className="bg-secondaryBlack p-5 rounded-xl">
-            <Text className="text-center font-semibold text-lg mb-3">
+            <Text className="text-center font-semibold text-lg mb-3 text-darkGray">
               {user.email === selectedComment?.author.email
                 ? "Delete this comment?"
                 : "Flag this comment?"}
             </Text>
 
             {selectedComment && (
-              <View className="bg-secondaryWhite p-3 rounded-md mb-4">
+              <View className="p-3 rounded-md mb-4">
                 <Text className="text-darkGray font-bold">
                   {selectedComment.author.name}
                 </Text>
