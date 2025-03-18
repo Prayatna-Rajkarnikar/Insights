@@ -11,8 +11,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
+import Toast from "react-native-toast-message";
+
+import Background from "../helpers/Background";
 
 const Create = () => {
   const [contentSections, setContentSections] = useState([
@@ -23,11 +24,13 @@ const Create = () => {
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
 
-  const StyledView = styled(LinearGradient);
-
   const goToTopics = () => {
     if (!title.trim() || !subtitle.trim() || !contentSections) {
-      alert("Please fill all the fields to preview.");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Please fill all the fields",
+      });
       return;
     }
 
@@ -105,20 +108,20 @@ const Create = () => {
       value: "•",
     };
     setContentSections((prevSections) => [...prevSections, newSection]);
-    scrollViewRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   }, []);
 
   return (
-    <View className="flex-1 bg-gray-900">
-      <View className="flex-1 px-5">
-        {/* Back Icon */}
-        <View className="mt-8">
+    <View className="flex-1">
+      <Background>
+        {/* close icon */}
+        <View className="mt-8 items-end">
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={30} color="#9CA3AF" />
+            <Ionicons name="close" size={30} color="#7871AA" />
           </TouchableOpacity>
         </View>
 
@@ -130,9 +133,9 @@ const Create = () => {
         >
           {/* Title */}
           <TextInput
-            className="text-3xl font-bold text-gray-50"
+            className="text-3xl font-bold text-primaryWhite"
             placeholder="Title"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#8B8F92"
             value={title}
             onChangeText={setTitle}
             multiline
@@ -141,9 +144,9 @@ const Create = () => {
 
           {/* Subtitle */}
           <TextInput
-            className="text-lg text-gray-400 mt-1 italic"
+            className="text-lg text-darkGray mt-1 italic"
             placeholder="Subtitle"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#8B8F92"
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
@@ -154,9 +157,9 @@ const Create = () => {
               {section.type === "text" ? (
                 <View className="relative">
                   <TextInput
-                    className="text-base justify-start text-gray-200 mt-2"
+                    className="text-base justify-start text-lightGray mt-2"
                     placeholder="Add text here..."
-                    placeholderTextColor="#9CA3AF"
+                    placeholderTextColor="#8B8F92"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
@@ -164,7 +167,7 @@ const Create = () => {
                   />
                   <TouchableOpacity
                     onPress={() => removeSection(index)}
-                    className="absolute right-0 p-1 bg-red-600 rounded-full"
+                    className="absolute right-0 p-2 bg-red-600 rounded-full"
                   >
                     <Ionicons
                       name="trash-bin-outline"
@@ -176,7 +179,7 @@ const Create = () => {
               ) : section.type === "bullet" ? (
                 <View className="relative">
                   <TextInput
-                    className="text-base justify-start text-gray-200 mt-2"
+                    className="text-base justify-start text-lightGray mt-2"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
@@ -196,7 +199,7 @@ const Create = () => {
               ) : section.type === "image" ? (
                 <View className="relative mt-2">
                   {section.value.uri ? (
-                    <View className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden">
+                    <View className="w-full h-52 mt-2 rounded-3xl border-4 border-accent overflow-hidden">
                       <Image
                         source={{ uri: section.value.uri }}
                         className="w-full h-full"
@@ -218,49 +221,40 @@ const Create = () => {
             </View>
           ))}
         </ScrollView>
-      </View>
+      </Background>
 
       {/* Buttons */}
-      <View className="flex-row bottom-0 h-16 px-5 space-x-2 items-center bg-gray-800 w-full">
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={() => addTextSection(contentSections.length)}
-          accessible
-          accessibilityLabel="Add text section"
-        >
-          <Ionicons name="text-outline" size={20} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={() => pickImage(contentSections.length)}
-        >
-          <Ionicons name="image-outline" size={20} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={() => addBulletPoint(contentSections.length)}
-        >
-          <Ionicons name="list-outline" size={20} />
-        </TouchableOpacity>
-
-        <View className="flex-1 items-end">
-          <StyledView
-            colors={["#312E81", "#4E2894"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            className="rounded-xl p-2"
+      <View className=" bottom-0 w-full bg-secondaryBlack p-5">
+        <View className="flex-row space-x-2 items-center">
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={() => addTextSection(contentSections.length)}
           >
-            <TouchableOpacity
-              onPress={goToTopics}
-              accessible
-              accessibilityLabel="Publish the blog"
-            >
-              <Text className="text-gray-100 font-bold text-base">Next</Text>
-            </TouchableOpacity>
-          </StyledView>
+            <Ionicons name="text-outline" size={24} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={() => pickImage(contentSections.length)}
+          >
+            <Ionicons name="image-outline" size={24} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={() => addBulletPoint(contentSections.length)}
+          >
+            <Ionicons name="list-outline" size={24} />
+          </TouchableOpacity>
         </View>
+
+        {/* Publish Button */}
+        <TouchableOpacity
+          className="bg-accent w-full mt-3 rounded-xl p-3 items-center"
+          onPress={goToTopics}
+        >
+          <Text className="text-primaryBlack font-bold text-lg">Next</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

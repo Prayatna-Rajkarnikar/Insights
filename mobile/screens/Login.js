@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
+
+import Background from "../helpers/Background";
 import InputField from "../helpers/InputField";
 import Button from "../helpers/Button";
 
@@ -46,15 +48,10 @@ const LoginScreen = () => {
   };
 
   return (
-    <View className="bg-gray-900 flex-1 px-5">
-      {/* close icon */}
-      <TouchableOpacity className="mt-12">
-        <Ionicons name="close" size={30} color="#9CA3AF" />
-      </TouchableOpacity>
-
+    <Background>
       {/* heading */}
-      <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">Login</Text>
+      <View className="mt-14">
+        <Text className="text-3xl font-bold text-primaryWhite">Login</Text>
       </View>
 
       {/* Input Fields */}
@@ -79,7 +76,7 @@ const LoginScreen = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#F3F4F6"
+              color="#E9ECEF"
             />
           </TouchableOpacity>
         </View>
@@ -90,7 +87,7 @@ const LoginScreen = () => {
         onPress={() => navigation.navigate("ForgetPassword")}
         className="mt-1 mb-6"
       >
-        <Text className="text-gray-400 font-medium  text-base text-right">
+        <Text className="text-darkGray font-medium  text-base text-right">
           Forget Password ?
         </Text>
       </TouchableOpacity>
@@ -101,34 +98,34 @@ const LoginScreen = () => {
       {/* Go to Register Btn */}
       <TouchableOpacity
         onPress={() => navigation.navigate("Register")}
-        className="rounded-full py-5 border-2 border-purple-800 mt-64"
+        className="rounded-full py-5 border-2 border-accent mt-64"
       >
-        <Text className="text-gray-50 text-xl font-bold  text-center">
+        <Text className="text-primaryWhite text-xl font-bold  text-center">
           Create new account
         </Text>
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-center items-center bg-gray-700">
-          <View className="w-3/4 p-5 bg-black rounded-xl">
-            <Text className="text-center text-lg font-bold text-gray-100">
+        <View className="flex-1 justify-center items-center bg-darkGray">
+          <View className="w-3/4 p-5 bg-primaryBlack rounded-xl">
+            <Text className="text-center text-lg font-bold text-primaryWhite">
               Account Deactivated
             </Text>
-            <Text className="text-center text-sm font-light text-gray-400 mt-3">
+            <Text className="text-center text-sm font-light text-darkGray mt-3">
               Your account has been deactivated due to a policy violation. It
               will be reactivated in a few days.
             </Text>
 
             <TouchableOpacity
-              className="items-center mt-4 p-3 rounded-lg bg-[#4E2894]"
+              className="items-center mt-4 p-3 rounded-lg bg-accent"
               onPress={() => setModalVisible(false)}
             >
-              <Text className="font-bold text-gray-100">OK</Text>
+              <Text className="font-bold text-primaryBlack">OK</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </View>
+    </Background>
   );
 };
 

@@ -10,16 +10,15 @@ import {
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
+import Background from "../helpers/Background";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [trendings, setTrendings] = useState([]);
   const [latest, setLatest] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("Trending");
 
   const navigation = useNavigation();
-  const StyledView = styled(LinearGradient);
 
   const fetchBlogs = async () => {
     try {
@@ -34,141 +33,64 @@ const Home = () => {
       setLoading(false);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       fetchBlogs();
     }, [])
   );
 
-  // Display a loading message if data is still being fetched
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View className="flex-1 justify-center items-center bg-secondaryBlack">
+        <ActivityIndicator size="large" color="#7871AA" />
       </View>
     );
   }
 
-  const renderTrendings = ({ item }) => {
+  const renderItem = ({ item }) => {
     const firstImg =
       item.content.find((contentItem) => contentItem.type === "image")?.value ||
       null;
+
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <StyledView
-          colors={["#312E81", "#4E2894", "#111827"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className=" w-[300px] h-36 mb-4 rounded-3xl mr-4"
-        >
-          <View className="m-[2px]">
+        <View className="p-4 mb-4 rounded-2xl bg-accent">
+          <View className="flex-row space-x-2 items-center">
+            {item.author?.image && (
+              <Image
+                source={{
+                  uri: `${axios.defaults.baseURL}${item.author.image}`,
+                }}
+                className="rounded-full w-8 h-8 bg-secondaryWhite"
+              />
+            )}
+            <Text className="text-xs text-secondaryBlack">
+              {item.author?.name}
+            </Text>
+          </View>
+          <View className="mt-4">
             {firstImg && (
               <Image
                 source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                className="w-full h-[70px] rounded-2xl"
+                className="w-full h-40 rounded-2xl"
+                resizeMode="cover"
               />
             )}
           </View>
-          <View className="flex-row space-x-2 items-center justify-center">
-            <Image
-              source={{
-                uri: `${axios.defaults.baseURL}${item.author.image}`,
-              }}
-              className="rounded-full w-6 h-6"
-            />
-
-            <Text className="text-xs font-medium text-gray-400">
-              {item.author.name}
-            </Text>
-          </View>
-          <View className="px-2">
-            <Text
-              className="text-xl font-bold text-gray-50"
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {item.title}
-            </Text>
-          </View>
-          <View className="flex-row space-x-7 justify-center">
-            <View className="flex-row space-x-1 items-center">
-              <Ionicons name="heart" size={12} color="#8b5cf6" />
-              <Text className="text-xs text-violet-500">
-                {item.likes.length}
-              </Text>
-            </View>
-            <View className="flex-row space-x-1 items-center">
-              <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
-              <Text className="text-xs text-violet-500">
-                {item.comments.length}
-              </Text>
-            </View>
-          </View>
-        </StyledView>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderLatest = ({ item }) => {
-    const firstImg =
-      item.content.find((contentItem) => contentItem.type === "image")?.value ||
-      null;
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
-      >
-        <StyledView
-          colors={["#312E81", "#4E2894", "#111827"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="h-48 p-3 mb-4 rounded-3xl"
-        >
-          <View className="flex-row space-x-2 items-center">
-            <Image
-              source={{
-                uri: `${axios.defaults.baseURL}${item.author.image}`,
-              }}
-              className="rounded-full w-6 h-6"
-            />
-
-            <Text className="text-xs font-medium text-gray-400">
-              {item.author.name}
-            </Text>
-          </View>
-          <View className="flex-row space-x-2">
-            <View className="w-44 space-y-1">
-              <Text
-                className="text-xl font-bold text-gray-50"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {item.title}
-              </Text>
-              <Text
-                className="text-xs font-normal text-gray-400"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {item.subTitle}
-              </Text>
-            </View>
-            <View className="w-36 h-28">
-              {firstImg && (
-                <Image
-                  source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                  className="w-[145px] h-28 rounded-2xl"
-                  resizeMode="cover"
-                />
-              )}
-            </View>
-          </View>
+          <Text className="text-2xl font-bold text-primaryBlack mt-2">
+            {item.title}
+          </Text>
+          <Text className="text-xs text-secondaryBlack mt-1" numberOfLines={2}>
+            {item.subTitle}
+          </Text>
 
           {/* Footer section */}
-          <View className="absolute mt-auto bottom-2 ml-4">
-            <View className="flex-row space-x-11 items-center">
-              <Text className="text-gray-400 text-xs font-bold">
+          <View className="mt-4">
+            <View className="flex-row justify-around items-center">
+              <Text className="text-lightGray text-xs">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -177,53 +99,68 @@ const Home = () => {
               </Text>
               <View className="flex-row space-x-4">
                 <View className="flex-row space-x-1">
-                  <Ionicons name="heart" size={12} color="#8b5cf6" />
-                  <Text className="text-xs text-violet-500 font-bold">
+                  <Ionicons name="heart" size={12} color="#2D3135" />
+                  <Text className="text-xs text-lightGray font-bold">
                     {item.likes.length}
                   </Text>
                 </View>
                 <View className="flex-row space-x-1">
-                  <Ionicons name="chatbubble" size={12} color="#8b5cf6" />
-                  <Text className="text-xs text-violet-500 font-bold">
+                  <Ionicons name="chatbubble" size={12} color="#2D3135" />
+                  <Text className="text-xs text-lightGray font-bold">
                     {item.comments.length}
                   </Text>
                 </View>
               </View>
             </View>
           </View>
-        </StyledView>
+        </View>
       </TouchableOpacity>
     );
   };
 
   return (
-    <View className="flex-1 bg-gray-900 px-5">
-      <View className=" flex-row justify-between items-center mt-8">
-        <Text className="text-gray-50 font-bold text-3xl ">Insights</Text>
+    <Background>
+      <View className="flex-row justify-between items-center mt-8">
+        <Text className="text-primaryWhite font-bold text-xl">Insights</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-          <Ionicons name="search-outline" size={30} color="#f9fafb" />
+          <Ionicons name="search-outline" size={26} color="#F1F3F5" />
         </TouchableOpacity>
       </View>
-      <Text className="text-lg font-bold text-gray-400 mt-5 mb-4">
-        Trending
-      </Text>
+
+      {/* Filter Toggle Buttons */}
+      <View className="flex-row justify-center space-x-4 mt-5">
+        <Text
+          onPress={() => setSelectedTab("Trending")}
+          className={`px-4 py-2 ${
+            selectedTab === "Trending"
+              ? "text-secondaryWhite text-3xl font-bold"
+              : "text-darkGray text-lg font-normal"
+          }`}
+        >
+          Trending
+        </Text>
+
+        <Text
+          onPress={() => setSelectedTab("Latest")}
+          className={`px-4 py-2 ${
+            selectedTab === "Latest"
+              ? "text-secondaryWhite text-3xl font-semibold"
+              : "text-darkGray text-lg font-normal"
+          }`}
+        >
+          Latest
+        </Text>
+      </View>
+
+      {/* Conditional Rendering of Blogs */}
       <FlatList
-        data={trendings}
-        renderItem={renderTrendings}
-        keyExtractor={(item) => item._id}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        className="mb-7 h-[248px]"
-      />
-      <Text className="text-lg font-bold text-gray-400  mb-4">Latest</Text>
-      <FlatList
-        data={latest}
-        renderItem={renderLatest}
+        data={selectedTab === "Trending" ? trendings : latest}
+        renderItem={renderItem}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
-        className="mb-1"
+        className="mt-5"
       />
-    </View>
+    </Background>
   );
 };
 

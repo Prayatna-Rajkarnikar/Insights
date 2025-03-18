@@ -10,6 +10,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const AddTopics = ({ route, navigation }) => {
   const { blogData } = route.params;
@@ -82,55 +83,51 @@ const AddTopics = ({ route, navigation }) => {
   }, [query]);
 
   return (
-    <View className="flex-1 bg-gray-900 px-5">
+    <Background>
       {/* Back Icon */}
       <View className="mt-8">
         <TouchableOpacity onPress={() => navigation.navigate("Create")}>
-          <Ionicons name="arrow-back-outline" size={30} color="#9CA3AF" />
+          <Ionicons name="arrow-back-outline" size={30} color="#7871AA" />
         </TouchableOpacity>
       </View>
-
       {/* heading */}
       <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">Add Topics</Text>
+        <Text className="text-3xl font-bold text-primaryWhite">Add Topics</Text>
       </View>
-
       {/*sub heading */}
       <View className="mt-1">
-        <Text className="text-sm font-normal text-gray-400">
+        <Text className="text-sm font-normal text-darkGray">
           Add topics to let readers know what your topic is about.
         </Text>
       </View>
-
       {/* Search bar */}
-      <View className="flex-row bg-gray-800 rounded-xl px-2 py-1 items-center mt-4">
-        <Ionicons name="search-outline" size={30} color="#9CA3AF" />
+      <View className="flex-row bg-secondaryBlack rounded-xl px-2 py-1 items-center mt-4">
+        <Ionicons name="search-outline" size={30} color="#7871AA" />
         <TextInput
-          className="text-xl font-bold text-gray-400 w-full"
+          className="text-xl font-bold text-lightGray w-full"
           placeholder="Search topics"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#8B8F92"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchTopics}
           scrollEnabled={false}
         />
       </View>
-
       {/* Selected topic */}
       {selectedTopics && (
         <View className="mt-2 px-2 mb-2 min-h-20">
           <View className="flex-row flex-wrap gap-1">
             {selectedTopics.map((topic) => (
               <View key={topic._id} className="flex-row">
-                <View className="bg-gray-800 rounded-full p-2">
-                  <Text className="text-gray-100 text-xs font-medium">
+                <View className="bg-darkGray rounded-full p-2">
+                  <Text className="text-primaryWhite text-xs font-medium">
                     {topic.name}
                   </Text>
                 </View>
 
                 <TouchableOpacity
                   onPress={() => handleDeselectedTopic(topic)}
-                  className="bg-gray-100 rounded-full  w-4 h-4"
+                  className="bg-primaryWhite rounded-full  w-4 h-4"
                 >
                   <Ionicons name="close" size={15} color="black" />
                 </TouchableOpacity>
@@ -139,11 +136,10 @@ const AddTopics = ({ route, navigation }) => {
           </View>
         </View>
       )}
-
       {/* Search Result */}
       {results.length > 0 && (
         <FlatList
-          className="bg-gray-800 p-1 max-h-48"
+          className="bg-secondaryBlack p-1 max-h-48"
           data={results}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
@@ -151,14 +147,13 @@ const AddTopics = ({ route, navigation }) => {
               onPress={() => handleSelectedTopics(item)}
               className="p-2"
             >
-              <Text className="text-gray-400 text-base">{item.name}</Text>
+              <Text className="text-lightGray text-base">{item.name}</Text>
             </TouchableOpacity>
           )}
         />
       )}
-
       <Button onPress={goToPreview} label="Save" />
-    </View>
+    </Background>
   );
 };
 

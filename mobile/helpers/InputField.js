@@ -4,15 +4,15 @@ import { TextInput } from "react-native-gesture-handler";
 
 const InputField = ({ placeholder, value, onChangeText, ...props }) => {
   return (
-    <View className="bg-gray-800 px-3 py-2 rounded-2xl mb-3">
+    <View className="bg-secondaryBlack px-3 py-2 rounded-2xl mb-3">
       <TextInput
         placeholder={placeholder}
         value={value}
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor="#8B8F92"
         onChangeText={onChangeText}
         scrollEnabled={false}
         {...props}
-        className=" w-full text-xl font-semibold text-gray-400"
+        className=" w-full text-xl font-semibold text-lightGray"
       />
     </View>
   );

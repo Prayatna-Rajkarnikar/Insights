@@ -209,7 +209,11 @@ export const getLatestBlogs = async (req, res) => {
       .find()
       .populate("author", "name image")
       .populate("likes", " _id")
-      .populate("comments", "_id")
+      .populate({
+        path: "comments",
+        match: { isHidden: { $ne: true } }, // Exclude hidden comments
+        select: "_id",
+      })
       .sort({ createdAt: -1 })
       .lean();
 
@@ -272,19 +276,30 @@ export const deleteBlog = async (req, res) => {
 
 export const getTrendingBlogs = async (req, res) => {
   try {
-    // Fetch all blogs
-    const blogs = await blogModel.find().populate("author", "name image");
+    const blogs = await blogModel
+      .find()
+      .populate("author", "name image")
+      .populate("likes", "_id")
+      .populate({
+        path: "comments",
+        match: { isHidden: { $ne: true } }, // Exclude hidden comments
+        select: "_id",
+      })
+      .lean(); // Convert Mongoose documents to plain objects
 
     const trending = blogs
-      .map((blog) => {
-        blog.trendingScore = blog.likes.length + blog.comments.length;
-        return blog;
-      })
-      .sort((a, b) => b.trendingScore - a.trendingScore) //descending order
-      .slice(0, 5); //start at 0 and stop at 5 index of array
+      .map((blog) => ({
+        ...blog,
+        likeCount: blog.likes.length,
+        commentCount: blog.comments.length,
+        trendingScore: blog.likes.length + blog.comments.length, // Dynamic score
+      }))
+      .sort((a, b) => b.trendingScore - a.trendingScore) // Sort in descending order
+      .slice(0, 5); // Get top 5 trending blogs
+
     res.status(200).json(trending);
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error fetching trending blogs:", error);
     res.status(500).json({ error: "Failed to get trending blogs" });
   }
 };

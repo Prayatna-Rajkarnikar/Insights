@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-
+import React, { useState, useCallback } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -12,18 +11,13 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
-import { Swipeable } from "react-native-gesture-handler";
 
 const UserBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
   const navigation = useNavigation();
-
-  const StyledView = styled(LinearGradient);
 
   useFocusEffect(
     useCallback(() => {
@@ -37,23 +31,15 @@ const UserBlogs = () => {
           setLoading(false);
         }
       };
-
       fetchUserBlogs();
     }, [])
   );
-
-  if (blogs.length === 0) {
-    return (
-      <Text className=" text-center text-xl text-gray-400 mt-4">
-        You have not created any blogs yet.
-      </Text>
-    );
-  }
 
   const deleteBlog = async (blogId) => {
     try {
       await axios.delete(`/blog/deleteBlog/${blogId}`);
       setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
+      setSelectedBlogId(null);
       Toast.show({
         type: "success",
         position: "top",
@@ -61,14 +47,8 @@ const UserBlogs = () => {
       });
     } catch (error) {
       const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.error
-          : error.message || "Something went wrong";
-      Toast.show({
-        type: "error",
-        position: "top",
-        text1: errorMessage,
-      });
+        error.response?.data?.error || error.message || "Something went wrong";
+      Toast.show({ type: "error", position: "top", text1: errorMessage });
     }
   };
 
@@ -77,37 +57,19 @@ const UserBlogs = () => {
       "Confirm Delete",
       "Are you sure you want to delete this blog?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
+        { text: "Cancel", style: "cancel" },
         {
           text: "Delete",
           style: "destructive",
           onPress: () => deleteBlog(blogId),
         },
-      ],
-      { cancelable: true }
+      ]
     );
   };
 
-  const renderRightActions = (blogId) => (
-    <View className="flex-row justify-center items-end pr-4 space-x-2 mb-2">
-      <TouchableOpacity
-        onPress={() => confirmDelete(blogId)}
-        className="bg-red-500 p-4 rounded-md"
-      >
-        <Ionicons name="trash-bin-outline" size={24} color="#fff" />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate("EditBlog", { blogId: blogId })}
-        className="bg-purple-900 p-4 rounded-md"
-      >
-        <Ionicons name="create-outline" size={26} color="#fff" />
-      </TouchableOpacity>
-    </View>
-  );
+  const handleLongPress = (blogId) => {
+    setSelectedBlogId(blogId === selectedBlogId ? null : blogId);
+  };
 
   const renderItem = ({ item }) => {
     const firstImg =
@@ -115,72 +77,72 @@ const UserBlogs = () => {
       null;
 
     return (
-      <Swipeable renderRightActions={() => renderRightActions(item._id)}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("BlogDetail", { blogId: item._id })
-          }
-        >
-          <StyledView
-            colors={["#312E81", "#4E2894", "#111827"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            className="h-48 p-3 mb-4 rounded-3xl"
-          >
-            <View className="flex-row space-x-2">
-              <View className="w-44 space-y-1">
-                <Text
-                  className="text-xl font-bold text-gray-50"
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                >
-                  {item.title}
-                </Text>
-                <Text
-                  className="text-xs font-normal text-gray-400"
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                >
-                  {item.subTitle}
-                </Text>
-              </View>
+      <TouchableOpacity
+        onLongPress={() => handleLongPress(item._id)}
+        activeOpacity={0.9}
+        style={{ flex: 1, margin: 5 }}
+        onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
+      >
+        <View className="h-48 px-4 py-3 rounded-2xl bg-accent">
+          <View className="space-y-1">
+            <Text
+              className="text-xl font-bold text-primaryBlack"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {item.title}
+            </Text>
+            <Text
+              className="text-xs font-normal text-secondaryBlack"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {item.subTitle}
+            </Text>
+          </View>
+          {firstImg && (
+            <Image
+              source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
+              className="w-full h-28 rounded-2xl mt-2"
+              resizeMode="cover"
+            />
+          )}
+        </View>
 
-              <View className="w-36 h-28">
-                {firstImg && (
-                  <Image
-                    source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                    className="w-[145px] h-32 rounded-2xl"
-                    resizeMode="cover"
-                  />
-                )}
-              </View>
-            </View>
-            <View className="absolute mt-auto bottom-4 ml-4">
-              <Text className="text-gray-400 text-xs font-bold">
-                {new Date(item.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </Text>
-            </View>
-          </StyledView>
-        </TouchableOpacity>
-      </Swipeable>
+        {selectedBlogId === item._id && (
+          <View className="absolute top-1 left-2 bg-secondaryBlack p-4 rounded-lg flex-row space-x-5">
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("EditBlog", { blogId: item._id })
+              }
+            >
+              <Ionicons name="pencil-outline" size={22} color="#7871AA" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => confirmDelete(item._id)}>
+              <Ionicons name="trash-outline" size={22} color="red" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedBlogId(null)}>
+              <Ionicons name="close-outline" size={22} color="white" />
+            </TouchableOpacity>
+          </View>
+        )}
+      </TouchableOpacity>
     );
   };
 
   return (
-    <View className="flex-1 bg-gray-900">
+    <View className="flex-1">
       {loading ? (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#0000ff" />
+        <View className="flex-1 justify-center items-center bg-secondaryBlack">
+          <ActivityIndicator size="large" color="#7871AA" />
         </View>
       ) : (
         <FlatList
           data={blogs}
+          keyExtractor={(item, index) => item._id || index.toString()}
           renderItem={renderItem}
-          keyExtractor={(item) => item._id}
+          numColumns={2}
+          contentContainerStyle={{ padding: 10 }}
           showsVerticalScrollIndicator={false}
         />
       )}

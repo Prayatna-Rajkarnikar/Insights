@@ -4,16 +4,13 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const Preview = ({ route }) => {
   const { blogData } = route.params;
   const { title, subtitle, contentSections, selectedTopics } = blogData;
   const navigation = useNavigation();
-
-  const StyledView = styled(LinearGradient);
 
   const createBlog = async () => {
     try {
@@ -68,78 +65,67 @@ const Preview = ({ route }) => {
   );
 
   return (
-    <View className="flex-1 bg-gray-900 px-5">
+    <Background>
       {/* Back Icon */}
       <View className="mt-8">
         <TouchableOpacity
           onPress={() => navigation.navigate("AddTopics", { blogData })}
         >
-          <Ionicons name="arrow-back-outline" size={30} color="#9CA3AF" />
+          <Ionicons name="arrow-back-outline" size={30} color="#E9ECEF" />
         </TouchableOpacity>
       </View>
 
       {/* Heading */}
       <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">Preview</Text>
+        <Text className="text-3xl font-bold text-primaryWhite">Preview</Text>
       </View>
 
       {/* SubHeading */}
       <View className="mt-1 mb-3">
-        <Text className="text-sm font-normal text-gray-400">
+        <Text className="text-sm font-normal text-darkGray">
           This is how the blog will be shown to readers in public places.
         </Text>
       </View>
 
       {/* Card for Preview */}
-      <StyledView
-        colors={["#312E81", "#4E2894", "#111827"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        className="h-36 p-3 mb-4 rounded-3xl"
-      >
-        <View className="flex-row space-x-2">
-          <View className="w-44 space-y-1">
-            <Text
-              className="text-xl font-bold text-gray-50"
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {title}
-            </Text>
-            <Text
-              className="text-xs font-normal text-gray-400"
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {subtitle}
-            </Text>
-          </View>
-
-          {contentSections.some((section) => section.type === "image") && (
-            <View className="mb-4">
-              <Image
-                source={{
-                  uri: contentSections.find(
-                    (section) => section.type === "image"
-                  ).value.uri,
-                }}
-                className="w-36 h-28 rounded-xl"
-                resizeMode="cover"
-              />
-            </View>
-          )}
+      <View className="p-4 mb-4 rounded-2xl bg-accent">
+        {contentSections.some((section) => section.type === "image") && (
+          <Image
+            source={{
+              uri: contentSections.find((section) => section.type === "image")
+                .value.uri,
+            }}
+            className="w-full h-40 rounded-2xl"
+            resizeMode="cover"
+          />
+        )}
+        <View className="mt-2">
+          <Text
+            className="text-xl font-bold text-gray-50"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {title}
+          </Text>
+          <Text
+            className="text-xs font-normal text-gray-400"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {subtitle}
+          </Text>
         </View>
-      </StyledView>
+      </View>
 
-      <Text className="text-base font-medium text-gray-100">
+      <Text className="text-base font-medium text-primaryWhite">
         Selected Topics:
       </Text>
 
       {/* Selected Topics */}
       <View className="flex-row flex-wrap gap-1">
         {selectedTopics.map((topic) => (
-          <View key={topic._id} className="bg-gray-800 rounded-full p-2">
-            <Text className="text-gray-100 text-xs font-medium text-center">
+          <View key={topic._id} className="bg-secondaryBlack rounded-full p-2">
+            <Text className="text-primaryWhite text-xs font-medium text-center">
               {topic.name}
             </Text>
           </View>
@@ -148,7 +134,7 @@ const Preview = ({ route }) => {
 
       {/* Publish button */}
       <Button onPress={createBlog} label="Publish" />
-    </View>
+    </Background>
   );
 };
 

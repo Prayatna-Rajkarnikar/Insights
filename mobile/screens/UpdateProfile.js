@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const UpdateProfile = () => {
   const [name, setName] = useState("");
@@ -107,10 +108,10 @@ const UpdateProfile = () => {
   };
 
   return (
-    <View className="flex-1 bg-gray-900 px-5">
+    <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#9CA3AF" />
+        <Ionicons name="arrow-back" size={30} color="#7871AA" />
       </TouchableOpacity>
 
       {/* Image */}
@@ -119,16 +120,16 @@ const UpdateProfile = () => {
           {image && (
             <Image
               source={{ uri: image }}
-              className="w-36 h-36 rounded-full border-4 border-gray-100 bg-gray-100"
+              className="w-36 h-36 rounded-full border-4 border-primaryWhite bg-primaryWhite"
               style={{
                 borderWidth: 4,
-                borderColor: "#f3f4f6",
+                borderColor: "#E9ECEF",
               }}
             />
           )}
           <TouchableOpacity
             onPress={pickImage}
-            className="absolute top-1 right-1 p-1 bg-gray-100 rounded-full"
+            className="absolute top-1 right-1 p-1 bg-primaryWhite rounded-full"
           >
             <Ionicons name="camera" size={20} color="black" />
           </TouchableOpacity>
@@ -136,27 +137,27 @@ const UpdateProfile = () => {
       </View>
       {/* Text Fields */}
       <TextInput
-        className="bg-gray-800 rounded-xl p-3 items-center mb-2 text-xl font-bold text-gray-400"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-lightGray"
         value={name}
         onChangeText={setName}
         placeholder="Enter your name"
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor="#8B8F92"
         scrollEnabled={false}
       />
       <TextInput
-        className="bg-gray-800 rounded-xl p-3 items-center mb-2 text-xl font-bold text-gray-400"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-lightGray"
         value={username}
         onChangeText={setUsername}
         placeholder="Enter your username"
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor="#8B8F92"
         scrollEnabled={false}
       />
       <TextInput
-        className="bg-gray-800 text-gray-200 rounded-xl p-4 text-xl h-24"
+        className="bg-secondaryBlack text-gray-200 rounded-xl p-4 text-xl h-24"
         value={bio}
         onChangeText={setBio}
         placeholder="Write something about yourself..."
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor="#8B8F92"
         multiline
         numberOfLines={2}
         textAlignVertical="top"
@@ -166,7 +167,7 @@ const UpdateProfile = () => {
       <TouchableOpacity disabled={isLoading}>
         <Button onPress={updateProfile} label="Save" />
       </TouchableOpacity>
-    </View>
+    </Background>
   );
 };
 

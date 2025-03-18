@@ -15,8 +15,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
+import Background from "../helpers/Background";
 
 const EditBlog = () => {
   const route = useRoute();
@@ -28,8 +27,6 @@ const EditBlog = () => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
-
-  const StyledView = styled(LinearGradient);
 
   useEffect(() => {
     const fetchBlogDetail = async () => {
@@ -57,15 +54,14 @@ const EditBlog = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View className="flex-1 justify-center items-center bg-secondaryBlack">
+        <ActivityIndicator size="large" color="#7871AA" />
       </View>
     );
   }
 
   const editBlog = async () => {
     try {
-      // Process contentSections to ensure all "image" values are strings
       const processedContent = contentSections.map((section) => {
         if (
           section.type === "image" &&
@@ -195,36 +191,36 @@ const EditBlog = () => {
   };
 
   return (
-    <View className="flex-1 bg-gray-900">
-      <View className="flex-1 px-5">
+    <View className="flex-1">
+      <Background>
         {/* Back Icon */}
-        <View className="mt-8">
+        <View className="mt-8 items-end">
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={30} color="#9CA3AF" />
+            <Ionicons name="close" size={30} color="#7871AA" />
           </TouchableOpacity>
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
-          className="mt-5 mb-1"
+          className="flex-1 w-full"
         >
           <TextInput
-            className="text-3xl font-bold text-gray-50"
+            className="text-3xl font-bold text-primaryWhite"
             placeholder="Title"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#8B8F92"
             value={title}
             onChangeText={setTitle}
             multiline
             scrollEnabled={false}
           />
           <TextInput
-            className="text-lg text-gray-400 mt-1 italic"
+            className="text-lg text-darkGray mt-1 italic"
             placeholder="Subtitle"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#8B8F92"
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
@@ -239,7 +235,7 @@ const EditBlog = () => {
                   <TextInput
                     className="text-base justify-start text-gray-200 mt-2"
                     placeholder="Add text here..."
-                    placeholderTextColor="#9CA3AF"
+                    placeholderTextColor="#8B8F92"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
@@ -256,7 +252,7 @@ const EditBlog = () => {
                 <View className="relative mt-1">
                   {section.value.uri ? (
                     <View
-                      className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden"
+                      className="w-full h-52 mt-2 rounded-3xl border-2 border-accent overflow-hidden"
                       key={index}
                     >
                       <Image
@@ -267,7 +263,7 @@ const EditBlog = () => {
                     </View>
                   ) : (
                     <View
-                      className="w-full h-52 mt-2 rounded-3xl border-2 border-[#8b5cf6] overflow-hidden"
+                      className="w-full h-52 mt-2 rounded-3xl border-2 border-accent overflow-hidden"
                       key={index}
                     >
                       <Image
@@ -308,45 +304,41 @@ const EditBlog = () => {
             </View>
           ))}
         </ScrollView>
-      </View>
+      </Background>
 
       {/* Buttons */}
-      <View className="flex-row bottom-0 h-16 px-5 space-x-2 items-center bg-gray-800 w-full">
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={addTextSection}
-          accessible
-          accessibilityLabel="Add text section"
-        >
-          <Ionicons name="text-outline" size={20} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={pickImage}
-        >
-          <Ionicons name="image-outline" size={20} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl p-2 justify-center h-10"
-          onPress={() => addBulletPoint(contentSections.length)}
-        >
-          <Ionicons name="list-outline" size={20} />
-        </TouchableOpacity>
-
-        <View className="flex-1 items-end">
-          <StyledView
-            colors={["#312E81", "#4E2894"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            className="rounded-xl p-2"
+      <View className=" bottom-0  w-full bg-secondaryBlack p-5">
+        <View className="flex-row space-x-2 items-center">
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={addTextSection}
+            accessible
+            accessibilityLabel="Add text section"
           >
-            <TouchableOpacity onPress={editBlog}>
-              <Text className="text-gray-50 font-bold text-base">Done</Text>
-            </TouchableOpacity>
-          </StyledView>
+            <Ionicons name="text-outline" size={24} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={pickImage}
+          >
+            <Ionicons name="image-outline" size={24} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            onPress={() => addBulletPoint(contentSections.length)}
+          >
+            <Ionicons name="list-outline" size={24} />
+          </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          className="bg-accent w-full mt-3 rounded-xl p-3 items-center"
+          onPress={editBlog}
+        >
+          <Text className="text-primaryBlack font-bold text-lg">Done</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

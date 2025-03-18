@@ -113,7 +113,7 @@ export default function ManageSlangWords() {
         </div>
         <div className="flex flex-col w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg bg-secondaryWhite p-4 items-center justify-center space-y-4">
           <input
-            className="w-3/4 bg-lightGray rounded-lg p-4 text-sm text-primaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
+            className="w-3/4 bg-darkGray rounded-lg p-4 text-sm text-primaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
             placeholder="Enter Slangword"
             value={newSlangword}
             onChange={(e) => setNewSlangword(e.target.value)}

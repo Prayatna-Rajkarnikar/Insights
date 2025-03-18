@@ -35,7 +35,7 @@ export default function SideNav({ children }) {
               className={({ isActive }) =>
                 isActive
                   ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
-                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-darkGray"
               }
             >
               Dashboard
@@ -45,7 +45,7 @@ export default function SideNav({ children }) {
               className={({ isActive }) =>
                 isActive
                   ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
-                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-darkGray"
               }
             >
               Blogs
@@ -55,7 +55,7 @@ export default function SideNav({ children }) {
               className={({ isActive }) =>
                 isActive
                   ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
-                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-darkGray"
               }
             >
               Users
@@ -65,7 +65,7 @@ export default function SideNav({ children }) {
               className={({ isActive }) =>
                 isActive
                   ? "block py-2 px-4 rounded-lg bg-primaryBlack text-primaryWhite"
-                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-lightGray"
+                  : "block py-2 px-4 rounded-lg hover:bg-secondaryBlack hover:text-darkGray"
               }
             >
               Slangwords

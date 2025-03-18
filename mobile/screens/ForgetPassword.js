@@ -7,6 +7,7 @@ import axios from "axios";
 
 import InputField from "../helpers/InputField";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -50,15 +51,17 @@ const ForgetPassword = () => {
   };
 
   return (
-    <View className="bg-gray-900 flex-1 px-5">
+    <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#9CA3AF" />
+        <Ionicons name="arrow-back" size={30} color="#E9ECEF" />
       </TouchableOpacity>
 
       {/* heading */}
       <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">Forget Password</Text>
+        <Text className="text-3xl font-bold text-primaryWhite">
+          Forget Password
+        </Text>
       </View>
 
       {/* Input Fields */}
@@ -83,7 +86,7 @@ const ForgetPassword = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#F3F4F6"
+              color="#E9ECEF"
             />
           </TouchableOpacity>
         </View>
@@ -102,7 +105,7 @@ const ForgetPassword = () => {
             <Ionicons
               name={isConfPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#F3F4F6"
+              color="#E9ECEF"
             />
           </TouchableOpacity>
         </View>
@@ -115,12 +118,12 @@ const ForgetPassword = () => {
           onPress={() => navigation.navigate("Login")}
           className="mt-[278px]"
         >
-          <Text className="text-purple-800 text-xl font-bold  text-center">
+          <Text className="text-accent text-xl font-bold  text-center">
             Go back to Login
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Background>
   );
 };
 

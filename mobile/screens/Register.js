@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import InputField from "../helpers/InputField";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -50,19 +51,14 @@ const Register = () => {
   };
 
   return (
-    <View className="bg-gray-900 flex-1 px-5">
-      {/* close icon */}
-      <TouchableOpacity className="mt-12">
-        <Ionicons name="close" size={30} color="#9CA3AF" />
-      </TouchableOpacity>
-
+    <Background>
       {/* heading */}
-      <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">Register</Text>
+      <View className="mt-14">
+        <Text className="text-3xl font-bold text-primaryWhite">Register</Text>
       </View>
 
       <View className="mt-1">
-        <Text className="text-sm font-normal text-gray-400">
+        <Text className="text-sm font-normal text-darkGray">
           Password must be at least 8 characters long and must include 1
           uppercase, 1 lowercase, 1 number, and @ or _ .
         </Text>
@@ -90,7 +86,7 @@ const Register = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#F3F4F6"
+              color="#E9ECEF"
             />
           </TouchableOpacity>
         </View>
@@ -109,7 +105,7 @@ const Register = () => {
             <Ionicons
               name={isConfPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#F3F4F6"
+              color="#E9ECEF"
             />
           </TouchableOpacity>
         </View>
@@ -122,12 +118,12 @@ const Register = () => {
           onPress={() => navigation.navigate("Login")}
           className="mt-[210px]"
         >
-          <Text className="text-purple-800 text-xl font-bold  text-center">
+          <Text className="text-accent text-xl font-bold  text-center">
             Go back to Login
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Background>
   );
 };
 

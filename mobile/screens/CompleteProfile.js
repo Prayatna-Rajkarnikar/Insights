@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 
 import InputField from "../helpers/InputField";
 import Button from "../helpers/Button";
+import Background from "../helpers/Background";
 
 const CompleteProfile = ({ route, navigation }) => {
   const { userData } = route.params;
@@ -48,21 +49,21 @@ const CompleteProfile = ({ route, navigation }) => {
   };
 
   return (
-    <View className="bg-gray-900 flex-1 px-5">
+    <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#9CA3AF" />
+        <Ionicons name="arrow-back" size={30} color="#E9ECEF" />
       </TouchableOpacity>
 
       {/* heading */}
       <View className="mt-5">
-        <Text className="text-3xl font-bold text-gray-50">
+        <Text className="text-3xl font-bold text-primaryWhite">
           Complete Profile
         </Text>
       </View>
 
       <View className="mt-1">
-        <Text className="text-sm font-normal text-gray-400">
+        <Text className="text-sm font-normal text-darkGray">
           Username must range from 4 to 20 characters and can only have letters,
           numbers, and underscores(_).
         </Text>
@@ -82,7 +83,7 @@ const CompleteProfile = ({ route, navigation }) => {
         />
       </View>
       <Button onPress={registerUser} label="Done" />
-    </View>
+    </Background>
   );
 };
 

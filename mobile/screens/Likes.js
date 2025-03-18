@@ -11,6 +11,7 @@ import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Background from "../helpers/Background";
 
 const Likes = () => {
   const route = useRoute();
@@ -38,8 +39,8 @@ const Likes = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View className="flex-1 justify-center items-center bg-secondaryBlack">
+        <ActivityIndicator size="large" color="#7871AA" />
       </View>
     );
   }
@@ -49,13 +50,13 @@ const Likes = () => {
       <View className="flex-row space-x-4 mb-4">
         <Image
           source={{ uri: `${axios.defaults.baseURL}${item.user.image}` }}
-          className="rounded-full h-12 w-12"
+          className="rounded-full h-12 w-12 bg-primaryWhite"
         />
         <View>
-          <Text className="text-xl text-gray-50 font-bold">
+          <Text className="text-xl text-primaryWhite font-bold">
             {item.user.name}
           </Text>
-          <Text className="text-xs text-gray-400 font-bold">
+          <Text className="text-xs text-darkGray font-bold">
             {item.user.username}
           </Text>
         </View>
@@ -63,20 +64,26 @@ const Likes = () => {
     );
   };
   return (
-    <View className="flex-1 bg-gray-900 px-5">
+    <Background>
       {/* close icon */}
-      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="close" size={30} color="#9CA3AF" />
-      </TouchableOpacity>
+      <View className="mt-8 items-end">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Ionicons name="close" size={30} color="#7871AA" />
+        </TouchableOpacity>
+      </View>
       <Text
-        className="text-center font-bold text-gray-400 text-base
-         mb-4"
+        className="text-center font-bold text-darkGray text-base
+         mb-4 mt-2"
       >
         Likes
       </Text>
       {likeList.length === 0 ? (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-gray-100">No Likes yet.</Text>
+          <Text className="text-lg text-primaryWhite">No Likes yet.</Text>
         </View>
       ) : (
         <FlatList
@@ -85,7 +92,7 @@ const Likes = () => {
           keyExtractor={(item) => item._id}
         />
       )}
-    </View>
+    </Background>
   );
 };
 

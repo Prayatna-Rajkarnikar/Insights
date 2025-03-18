@@ -74,7 +74,7 @@ export default function Dashboard() {
             <h1 className="font-bold text-6xl md:text-8xl text-primaryWhite text-center">
               {totalBlog}
             </h1>
-            <h5 className="font-normal text-base text-lightGray text-end">
+            <h5 className="font-normal text-base text-darkGray text-end">
               Blogs successfully created
             </h5>
           </div>
@@ -90,7 +90,7 @@ export default function Dashboard() {
             <h1 className="font-bold text-6xl md:text-8xl text-primaryWhite text-center">
               {totalUser}
             </h1>
-            <h5 className="font-normal text-base text-lightGray text-end">
+            <h5 className="font-normal text-base text-darkGray text-end">
               Users
             </h5>
           </div>
@@ -108,7 +108,7 @@ export default function Dashboard() {
             return (
               <div
                 key={topic.name}
-                className="p-3 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-gray-300 m-4"
+                className="p-3 bg-darkGray rounded-xl flex justify-between shadow-sm shadow-gray-300 m-4"
               >
                 <h5 className="text-sm text-secondaryBlack">{topic.name}</h5>
                 <span className="text-base font-bold text-primaryBlack">
@@ -136,7 +136,7 @@ export default function Dashboard() {
               return (
                 <div
                   key={blog._id || index}
-                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-gray-300"
+                  className="bg-darkGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-gray-300"
                 >
                   <div className="flex space-x-4">
                     <div className="w-28 space-y-1">
