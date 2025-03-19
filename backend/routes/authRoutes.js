@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
 import cors from "cors";
 
 import {
@@ -16,6 +15,6 @@ router.post("/register", registerUser);
 router.post("/validDetails", validDetails);
 router.post("/login", loginUser);
 router.put("/forgetPassword", forgetPassword);
-router.post("/logout", authMiddleware, logout);
+router.post("/logout", logout);
 
 export default router;

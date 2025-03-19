@@ -2,24 +2,19 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function SideNav({ children }) {
   const navigate = useNavigate();
 
-  // const performLogout = async () => {
-  //   try {
-  //     await axios.post("/auth/logout");
-  //     navigate("/login");
-  //     toast.success("Logout Successful");
-  //   } catch (error) {
-  //     if (error.response && error.response.data && error.response.data.error) {
-  //       toast.error(error.response.data.error);
-  //     } else {
-  //       toast.error("Logout failed");
-  //     }
-  //   }
-  // };
+  const performLogout = async () => {
+    try {
+      await axios.post("/auth/logout");
+      navigate("/");
+    } catch (error) {
+      console.log("Failed to logout", error);
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -27,7 +22,7 @@ export default function SideNav({ children }) {
       <aside className="w-64 bg-darkGray p-6 flex flex-col justify-between">
         <div>
           <div className="mb-8">
-            <img src={Logo} alt="Logo" className="w-24 mx-auto" />
+            <img src={Logo} alt="Logo" className="w-36 mx-auto" />
           </div>
           <nav className="space-y-4">
             <NavLink
@@ -71,6 +66,14 @@ export default function SideNav({ children }) {
               Slangwords
             </NavLink>
           </nav>
+          <div className="flex items-center justify-center mt-8">
+            <button
+              className="bg-primaryBlack text-primaryWhite px-6 py-2 rounded-xl"
+              onClick={performLogout}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </aside>
 

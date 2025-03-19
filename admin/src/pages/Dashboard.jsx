@@ -55,7 +55,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="h-screen px-6 py-7 bg-primaryWhite">
+    <div className="h-full px-6 py-7 bg-primaryWhite">
       {/* Header */}
       <div className="mb-7">
         <h1 className="font-bold text-4xl text-primaryBlack">Dashboard</h1>
@@ -65,7 +65,7 @@ export default function Dashboard() {
       {/* Cards */}
       <div className="flex flex-wrap gap-6 mb-7 items-center justify-center">
         {/* First Card */}
-        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-gray-300 p-4">
+        <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${BlogBG})` }}
@@ -81,7 +81,7 @@ export default function Dashboard() {
         </div>
 
         {/* Second Card */}
-        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-gray-300 p-4">
+        <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
             style={{ backgroundImage: `url(${UserBG})` }}
@@ -108,7 +108,7 @@ export default function Dashboard() {
             return (
               <div
                 key={topic.name}
-                className="p-3 bg-darkGray rounded-xl flex justify-between shadow-sm shadow-gray-300 m-4"
+                className="p-3 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-darkGray m-4"
               >
                 <h5 className="text-sm text-secondaryBlack">{topic.name}</h5>
                 <span className="text-base font-bold text-primaryBlack">
@@ -136,7 +136,7 @@ export default function Dashboard() {
               return (
                 <div
                   key={blog._id || index}
-                  className="bg-darkGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-gray-300"
+                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-darkGray"
                 >
                   <div className="flex space-x-4">
                     <div className="w-28 space-y-1">

@@ -44,10 +44,10 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-darkGray">
+    <div className="h-screen flex items-center justify-center bg-lightGray">
       <div className="flex flex-col lg:flex-row bg-primaryWhite rounded-3xl shadow-lg shadow-darkGray w-full max-w-4xl m-6">
         {/* Image Section */}
-        <div className="flex items-center justify-center p-4  lg:w-1/2 bg-darkGray">
+        <div className="flex items-center justify-center p-4  lg:w-1/2 bg-lightGray">
           <img
             src={Logo}
             alt="Login Illustration"
@@ -62,7 +62,7 @@ export default function ForgetPassword() {
           <form onSubmit={forgetPassword}>
             <div className="space-y-3">
               <input
-                className="w-full bg-secondaryWhite border border-darkGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
+                className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -71,14 +71,14 @@ export default function ForgetPassword() {
 
               <div className="relative">
                 <input
-                  className="w-full bg-secondaryWhite border border-darkGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
+                  className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
                   type={isPasswordVisible ? "text" : "password"}
                   placeholder="New Password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <span
-                  className="absolute right-4 top-4 cursor-pointer text-darkGray"
+                  className="absolute right-4 top-4 cursor-pointer text-lightGray"
                   onClick={togglePasswordVisiblity}
                 >
                   {isPasswordVisible ? (
@@ -90,7 +90,7 @@ export default function ForgetPassword() {
               </div>
               <div className="relative">
                 <input
-                  className="w-full bg-secondaryWhite border border-darkGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
+                  className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
                   type={isConfPasswordVisible ? "text" : "password"}
                   placeholder="Confirm Password"
                   value={verifyNewPassword}
