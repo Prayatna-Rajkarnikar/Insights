@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -14,7 +20,7 @@ const UpdateProfile = () => {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -65,7 +71,7 @@ const UpdateProfile = () => {
   };
 
   const updateProfile = async () => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -89,7 +95,7 @@ const UpdateProfile = () => {
       Toast.show({
         type: "success",
         position: "top",
-        text1: "Details updated successfully!",
+        text1: "Profile updated successfully!",
       });
     } catch (error) {
       const errorMessage =
@@ -103,7 +109,7 @@ const UpdateProfile = () => {
         text1: errorMessage,
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -164,9 +170,13 @@ const UpdateProfile = () => {
         scrollEnabled={false}
       />
 
-      <TouchableOpacity disabled={isLoading}>
-        <Button onPress={updateProfile} label="Save" />
-      </TouchableOpacity>
+      {loading ? (
+        <View className="rounded-full py-5 mt-8 bg-accent">
+          <ActivityIndicator size="large" color="#2D3135" />
+        </View>
+      ) : (
+        <Button onPress={updateProfile} label="Update" />
+      )}
     </Background>
   );
 };

@@ -129,6 +129,15 @@ const UserBlogs = () => {
       </TouchableOpacity>
     );
   };
+  if (blogs.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="font-semibold text-lg text-darkGray text-center">
+          You have not created your first blog yet
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1">

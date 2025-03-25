@@ -1,5 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,7 +18,10 @@ const Preview = ({ route }) => {
   const { title, subtitle, contentSections, selectedTopics } = blogData;
   const navigation = useNavigation();
 
+  const [loading, setLoading] = useState(false);
+
   const createBlog = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -56,6 +65,8 @@ const Preview = ({ route }) => {
         position: "top",
         text1: errorMessage,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,14 +112,14 @@ const Preview = ({ route }) => {
         )}
         <View className="mt-2">
           <Text
-            className="text-xl font-bold text-gray-50"
+            className="text-2xl font-bold text-primaryBlack"
             numberOfLines={2}
             ellipsizeMode="tail"
           >
             {title}
           </Text>
           <Text
-            className="text-xs font-normal text-gray-400"
+            className="text-xs font-normal text-secondaryBlack"
             numberOfLines={2}
             ellipsizeMode="tail"
           >
@@ -133,7 +144,13 @@ const Preview = ({ route }) => {
       </View>
 
       {/* Publish button */}
-      <Button onPress={createBlog} label="Publish" />
+      {loading ? (
+        <View className="rounded-full py-5 mt-8">
+          <ActivityIndicator size="large" color="#2D3135" />
+        </View>
+      ) : (
+        <Button onPress={createBlog} label="Publish" />
+      )}
     </Background>
   );
 };

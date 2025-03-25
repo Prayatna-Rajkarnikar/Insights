@@ -70,7 +70,7 @@ export const editProfile = async (req, res) => {
       .status(201)
       .json({ message: "Profile Updated successfully", user: updatedProfile });
   } catch (error) {
-    console.error("Error updating profile:", error); // Log the error
+    console.error("Error updating profile:", error);
     res.status(500).json({
       message: "Error updating profile",
       error: error.message || error,

@@ -42,40 +42,55 @@ const Create = () => {
     navigation.navigate("AddTopics", { blogData });
   };
 
-  const pickImage = useCallback(async (index) => {
-    const { status } =
-      Platform.OS === "android"
-        ? await ImagePicker.requestMediaLibraryPermissionsAsync()
-        : { status: "granted" };
-
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets.length) {
-      const asset = result.assets[0];
-      if (asset.uri) {
-        const newSection = { type: "image", value: asset };
-        setContentSections((prevSections) => {
-          // If the last section is text, add the image after it
-          const updatedSections = [...prevSections];
-          updatedSections.push(newSection); // Push image after existing sections
-          return updatedSections;
+  const pickImage = useCallback(
+    async (index) => {
+      const imageCount = contentSections.filter(
+        (section) => section.type === "image"
+      ).length;
+      if (imageCount >= 5) {
+        // Show error message if there are already 5 images
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "You can only upload up to 5 images",
         });
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-      } else {
-        console.error("invalid uri", asset);
+        return;
       }
-    }
-  }, []);
+      const { status } =
+        Platform.OS === "android"
+          ? await ImagePicker.requestMediaLibraryPermissionsAsync()
+          : { status: "granted" };
+
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets.length) {
+        const asset = result.assets[0];
+        if (asset.uri) {
+          const newSection = { type: "image", value: asset };
+          setContentSections((prevSections) => {
+            // If the last section is text, add the image after it
+            const updatedSections = [...prevSections];
+            updatedSections.push(newSection); // Push image after existing sections
+            return updatedSections;
+          });
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        } else {
+          console.error("invalid uri", asset);
+        }
+      }
+    },
+    [contentSections]
+  );
 
   const addTextSection = useCallback((index) => {
     const newSection = { type: "text", value: "" };

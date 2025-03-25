@@ -10,12 +10,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+
 import Background from "../helpers/Background";
+import Button from "../helpers/Button";
 
 const EditBlog = () => {
   const route = useRoute();
@@ -61,6 +63,7 @@ const EditBlog = () => {
   }
 
   const editBlog = async () => {
+    setLoading(true);
     try {
       const processedContent = contentSections.map((section) => {
         if (
@@ -124,10 +127,24 @@ const EditBlog = () => {
         position: "top",
         text1: errorMessage,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const pickImage = async () => {
+    const imageCount = contentSections.filter(
+      (section) => section.type === "image"
+    ).length;
+    if (imageCount >= 5) {
+      // Show error message if there are already 5 images
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "You can only upload up to 5 images",
+      });
+      return;
+    }
     const { status } =
       Platform.OS === "android"
         ? await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -333,12 +350,13 @@ const EditBlog = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          className="bg-accent w-full mt-3 rounded-xl p-3 items-center"
-          onPress={editBlog}
-        >
-          <Text className="text-primaryBlack font-bold text-lg">Done</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <View className="rounded-full py-5 mt-8">
+            <ActivityIndicator size="large" color="#2D3135" />
+          </View>
+        ) : (
+          <Button onPress={editBlog} label="Done" />
+        )}
       </View>
     </View>
   );
