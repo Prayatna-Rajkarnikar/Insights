@@ -87,14 +87,14 @@ const UserBlogs = () => {
           <View className="space-y-1">
             <Text
               className="text-xl font-bold text-primaryBlack"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               {item.title}
             </Text>
             <Text
               className="text-xs font-normal text-secondaryBlack"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               {item.subTitle}

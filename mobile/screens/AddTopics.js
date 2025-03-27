@@ -42,7 +42,6 @@ const AddTopics = ({ route, navigation }) => {
       setResults(response.data);
     } catch (error) {
       console.error("Error fetching topics:", error);
-      setError("Failed to fetch topics. Please try again.");
     }
   };
 

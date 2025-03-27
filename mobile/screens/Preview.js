@@ -22,51 +22,67 @@ const Preview = ({ route }) => {
 
   const createBlog = async () => {
     setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subTitle", subtitle);
-      formData.append("content", JSON.stringify(contentSections));
-      formData.append(
-        "topics",
-        JSON.stringify(selectedTopics.map((topic) => topic._id))
-      );
+    const maxAttempts = 2; // Retry once after the first failure
+    let attempts = 0;
 
-      contentSections
-        .filter((section) => section.type === "image")
-        .forEach((section) => {
-          formData.append("image", {
-            uri: section.value.uri,
-            type: section.value.mimeType,
-            name: section.value.fileName || section.value.uri.split("/").pop(),
+    while (attempts < maxAttempts) {
+      try {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("subTitle", subtitle);
+        formData.append("content", JSON.stringify(contentSections));
+        formData.append(
+          "topics",
+          JSON.stringify(selectedTopics.map((topic) => topic._id))
+        );
+
+        contentSections
+          .filter((section) => section.type === "image")
+          .forEach((section) => {
+            formData.append("image", {
+              uri: section.value.uri,
+              type: section.value.mimeType,
+              name:
+                section.value.fileName || section.value.uri.split("/").pop(),
+            });
           });
+
+        await axios.post("/blog/createBlog", formData, {
+          timeout: 10 * 60 * 1000, // 10 minutes timeout
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
 
-      await axios.post("/blog/createBlog", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        Toast.show({
+          type: "success",
+          position: "top",
+          text1: "Yay! You just created a blog",
+        });
 
-      Toast.show({
-        type: "success",
-        position: "top",
-        text1: "Yay! You just created a blog",
-      });
+        navigation.navigate("Home");
+        break; // Exit the loop if the request is successful
+      } catch (error) {
+        attempts++;
+        const errorMessage =
+          error.response && error.response.data
+            ? error.response.data.error
+            : error.message || "Something went wrong";
 
-      navigation.navigate("Home");
-    } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.error
-          : error.message || "Something went wrong";
-      Toast.show({
-        type: "error",
-        position: "top",
-        text1: errorMessage,
-      });
-    } finally {
-      setLoading(false);
+        console.error("Create blog error:", error);
+
+        if (attempts >= maxAttempts) {
+          Toast.show({
+            type: "error",
+            position: "top",
+            text1: errorMessage,
+          });
+        }
+      } finally {
+        if (attempts >= maxAttempts) {
+          setLoading(false);
+        }
+      }
     }
   };
 
@@ -82,7 +98,7 @@ const Preview = ({ route }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate("AddTopics", { blogData })}
         >
-          <Ionicons name="arrow-back-outline" size={30} color="#E9ECEF" />
+          <Ionicons name="arrow-back-outline" size={30} color="#7871AA" />
         </TouchableOpacity>
       </View>
 
@@ -146,7 +162,7 @@ const Preview = ({ route }) => {
       {/* Publish button */}
       {loading ? (
         <View className="rounded-full py-5 mt-8">
-          <ActivityIndicator size="large" color="#2D3135" />
+          <ActivityIndicator size="large" color="#7871AA" />
         </View>
       ) : (
         <Button onPress={createBlog} label="Publish" />

@@ -63,6 +63,8 @@ fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (error, data) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server Connected Successfully on PORT ${process.env.PORT}`);
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
+
+server.setTimeout(10 * 60 * 1000); // 10 minutes

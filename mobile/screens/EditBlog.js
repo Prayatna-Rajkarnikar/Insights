@@ -40,7 +40,6 @@ const EditBlog = () => {
         setContentSections(response.data.content);
         console.log(response.data.content);
       } catch (error) {
-        console.error("Error fetching blog data:", error);
         Toast.show({
           type: "error",
           position: "top",
@@ -64,71 +63,78 @@ const EditBlog = () => {
 
   const editBlog = async () => {
     setLoading(true);
-    try {
-      const processedContent = contentSections.map((section) => {
-        if (
-          section.type === "image" &&
-          typeof section.value === "object" &&
-          section.value.uri
-        ) {
-          return { ...section, value: section.value.uri };
-        }
-        return section;
-      });
+    const maxAttempts = 2; // Retry once after the first failure
+    let attempts = 0;
 
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subTitle", subtitle);
-      formData.append("content", JSON.stringify(processedContent));
-      formData.append(
-        "topics",
-        JSON.stringify(selectedTopics.map((topic) => topic._id))
-      );
-
-      contentSections.forEach((section) => {
-        if (section.type === "image") {
-          if (section.value.uri) {
-            // New image or modified image
-            formData.append("image", {
-              uri: section.value.uri,
-              type: section.value.mimeType,
-              name:
-                section.value.fileName || section.value.uri.split("/").pop(),
-            });
-          } else if (section.value) {
-            // Existing image, which is just a URI
-            formData.append("image", section.value);
+    while (attempts < maxAttempts) {
+      try {
+        const processedContent = contentSections.map((section) => {
+          if (
+            section.type === "image" &&
+            typeof section.value === "object" &&
+            section.value.uri
+          ) {
+            return { ...section, value: section.value.uri };
           }
+          return section;
+        });
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("subTitle", subtitle);
+        formData.append("content", JSON.stringify(processedContent));
+        formData.append(
+          "topics",
+          JSON.stringify(selectedTopics.map((topic) => topic._id))
+        );
+
+        contentSections.forEach((section) => {
+          if (section.type === "image") {
+            if (section.value.uri) {
+              formData.append("image", {
+                uri: section.value.uri,
+                type: section.value.mimeType,
+                name:
+                  section.value.fileName || section.value.uri.split("/").pop(),
+              });
+            } else if (section.value) {
+              formData.append("image", section.value);
+            }
+          }
+        });
+
+        await axios.put(`/blog/editBlog/${blogId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        navigation.goBack();
+        Toast.show({
+          type: "success",
+          position: "top",
+          text1: "Changes made successfully",
+        });
+        break; // Exit the loop if the request is successful
+      } catch (error) {
+        attempts++;
+        const errorMessage =
+          error.response && error.response.data
+            ? error.response.data.error
+            : error.message || "Something went wrong";
+
+        if (attempts >= maxAttempts) {
+          Toast.show({
+            type: "error",
+            position: "top",
+            text1: errorMessage,
+          });
         }
-      });
-
-      console.log("Data sent to backend:", contentSections);
-
-      await axios.put(`/blog/editBlog/${blogId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigation.goBack();
-      Toast.show({
-        type: "success",
-        position: "top",
-        text1: "Changes made successfully",
-      });
-    } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.error
-          : error.message || "Something went wrong";
-      console.error("Edit blog error", error);
-
-      Toast.show({
-        type: "error",
-        position: "top",
-        text1: errorMessage,
-      });
-    } finally {
-      setLoading(false);
+      } finally {
+        if (attempts >= maxAttempts) {
+          setLoading(false);
+        }
+      }
     }
   };
 

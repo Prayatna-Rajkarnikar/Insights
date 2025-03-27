@@ -7,8 +7,6 @@ export const createBlog = async (req, res) => {
     let { title, subTitle, content, topics } = req.body;
     const authorId = req.user.id;
 
-    console.log("Request body:", req.body);
-
     // Ensure that none of the required fields are empty
     if (!title || !subTitle || !content) {
       return res
