@@ -117,7 +117,7 @@ const Profile = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={() => null}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={<UserBlogs />}
+        ListFooterComponent={<UserBlogs userId={user?._id} />}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
 

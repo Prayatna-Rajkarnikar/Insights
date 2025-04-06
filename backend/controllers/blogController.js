@@ -202,6 +202,20 @@ export const userBlogs = async (req, res) => {
   }
 };
 
+export const userBlogsById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const blogs = await blogModel
+      .find({ author: userId })
+      .populate("topics", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch blogs by user ID" });
+  }
+};
+
 export const getLatestBlogs = async (req, res) => {
   try {
     const blogs = await blogModel

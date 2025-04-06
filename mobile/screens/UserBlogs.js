@@ -14,7 +14,7 @@ import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
-const UserBlogs = () => {
+const UserBlogs = ({ userId }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
@@ -27,7 +27,11 @@ const UserBlogs = () => {
     useCallback(() => {
       const fetchUserBlogs = async () => {
         try {
-          const response = await axios.get("/blog/getUserBlogs");
+          console.log("User ID:", userId);
+
+          const response = userId
+            ? await axios.get(`/blog/getUserBlogsById/${userId}`)
+            : await axios.get("/blog/getUserBlogs");
 
           const blogData = response.data;
           setBlogs(blogData);
@@ -132,11 +136,14 @@ const UserBlogs = () => {
     const firstImg =
       item.content.find((c) => c.type === "image")?.value || null;
 
+    const isAuthor = item.authorId === userId;
+
     return (
       <TouchableOpacity
         onLongPress={() => handleLongPress(item._id)}
         activeOpacity={0.9}
         style={{ flex: 1, margin: 5 }}
+        disabled={!isAuthor}
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
         <View className="h-48 px-4 py-3 rounded-2xl bg-accent">

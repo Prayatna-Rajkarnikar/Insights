@@ -26,6 +26,7 @@ import AddTopics from "./screens/AddTopics";
 import Preview from "./screens/Preview";
 import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
+import UserProfile from "./screens/UserProfile";
 
 axios.defaults.baseURL = "http://192.168.1.8:3001";
 // axios.defaults.baseURL = "http://100.64.200.232:3001";
@@ -58,6 +59,7 @@ export default function App() {
           <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
           <Stack.Screen name="Comment" component={Comment} />
           <Stack.Screen name="Like" component={Like} />
+          <Stack.Screen name="UserProfile" component={UserProfile} />
         </Stack.Navigator>
         <Toast />
         <StatusBar style="auto" />

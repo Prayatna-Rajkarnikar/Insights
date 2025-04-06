@@ -102,7 +102,9 @@ const Search = () => {
 
   const renderSearchedUsers = ({ item }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("UserProfile", { userId: item._id })}
+      >
         <View className="flex-row space-x-4 mb-4">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${item.image}` }}

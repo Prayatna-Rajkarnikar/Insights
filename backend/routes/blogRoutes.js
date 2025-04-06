@@ -4,6 +4,7 @@ import {
   editBlog,
   getLatestBlogs,
   userBlogs,
+  userBlogsById,
   getBlogDetail,
   deleteBlog,
   getTrendingBlogs,
@@ -19,6 +20,7 @@ router.post("/createBlog", authMiddleware, upload.array("image"), createBlog);
 router.put("/editBlog/:id", authMiddleware, upload.array("image"), editBlog);
 router.get("/getLatestBlogs", getLatestBlogs);
 router.get("/getUserBlogs", authMiddleware, userBlogs);
+router.get("/getUserBlogsById/:userId", userBlogsById);
 router.get("/getBlogDetail/:id", authMiddleware, getBlogDetail);
 router.delete("/deleteBlog/:blogId", deleteBlog);
 router.get("/trending", getTrendingBlogs);
