@@ -67,7 +67,7 @@ const Home = () => {
                 className="rounded-full w-8 h-8 bg-secondaryWhite"
               />
             )}
-            <Text className="text-xs text-secondaryBlack">
+            <Text className="text-sm text-primaryBlack">
               {item.author?.name}
             </Text>
           </View>
@@ -83,14 +83,14 @@ const Home = () => {
           <Text className="text-2xl font-bold text-primaryBlack mt-2">
             {item.title}
           </Text>
-          <Text className="text-xs text-secondaryBlack mt-1" numberOfLines={2}>
+          <Text className="text-sm text-primaryBlack mt-1" numberOfLines={2}>
             {item.subTitle}
           </Text>
 
           {/* Footer section */}
           <View className="mt-4">
             <View className="flex-row justify-around items-center">
-              <Text className="text-lightGray text-xs">
+              <Text className="text-secondaryBlack text-xs">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -100,13 +100,13 @@ const Home = () => {
               <View className="flex-row space-x-4">
                 <View className="flex-row space-x-1">
                   <Ionicons name="heart" size={12} color="#2D3135" />
-                  <Text className="text-xs text-lightGray font-bold">
+                  <Text className="text-xs text-primaryBlack font-bold">
                     {item.likes.length}
                   </Text>
                 </View>
                 <View className="flex-row space-x-1">
                   <Ionicons name="chatbubble" size={12} color="#2D3135" />
-                  <Text className="text-xs text-lightGray font-bold">
+                  <Text className="text-xs text-primaryBlack font-bold">
                     {item.comments.length}
                   </Text>
                 </View>

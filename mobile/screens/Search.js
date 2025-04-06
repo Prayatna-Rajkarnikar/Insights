@@ -72,7 +72,7 @@ const Search = () => {
           {/* Footer section */}
           <View className="mt-4">
             <View className="flex-row justify-around items-center">
-              <Text className="text-lightGray text-xs">
+              <Text className="text-secondaryBlack text-xs">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -82,13 +82,13 @@ const Search = () => {
               <View className="flex-row space-x-4">
                 <View className="flex-row space-x-1">
                   <Ionicons name="heart" size={12} color="#2D3135" />
-                  <Text className="text-xs text-lightGray font-bold">
+                  <Text className="text-xs text-secondaryBlack font-bold">
                     {item.likes.length}
                   </Text>
                 </View>
                 <View className="flex-row space-x-1">
                   <Ionicons name="chatbubble" size={12} color="#2D3135" />
-                  <Text className="text-xs text-lightGray font-bold">
+                  <Text className="text-xs text-secondaryBlack font-bold">
                     {item.comments.length}
                   </Text>
                 </View>

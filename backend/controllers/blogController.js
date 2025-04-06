@@ -194,6 +194,7 @@ export const userBlogs = async (req, res) => {
     const userID = req.user.id;
     const blogs = await blogModel
       .find({ author: userID })
+      .populate("topics", "name")
       .sort({ createdAt: -1 });
     res.status(200).json(blogs);
   } catch (error) {

@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +18,9 @@ const UserBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
+  const [topics, setTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState("All");
+
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -24,9 +28,24 @@ const UserBlogs = () => {
       const fetchUserBlogs = async () => {
         try {
           const response = await axios.get("/blog/getUserBlogs");
-          setBlogs(response.data);
+
+          const blogData = response.data;
+          setBlogs(blogData);
+
+          const extractedTopics = new Set();
+          blogData.forEach((blog) => {
+            blog.topics?.forEach((topic) => {
+              extractedTopics.add(topic.name);
+            });
+          });
+          setTopics(["All", ...Array.from(extractedTopics)]);
         } catch (error) {
           console.error("Error fetching blogs:", error);
+          Toast.show({
+            type: "error",
+            position: "top",
+            text1: "Failed to fetch blogs",
+          });
         } finally {
           setLoading(false);
         }
@@ -38,7 +57,7 @@ const UserBlogs = () => {
   const deleteBlog = async (blogId) => {
     try {
       await axios.delete(`/blog/deleteBlog/${blogId}`);
-      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
+      setBlogs((prev) => prev.filter((b) => b._id !== blogId));
       setSelectedBlogId(null);
       Toast.show({
         type: "success",
@@ -49,6 +68,7 @@ const UserBlogs = () => {
       const errorMessage =
         error.response?.data?.error || error.message || "Something went wrong";
       Toast.show({ type: "error", position: "top", text1: errorMessage });
+      console.error("Error deleting blog:", errorMessage);
     }
   };
 
@@ -60,8 +80,8 @@ const UserBlogs = () => {
         { text: "Cancel", style: "cancel" },
         {
           text: "Delete",
-          style: "destructive",
           onPress: () => deleteBlog(blogId),
+          style: "destructive",
         },
       ]
     );
@@ -71,10 +91,46 @@ const UserBlogs = () => {
     setSelectedBlogId(blogId === selectedBlogId ? null : blogId);
   };
 
+  const filteredBlogs =
+    selectedTopic === "All"
+      ? blogs
+      : blogs.filter((blog) =>
+          blog.topics?.some((topic) => topic.name === selectedTopic)
+        );
+
+  const renderFilter = () => (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className="px-4 py-2"
+    >
+      {topics.map((topic, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => {
+            setSelectedTopic(topic);
+          }}
+          className={`px-4 py-2 rounded-full mr-2 ${
+            selectedTopic === topic ? "bg-primaryWhite" : "bg-secondaryBlack"
+          }`}
+        >
+          <Text
+            className={`text-sm ${
+              selectedTopic === topic
+                ? "text-primaryBlack font-bold"
+                : "text-darkGray"
+            }`}
+          >
+            {topic}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+
   const renderItem = ({ item }) => {
     const firstImg =
-      item.content.find((contentItem) => contentItem.type === "image")?.value ||
-      null;
+      item.content.find((c) => c.type === "image")?.value || null;
 
     return (
       <TouchableOpacity
@@ -88,14 +144,12 @@ const UserBlogs = () => {
             <Text
               className="text-xl font-bold text-primaryBlack"
               numberOfLines={1}
-              ellipsizeMode="tail"
             >
               {item.title}
             </Text>
             <Text
               className="text-xs font-normal text-secondaryBlack"
               numberOfLines={1}
-              ellipsizeMode="tail"
             >
               {item.subTitle}
             </Text>
@@ -129,32 +183,25 @@ const UserBlogs = () => {
       </TouchableOpacity>
     );
   };
-  if (blogs.length === 0) {
+
+  if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="font-semibold text-lg text-darkGray text-center">
-          You have not created your first blog yet
-        </Text>
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#000" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1">
-      {loading ? (
-        <View className="flex-1 justify-center items-center bg-secondaryBlack">
-          <ActivityIndicator size="large" color="#7871AA" />
-        </View>
-      ) : (
-        <FlatList
-          data={blogs}
-          keyExtractor={(item, index) => item._id || index.toString()}
-          renderItem={renderItem}
-          numColumns={2}
-          contentContainerStyle={{ padding: 10 }}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+    <View className="flex-1 bg-background pt-2">
+      {renderFilter()}
+      <FlatList
+        data={filteredBlogs}
+        renderItem={renderItem}
+        keyExtractor={(item) => item._id}
+        numColumns={2}
+        contentContainerStyle={{ paddingBottom: 16 }}
+      />
     </View>
   );
 };

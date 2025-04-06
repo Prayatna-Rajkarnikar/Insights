@@ -5,6 +5,7 @@ import { getUserInfo, editProfile } from "../controllers/userController.js";
 
 const router = Router();
 router.get("/profile", authMiddleware, getUserInfo);
+router.get("/:userId", authMiddleware, getUserInfo);
 router.put(
   "/updateProfile",
   authMiddleware,

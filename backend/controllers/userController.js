@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 export const getUserInfo = async (req, res) => {
   const { token } = req.cookies;
+  const { userId } = req.params;
 
   if (!token) {
     return res.status(401).json({ error: "No token provided" });
@@ -12,8 +13,10 @@ export const getUserInfo = async (req, res) => {
     // Verify token synchronously
     const userInfo = jwt.verify(token, process.env.JWT_SECRET);
 
+    const idToFetch = userId || userInfo.id;
+
     // Fetch user from the database
-    const user = await userModel.findById(userInfo.id);
+    const user = await userModel.findById(idToFetch).populate("blogs");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
