@@ -27,8 +27,12 @@ import Preview from "./screens/Preview";
 import Comment from "./screens/Comment";
 import Like from "./screens/Likes";
 import UserProfile from "./screens/UserProfile";
+import Discussions from "./screens/Discussions";
+import RoomChat from "./screens/RoomChat";
+import ExploreDiscussions from "./screens/ExploreDiscussions";
+import CreateDiscussionScreen from "./screens/CreateDiscussionScreen";
 
-axios.defaults.baseURL = "http://192.168.1.8:3001";
+axios.defaults.baseURL = "http://192.168.1.6:3001";
 // axios.defaults.baseURL = "http://100.64.200.232:3001";
 axios.defaults.withCredentials = true;
 
@@ -60,6 +64,16 @@ export default function App() {
           <Stack.Screen name="Comment" component={Comment} />
           <Stack.Screen name="Like" component={Like} />
           <Stack.Screen name="UserProfile" component={UserProfile} />
+          <Stack.Screen name="Discussions" component={Discussions} />
+          <Stack.Screen name="RoomChat" component={RoomChat} />
+          <Stack.Screen
+            name="CreateDiscussionScreen"
+            component={CreateDiscussionScreen}
+          />
+          <Stack.Screen
+            name="ExploreDiscussions"
+            component={ExploreDiscussions}
+          />
         </Stack.Navigator>
         <Toast />
         <StatusBar style="auto" />

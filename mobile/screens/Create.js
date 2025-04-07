@@ -240,6 +240,9 @@ const Create = () => {
 
       {/* Buttons */}
       <View className=" bottom-0 w-full bg-secondaryBlack p-5">
+        <Text className="text-sm text-primaryBlack text-center mb-2">
+          Image size limit: 10MB
+        </Text>
         <View className="flex-row space-x-2 items-center">
           <TouchableOpacity
             className="bg-accent flex-1 rounded-xl p-3 items-center"

@@ -6,6 +6,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { Server } from "socket.io";
 
 import { dbConnect } from "./mongo/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -18,7 +19,10 @@ import slangwordRoute from "./routes/slangwordRoute.js";
 import topicRoute from "./routes/topicRoutes.js";
 import searchRoute from "./routes/searchRoute.js";
 import flagRoute from "./routes/flagRoutes.js";
+import roomRoute from "./routes/roomRoutes.js";
+import messageRoute from "./routes/messageRoutes.js";
 import { setSlangwords } from "./controllers/slangwordController.js";
+import messageModel from "./models/messageModel.js";
 
 const app = express();
 dotenv.config();
@@ -53,6 +57,8 @@ app.use("/slangword", slangwordRoute);
 app.use("/topic", topicRoute);
 app.use("/search", searchRoute);
 app.use("/flag", flagRoute);
+app.use("/room", roomRoute);
+app.use("/message", messageRoute);
 
 fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (error, data) => {
   try {
@@ -67,4 +73,50 @@ const server = app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
-server.setTimeout(10 * 60 * 1000); // 10 minutes
+const io = new Server(server, {
+  cors: {
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Join a room
+  socket.on("joinRoom", ({ roomId, user }) => {
+    console.log(`${user.name} joined room ${roomId}`);
+    socket.join(roomId);
+  });
+  socket.on("sendMessage", async ({ roomId, message, user }) => {
+    try {
+      // Save the message to the database
+      const newMessage = new messageModel({
+        roomId,
+        user: user._id, // Save the user ID
+        message,
+      });
+      await newMessage.save();
+
+      // Emit the message to the room with the correct user information
+      io.to(roomId).emit("receiveMessage", {
+        _id: newMessage._id,
+        message: newMessage.message,
+        user: {
+          _id: user._id,
+          name: user.name,
+        },
+        createdAt: newMessage.createdAt,
+      });
+
+      console.log(`Message from ${user.name}: ${message}`);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+  });
+});
+
+server.setTimeout(10 * 60 * 1000);

@@ -122,9 +122,14 @@ const Home = () => {
     <Background>
       <View className="flex-row justify-between items-center mt-8">
         <Text className="text-primaryWhite font-bold text-xl">Insights</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-          <Ionicons name="search-outline" size={26} color="#F1F3F5" />
-        </TouchableOpacity>
+        <View className="flex-row items-center justify-around space-x-4">
+          <TouchableOpacity onPress={() => navigation.navigate("Discussions")}>
+            <Ionicons name="chatbubble-outline" size={26} color="#F1F3F5" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+            <Ionicons name="search-outline" size={26} color="#F1F3F5" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Filter Toggle Buttons */}
