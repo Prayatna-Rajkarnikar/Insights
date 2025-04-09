@@ -55,7 +55,7 @@ const Search = () => {
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <View className="px-4 py-2 mb-4 rounded-2xl bg-accent">
+        <View className="px-4 py-2 mb-4 rounded-2xl bg-secondaryBlack">
           <View className="mt-4 mb-2">
             {firstImg && (
               <Image
@@ -65,14 +65,14 @@ const Search = () => {
               />
             )}
           </View>
-          <Text className="text-2xl font-bold text-primaryBlack">
+          <Text className="text-2xl font-bold text-primaryWhite">
             {item.title}
           </Text>
 
           {/* Footer section */}
           <View className="mt-4">
             <View className="flex-row justify-around items-center">
-              <Text className="text-secondaryBlack text-xs">
+              <Text className="text-lightGray text-sm">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -81,15 +81,19 @@ const Search = () => {
               </Text>
               <View className="flex-row space-x-4">
                 <View className="flex-row space-x-1">
-                  <Ionicons name="heart" size={12} color="#2D3135" />
-                  <Text className="text-xs text-secondaryBlack font-bold">
+                  <Text className="text-sm text-primaryWhite font-bold">
                     {item.likes.length}
+                  </Text>
+                  <Text className="text-sm text-lightGray font-bold">
+                    Likes
                   </Text>
                 </View>
                 <View className="flex-row space-x-1">
-                  <Ionicons name="chatbubble" size={12} color="#2D3135" />
-                  <Text className="text-xs text-secondaryBlack font-bold">
+                  <Text className="text-sm text-primaryWhite font-bold">
                     {item.comments.length}
+                  </Text>
+                  <Text className="text-sm text-lightGray font-bold">
+                    Comments
                   </Text>
                 </View>
               </View>
@@ -108,13 +112,13 @@ const Search = () => {
         <View className="flex-row space-x-4 mb-4">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${item.image}` }}
-            className="rounded-full h-10 w-10"
+            className="rounded-full h-10 w-10 bg-primaryWhite"
           />
           <View>
             <Text className="text-xl text-primaryWhite font-medium">
               {item.name}
             </Text>
-            <Text className="text-xs text-darkGray font-normal">
+            <Text className="text-xs text-lightGray font-normal">
               {item.username}
             </Text>
           </View>
@@ -127,19 +131,19 @@ const Search = () => {
     <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#7871AA" />
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
       </TouchableOpacity>
 
       {/* search bar */}
       <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center mt-4 space-x-2">
-        <Ionicons name="search-outline" size={30} color="#7871AA" />
+        <Ionicons name="search-outline" size={26} color="#E4E6E7" />
         <TextInput
           placeholder="Search"
           placeholderTextColor="#8B8F92"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchBlogs}
-          className="text-xl font-bold text-lightGray flex-1"
+          className="text-base font-normals text-primaryWhite flex-1"
           scrollEnabled={false}
         />
       </View>
@@ -149,7 +153,7 @@ const Search = () => {
         <TouchableOpacity
           onPress={() => setFilter("blogs")}
           style={{
-            backgroundColor: filter === "blogs" ? "#7871AA" : "#2D3135",
+            backgroundColor: filter === "blogs" ? "#2840B5" : "#2D3135",
             borderRadius: 25,
             paddingHorizontal: 12,
             paddingVertical: 8,
@@ -157,7 +161,7 @@ const Search = () => {
         >
           <Text
             className={`text-base font-bold text-center ${
-              filter === "blogs" ? "text-primaryBlack" : "text-darkGray"
+              filter === "blogs" ? "text-primaryWhite" : "text-lightGray"
             }`}
           >
             Blogs
@@ -166,7 +170,7 @@ const Search = () => {
         <TouchableOpacity
           onPress={() => setFilter("users")}
           style={{
-            backgroundColor: filter === "users" ? "#7871AA" : "#2D3135",
+            backgroundColor: filter === "users" ? "#2840B5" : "#2D3135",
             borderRadius: 25,
             paddingHorizontal: 12,
             paddingVertical: 8,
@@ -174,7 +178,7 @@ const Search = () => {
         >
           <Text
             className={`text-base font-bold text-center ${
-              filter === "users" ? "text-primaryBlack" : "text-darkGray"
+              filter === "users" ? "text-primaryWhite" : "text-lightGray"
             }`}
           >
             Users

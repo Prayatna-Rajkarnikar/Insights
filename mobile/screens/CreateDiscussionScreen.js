@@ -9,6 +9,10 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import Background from "../helpers/Background";
+import InputField from "../helpers/InputField";
+import Button from "../helpers/Button";
 
 const CreateDiscussionScreen = () => {
   const [name, setName] = useState("");
@@ -49,33 +53,33 @@ const CreateDiscussionScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle="flex-1 justify-center px-4 bg-white">
-      <Text className="text-2xl font-bold text-center mb-8">
-        Create New Discussion Room
-      </Text>
+    <Background>
+      <ScrollView contentContainerStyle="flex-1 justify-center">
+        <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-center mb-8 mt-2 text-primaryWhite">
+          Create New Discussion Room
+        </Text>
 
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Room Name"
-        className="h-12 border border-gray-300 rounded-lg p-3 mb-4"
-      />
+        <InputField
+          value={name}
+          onChangeText={setName}
+          placeholder="Room Name"
+          className="text-lg font-medium"
+        />
 
-      <TextInput
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Room Description"
-        className="h-24 border border-gray-300 rounded-lg p-3 mb-4"
-        multiline
-      />
+        <InputField
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Room Description"
+          multiline
+          className="text-lg font-medium h-20"
+        />
 
-      <TouchableOpacity
-        onPress={handleCreateRoom}
-        className="bg-blue-500 p-3 rounded-lg items-center"
-      >
-        <Text className="text-white font-semibold text-lg">Create Room</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Button onPress={handleCreateRoom} label="Create" />
+      </ScrollView>
+    </Background>
   );
 };
 

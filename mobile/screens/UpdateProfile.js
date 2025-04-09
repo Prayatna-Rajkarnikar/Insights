@@ -117,7 +117,7 @@ const UpdateProfile = () => {
     <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#7871AA" />
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
       </TouchableOpacity>
 
       {/* Image */}
@@ -126,10 +126,10 @@ const UpdateProfile = () => {
           {image && (
             <Image
               source={{ uri: image }}
-              className="w-36 h-36 rounded-full border-4 border-primaryWhite bg-primaryWhite"
+              className="w-36 h-36 rounded-full bg-primaryWhite"
               style={{
                 borderWidth: 4,
-                borderColor: "#E9ECEF",
+                borderColor: "#2840B5",
               }}
             />
           )}
@@ -143,7 +143,7 @@ const UpdateProfile = () => {
       </View>
       {/* Text Fields */}
       <TextInput
-        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-lightGray"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-primaryWhite"
         value={name}
         onChangeText={setName}
         placeholder="Enter your name"
@@ -151,7 +151,7 @@ const UpdateProfile = () => {
         scrollEnabled={false}
       />
       <TextInput
-        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-lightGray"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-primaryWhite"
         value={username}
         onChangeText={setUsername}
         placeholder="Enter your username"

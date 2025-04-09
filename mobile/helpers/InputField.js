@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { TextInput } from "react-native-gesture-handler";
+import { View, TextInput } from "react-native";
 
 const InputField = ({ placeholder, value, onChangeText, ...props }) => {
   return (
@@ -12,7 +11,7 @@ const InputField = ({ placeholder, value, onChangeText, ...props }) => {
         onChangeText={onChangeText}
         scrollEnabled={false}
         {...props}
-        className=" w-full text-xl font-semibold text-lightGray"
+        className=" w-full text-xl font-medium text-primaryWhite"
       />
     </View>
   );

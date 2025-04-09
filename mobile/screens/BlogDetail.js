@@ -93,7 +93,7 @@ const BlogDetail = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -107,26 +107,31 @@ const BlogDetail = () => {
             navigation.goBack();
           }}
         >
-          <Ionicons name="close" size={30} color="#7871AA" />
+          <Ionicons name="close" size={30} color="#8B8F92" />
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} className="mt-5">
-        <Text className="text-3xl font-bold text-primaryWhite">
-          {blog.title}
-        </Text>
-        <Text className="text-lg text-darkGray mt-1 italic">
-          {blog.subTitle}
-        </Text>
-        <View className="flex-row justify-start space-x-3 mt-4">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className="mt-6 flex space-y-6"
+      >
+        <View className="flex">
+          <Text className="text-2xl font-bold text-primaryWhite">
+            {blog.title}
+          </Text>
+          <Text className="text-base font-normal italic text-lightGray">
+            {blog.subTitle}
+          </Text>
+        </View>
+        <View className="flex-row justify-start space-x-3">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${blog.author.image}` }}
             className="rounded-full w-14 h-14 bg-primaryWhite"
           />
-          <View>
-            <Text className="text-lg font-medium text-accent">
+          <View className="flex justify-center space-y-2">
+            <Text className="text-sm font-thin text-primaryWhite">
               {blog.author.name}
             </Text>
-            <Text className="text-darkGray text-xs">
+            <Text className="text-lightGray text-sm">
               {new Date(blog.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -136,7 +141,7 @@ const BlogDetail = () => {
           </View>
         </View>
 
-        <View className="mt-6">
+        <View className="">
           {blog.content.map((item, index) => {
             if (item.type === "text") {
               return (
@@ -150,7 +155,7 @@ const BlogDetail = () => {
             if (item.type === "image") {
               return (
                 <View
-                  className="w-full h-52 mt-2 rounded-3xl border-2 border-accent overflow-hidden"
+                  className="w-full h-52 mt-2 rounded-2xl overflow-hidden"
                   key={index}
                 >
                   <Image
@@ -166,7 +171,7 @@ const BlogDetail = () => {
         </View>
         <View className="h-2" />
       </ScrollView>
-      <View className="flex-row justify-evenly h-16">
+      <View className="flex-row justify-evenly h-16 pt-2">
         <TouchableOpacity
           onPress={() => navigation.navigate("Like", { blogId })}
         >
@@ -175,10 +180,10 @@ const BlogDetail = () => {
               <Ionicons
                 name={isLiked ? "heart" : "heart-outline"}
                 size={30}
-                color={isLiked ? "#7871AA" : "#E9ECEF"}
+                color={isLiked ? "#2840B5" : "#E4E6E7"}
               />
             </TouchableOpacity>
-            <Text className="w-10 text-start text-base font-semibold text-lightGray">
+            <Text className="w-10 text-start text-lg font-semibold text-primaryWhite">
               {likes}
             </Text>
           </View>
@@ -187,8 +192,8 @@ const BlogDetail = () => {
           onPress={() => navigation.navigate("Comment", { blogId, user })}
         >
           <View className="flex-row items-center space-x-2">
-            <Ionicons name="chatbubble-outline" size={30} color="#7871AA" />
-            <Text className="w-10 text-start text-base font-semibold text-lightGray">
+            <Ionicons name="chatbubble-outline" size={30} color="#E4E6E7" />
+            <Text className="w-10 text-start text-lg font-semibold text-primaryWhite">
               {totalComments}
             </Text>
           </View>

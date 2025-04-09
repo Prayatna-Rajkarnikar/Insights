@@ -40,7 +40,7 @@ const Likes = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -53,10 +53,10 @@ const Likes = () => {
           className="rounded-full h-12 w-12 bg-primaryWhite"
         />
         <View>
-          <Text className="text-xl text-primaryWhite font-bold">
+          <Text className="text-lg text-primaryWhite font-medium">
             {item.user.name}
           </Text>
-          <Text className="text-xs text-darkGray font-bold">
+          <Text className="text-sm text-lightGray font-thin">
             {item.user.username}
           </Text>
         </View>
@@ -72,11 +72,11 @@ const Likes = () => {
             navigation.goBack();
           }}
         >
-          <Ionicons name="close" size={30} color="#7871AA" />
+          <Ionicons name="close" size={30} color="#8B8F92" />
         </TouchableOpacity>
       </View>
       <Text
-        className="text-center font-bold text-darkGray text-base
+        className="text-center font-bold text-lightGray text-base
          mb-4 mt-2"
       >
         Likes

@@ -52,7 +52,7 @@ const CompleteProfile = ({ route, navigation }) => {
     <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#E9ECEF" />
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
       </TouchableOpacity>
 
       {/* heading */}
@@ -63,7 +63,7 @@ const CompleteProfile = ({ route, navigation }) => {
       </View>
 
       <View className="mt-1">
-        <Text className="text-sm font-normal text-darkGray">
+        <Text className="text-sm font-normal text-lightGray">
           Username must range from 4 to 20 characters and can only have letters,
           numbers, and underscores(_).
         </Text>

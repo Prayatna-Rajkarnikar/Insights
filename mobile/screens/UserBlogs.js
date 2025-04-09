@@ -27,8 +27,6 @@ const UserBlogs = ({ userId }) => {
     useCallback(() => {
       const fetchUserBlogs = async () => {
         try {
-          console.log("User ID:", userId);
-
           const response = userId
             ? await axios.get(`/blog/getUserBlogsById/${userId}`)
             : await axios.get("/blog/getUserBlogs");
@@ -122,7 +120,7 @@ const UserBlogs = ({ userId }) => {
             className={`text-sm ${
               selectedTopic === topic
                 ? "text-primaryBlack font-bold"
-                : "text-darkGray"
+                : "text-lightGray"
             }`}
           >
             {topic}
@@ -140,44 +138,37 @@ const UserBlogs = ({ userId }) => {
 
     return (
       <TouchableOpacity
-        onLongPress={() => handleLongPress(item._id)}
+        onLongPress={isAuthor ? () => handleLongPress(item._id) : null}
         activeOpacity={0.9}
         style={{ flex: 1, margin: 5 }}
-        disabled={!isAuthor}
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <View className="h-48 px-4 py-3 rounded-2xl bg-accent">
-          <View className="space-y-1">
+        <View className="h-48 rounded-2xl bg-secondaryBlack">
+          <View className="px-4 py-1">
             <Text
-              className="text-xl font-bold text-primaryBlack"
+              className="text-xl font-bold text-primaryWhite"
               numberOfLines={1}
             >
               {item.title}
-            </Text>
-            <Text
-              className="text-xs font-normal text-secondaryBlack"
-              numberOfLines={1}
-            >
-              {item.subTitle}
             </Text>
           </View>
           {firstImg && (
             <Image
               source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-              className="w-full h-28 rounded-2xl mt-2"
+              className="w-full h-40 rounded-2xl mt-2"
               resizeMode="cover"
             />
           )}
         </View>
 
         {selectedBlogId === item._id && (
-          <View className="absolute top-1 left-2 bg-secondaryBlack p-4 rounded-lg flex-row space-x-5">
+          <View className="absolute top-1 left-2 bg-primaryBlack p-4 rounded-lg flex-row space-x-5">
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("EditBlog", { blogId: item._id })
               }
             >
-              <Ionicons name="pencil-outline" size={22} color="#7871AA" />
+              <Ionicons name="pencil-outline" size={22} color="#2840B5" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => confirmDelete(item._id)}>
               <Ionicons name="trash-outline" size={22} color="red" />

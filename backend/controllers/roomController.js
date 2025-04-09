@@ -35,7 +35,7 @@ export const getUserRooms = async (req, res) => {
 
     const rooms = await roomModel
       .find({ members: userId })
-      .populate("admin", "name email image");
+      .populate("admin", "name email");
 
     res.status(200).json({ userId, userName: user.name, rooms });
   } catch (error) {
@@ -55,21 +55,72 @@ export const getAllRooms = async (req, res) => {
 export const joinRoom = async (req, res) => {
   try {
     const userId = req.user.id;
+    const userName = req.user.name; // Assuming user name is stored in req.user
     const { roomId } = req.params;
 
+    // Find the room by its ID
     const room = await roomModel.findById(roomId);
     if (!room) return res.status(404).json({ message: "Room not found" });
 
+    // Check if the user is already in the room
     if (room.members.includes(userId)) {
       return res.status(400).json({ message: "You are already in this room" });
     }
 
+    // Add the user to the room's members
     room.members.push(userId);
     await room.save();
 
-    res.status(200).json({ message: "Successfully joined the room", room });
+    // Return a response with the success message, room details, userId, userName, and roomName
+    res.status(200).json({
+      message: "Successfully joined the room",
+      roomId,
+      roomName: room.name, // Include the room name here
+      userId,
+      userName,
+    });
   } catch (error) {
     console.error("Join room error:", error);
     res.status(500).json({ message: "Failed to join room", error });
+  }
+};
+
+export const leaveRoom = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { roomId } = req.params;
+
+    const room = await roomModel.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    if (!room.members.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: "You are not a member of this room" });
+    }
+
+    // Remove the user from the members array
+    room.members = room.members.filter(
+      (member) => member.toString() !== userId.toString()
+    );
+
+    // If the user is the admin, reassign the admin role
+    if (room.admin.toString() === userId.toString()) {
+      if (room.members.length > 0) {
+        room.admin = room.members[0];
+      } else {
+        await room.remove();
+        return res.status(200).json({ message: "Room deleted as admin left" });
+      }
+    }
+
+    await room.save();
+
+    res.status(200).json({ message: "Successfully left the room", room });
+  } catch (error) {
+    console.error("Leave room error:", error);
+    res.status(500).json({ message: "Failed to leave room", error });
   }
 };

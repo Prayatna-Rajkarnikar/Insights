@@ -1,97 +1,140 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import React, { useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-
 import Background from "../helpers/Background";
 
 const Discussions = () => {
-  const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUserRooms = async () => {
-      try {
-        const response = await axios.get(`/room/getUserRooms`);
-        setRooms(response.data.rooms);
-        setUserId(response.data.userId);
-        setUserName(response.data.userName);
-      } catch (err) {
-        console.error(
-          "Error fetching user rooms:",
-          err.response?.data || err.message
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserRooms();
+  const fetchUserRooms = useCallback(async () => {
+    try {
+      const response = await axios.get("/room/getUserRooms");
+      setFilteredRooms(response.data.rooms);
+      setUserId(response.data.userId);
+      setUserName(response.data.userName);
+    } catch (err) {
+      console.error(
+        "Error fetching user rooms:",
+        err.response?.data || err.message
+      );
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const renderCard = ({ item }) => (
-    <TouchableOpacity
-      className="bg-white p-4 rounded-2xl shadow mb-4 flex-row items-center space-x-4"
-      onPress={() =>
-        navigation.navigate("RoomChat", {
-          roomId: item._id,
-          roomName: item.name,
-          userId: userId,
-          userName: userName,
-        })
-      }
-    >
-      {item.admin?.image && (
-        <Image
-          source={{ uri: item.admin.image }}
-          className="w-12 h-12 rounded-full"
-        />
-      )}
-      <View>
-        <Text className="text-lg font-semibold text-gray-800">
-          {item.name || "Unknown"}
-        </Text>
-        <Text className="text-lg font-semibold text-gray-800">
-          Admin: {item.admin?.name || "Unknown"}
-        </Text>
-        <Text className="text-gray-500">{item.admin?.email}</Text>
-      </View>
-    </TouchableOpacity>
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserRooms();
+    }, [fetchUserRooms])
   );
+
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    try {
+      if (query.trim() === "") {
+        await fetchUserRooms();
+      } else {
+        const response = await axios.get(
+          `/search/searchUserChat?query=${query}`
+        );
+        setFilteredRooms(response.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error searching user chats:",
+        error.response?.data || error.message
+      );
+    }
+  };
 
   return (
     <Background>
-      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#7871AA" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="mt-8"
-        onPress={() => navigation.navigate("ExploreDiscussions")}
+      <View className="flex-row justify-between items-center mt-8 mb-4">
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("CreateDiscussionScreen")}
+        >
+          <Ionicons name="create" size={30} color="#E4E6E7" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
-        <Text>Explore rooms</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="mt-8"
-        onPress={() => navigation.navigate("CreateDiscussionScreen")}
-      >
-        <Ionicons name="create" size={30} color="#7871AA" />
-      </TouchableOpacity>
-      <Text className="text-2xl font-bold mb-4">Your Discussions</Text>
-      {loading ? (
-        <Text className="text-center text-gray-500">Loading...</Text>
-      ) : rooms.length === 0 ? (
-        <Text className="text-center text-gray-500">No rooms joined yet.</Text>
-      ) : (
-        <FlatList
-          data={rooms}
-          keyExtractor={(item) => item._id}
-          renderItem={renderCard}
-        />
-      )}
+        <TouchableOpacity
+          className="bg-accent px-4 py-3 rounded-lg mb-6"
+          onPress={() => navigation.navigate("ExploreDiscussions")}
+        >
+          <Text className="text-primaryWhite text-lg font-bold text-center">
+            Explore rooms
+          </Text>
+        </TouchableOpacity>
+
+        <Text className="text-lg font-bold mb-4 text-primaryWhite">
+          Your Discussions
+        </Text>
+
+        <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center space-x-2 mb-4">
+          <Ionicons name="search-outline" size={24} color="#E4E6E7" />
+          <TextInput
+            placeholder="Search rooms..."
+            placeholderTextColor="#8B8F92"
+            value={searchQuery}
+            onChangeText={handleSearch}
+            className="text-base font-normal text-primaryWhite flex-1"
+          />
+        </View>
+
+        {loading ? (
+          <View className="flex-1 justify-center items-center bg-primaryBlack">
+            <ActivityIndicator size="large" color="#2840B5" />
+          </View>
+        ) : filteredRooms.length === 0 ? (
+          <Text className="text-center text-lightGray">
+            No rooms joined yet.
+          </Text>
+        ) : (
+          filteredRooms.map((item) => (
+            <TouchableOpacity
+              key={item._id}
+              className="p-4 mb-4 bg-secondaryBlack rounded-lg"
+              onPress={() =>
+                navigation.navigate("RoomChat", {
+                  roomId: item._id,
+                  roomName: item.name,
+                  userId: userId,
+                  userName: userName,
+                })
+              }
+            >
+              <Text
+                className="text-xl font-bold text-primaryWhite"
+                numberOfLines={1}
+              >
+                {item.name || "Unknown"}
+              </Text>
+              <Text className="text-xs font-thin text-accent">Message</Text>
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
     </Background>
   );
 };

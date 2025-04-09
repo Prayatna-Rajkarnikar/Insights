@@ -136,7 +136,7 @@ const Create = () => {
               navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={30} color="#7871AA" />
+            <Ionicons name="close" size={30} color="#8B8F92" />
           </TouchableOpacity>
         </View>
 
@@ -148,7 +148,7 @@ const Create = () => {
         >
           {/* Title */}
           <TextInput
-            className="text-3xl font-bold text-primaryWhite"
+            className="text-2xl font-bold text-primaryWhite"
             placeholder="Title"
             placeholderTextColor="#8B8F92"
             value={title}
@@ -159,7 +159,7 @@ const Create = () => {
 
           {/* Subtitle */}
           <TextInput
-            className="text-lg text-darkGray mt-1 italic"
+            className="text-lg text-lightGray mt-1"
             placeholder="Subtitle"
             placeholderTextColor="#8B8F92"
             value={subtitle}
@@ -214,14 +214,14 @@ const Create = () => {
               ) : section.type === "image" ? (
                 <View className="relative mt-2">
                   {section.value.uri ? (
-                    <View className="w-full h-52 mt-2 rounded-3xl border-4 border-accent overflow-hidden">
+                    <View className="w-full h-52 mt-2 rounded-2xl overflow-hidden">
                       <Image
                         source={{ uri: section.value.uri }}
                         className="w-full h-full"
                       />
                     </View>
                   ) : (
-                    <Text className="text-base justify-start text-gray-200 mt-2">
+                    <Text className="text-base justify-start text-lightGray mt-2">
                       No image available
                     </Text>
                   )}
@@ -240,26 +240,26 @@ const Create = () => {
 
       {/* Buttons */}
       <View className=" bottom-0 w-full bg-secondaryBlack p-5">
-        <Text className="text-sm text-primaryBlack text-center mb-2">
+        <Text className="text-sm text-lightGray text-center mb-2">
           Image size limit: 10MB
         </Text>
         <View className="flex-row space-x-2 items-center">
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={() => addTextSection(contentSections.length)}
           >
             <Ionicons name="text-outline" size={24} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={() => pickImage(contentSections.length)}
           >
             <Ionicons name="image-outline" size={24} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={() => addBulletPoint(contentSections.length)}
           >
             <Ionicons name="list-outline" size={24} />
@@ -271,7 +271,7 @@ const Create = () => {
           className="bg-accent w-full mt-3 rounded-xl p-3 items-center"
           onPress={goToTopics}
         >
-          <Text className="text-primaryBlack font-bold text-lg">Next</Text>
+          <Text className="text-primaryWhite font-bold text-lg">Next</Text>
         </TouchableOpacity>
       </View>
     </View>

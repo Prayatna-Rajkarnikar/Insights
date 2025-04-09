@@ -22,7 +22,7 @@ const Preview = ({ route }) => {
 
   const createBlog = async () => {
     setLoading(true);
-    const maxAttempts = 2; // Retry once after the first failure
+    const maxAttempts = 2;
     let attempts = 0;
 
     while (attempts < maxAttempts) {
@@ -61,7 +61,7 @@ const Preview = ({ route }) => {
         });
 
         navigation.navigate("Home");
-        break; // Exit the loop if the request is successful
+        break;
       } catch (error) {
         attempts++;
         const errorMessage =
@@ -98,7 +98,7 @@ const Preview = ({ route }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate("AddTopics", { blogData })}
         >
-          <Ionicons name="arrow-back-outline" size={30} color="#7871AA" />
+          <Ionicons name="arrow-back-outline" size={30} color="#8B8F92" />
         </TouchableOpacity>
       </View>
 
@@ -109,13 +109,13 @@ const Preview = ({ route }) => {
 
       {/* SubHeading */}
       <View className="mt-1 mb-3">
-        <Text className="text-sm font-normal text-darkGray">
+        <Text className="text-sm font-normal text-lightGray">
           This is how the blog will be shown to readers in public places.
         </Text>
       </View>
 
       {/* Card for Preview */}
-      <View className="p-4 mb-4 rounded-2xl bg-accent">
+      <View className="p-4 mb-4 rounded-2xl bg-secondaryBlack">
         {contentSections.some((section) => section.type === "image") && (
           <Image
             source={{
@@ -128,14 +128,14 @@ const Preview = ({ route }) => {
         )}
         <View className="mt-2">
           <Text
-            className="text-2xl font-bold text-primaryBlack"
+            className="text-2xl font-bold text-primaryWhite"
             numberOfLines={2}
             ellipsizeMode="tail"
           >
             {title}
           </Text>
           <Text
-            className="text-xs font-normal text-secondaryBlack"
+            className="text-sm font-normal text-lightGray italic"
             numberOfLines={2}
             ellipsizeMode="tail"
           >
@@ -144,7 +144,7 @@ const Preview = ({ route }) => {
         </View>
       </View>
 
-      <Text className="text-base font-medium text-primaryWhite">
+      <Text className="text-base font-medium text-primaryWhite mb-1">
         Selected Topics:
       </Text>
 
@@ -162,7 +162,7 @@ const Preview = ({ route }) => {
       {/* Publish button */}
       {loading ? (
         <View className="rounded-full py-5 mt-8">
-          <ActivityIndicator size="large" color="#7871AA" />
+          <ActivityIndicator size="large" color="#2840B5" />
         </View>
       ) : (
         <Button onPress={createBlog} label="Publish" />

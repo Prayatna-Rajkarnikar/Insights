@@ -5,36 +5,61 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import axios from "axios";
-import Toast from "react-native-toast-message"; // Import toast
+import Toast from "react-native-toast-message";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import Background from "../helpers/Background";
 
-const ExploreDiscussions = ({ navigation }) => {
-  const [discussions, setDiscussions] = useState([]);
+const ExploreDiscussions = () => {
+  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
+
+  const fetchDiscussions = async () => {
+    try {
+      const response = await axios.get("/room/getAllRooms");
+      setFilteredRooms(response.data);
+    } catch (err) {
+      setError("Failed to fetch discussions");
+      console.error("Error fetching discussions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDiscussions = async () => {
-      try {
-        const response = await axios.get("/room/getAllRooms"); // Replace with your API endpoint
-        setDiscussions(response.data); // Set the discussions data in state
-      } catch (err) {
-        setError("Failed to fetch discussions");
-        console.error("Error fetching discussions:", err);
-      } finally {
-        setLoading(false); // Set loading to false when request finishes
-      }
-    };
-
     fetchDiscussions();
   }, []);
 
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+
+    try {
+      if (query.trim() === "") {
+        await fetchDiscussions();
+      } else {
+        const response = await axios.get(
+          `/search/searchAllChat?query=${query}`
+        );
+        setFilteredRooms(response.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error searching user chats:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text className="mt-4 text-lg">Loading discussions...</Text>
+      <View className="flex-1 justify-center items-center bg-secondaryBlack">
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -48,20 +73,19 @@ const ExploreDiscussions = ({ navigation }) => {
   }
 
   // Function to join a room
-  const joinRoom = async (roomId) => {
+  const joinRoom = async (roomId, roomName) => {
     try {
       const response = await axios.put(`/room/joinRoom/${roomId}`);
       if (response.data.message) {
-        // Show success toast if the room was joined successfully
         Toast.show({
           type: "success",
           text1: response.data.message,
         });
-        // Optionally, navigate to the room's chat screen
-        navigation.navigate("RoomChat", { roomId }); // Navigate to the chat room screen
+        const { userId, userName, roomName } = response.data;
+
+        navigation.navigate("RoomChat", { roomId, roomName, userId, userName });
       }
     } catch (error) {
-      // Show error toast if there's an issue joining the room\
       console.log(error);
       Toast.show({
         type: "error",
@@ -71,24 +95,42 @@ const ExploreDiscussions = ({ navigation }) => {
   };
 
   return (
-    <View className="flex-1 p-4 bg-white">
-      <Text className="text-2xl font-bold mb-4">Explore Discussions</Text>
-      {discussions.length === 0 ? (
-        <Text className="text-lg text-gray-500">No discussions available</Text>
+    <Background>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="w-10 mt-8"
+      >
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+      </TouchableOpacity>
+      <Text className="text-2xl font-bold my-4 text-primaryWhite">
+        Explore Discussions
+      </Text>
+      <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center space-x-2 mb-4">
+        <Ionicons name="search-outline" size={24} color="#E4E6E7" />
+        <TextInput
+          placeholder="Search rooms..."
+          placeholderTextColor="#8B8F92"
+          value={searchQuery}
+          onChangeText={handleSearch}
+          className="text-base font-normal text-primaryWhite flex-1"
+        />
+      </View>
+      {filteredRooms.length === 0 ? (
+        <Text className="text-lg text-lightGray">No discussions available</Text>
       ) : (
         <FlatList
-          data={discussions}
+          data={filteredRooms}
           keyExtractor={(item) => item._id.toString()}
           renderItem={({ item }) => (
-            <View className="bg-gray-100 p-4 mb-4 rounded-lg shadow-lg">
-              <Text className="text-xl font-semibold mb-2">{item.name}</Text>
-              <Text className="text-gray-700 mb-2">{item.description}</Text>
-              <Text className="text-sm text-gray-500">
+            <View className="bg-secondaryBlack p-4 mb-4 rounded-lg ">
+              <Text className="text-xl font-bold mb-2">{item.name}</Text>
+              <Text className="text-lightGray mb-2">{item.description}</Text>
+              <Text className="text-sm text-lightGray">
                 Admin: {item.admin?.name || "Unknown"}
               </Text>
               <TouchableOpacity
-                className="mt-4 px-4 py-2 bg-blue-500 rounded-full"
-                onPress={() => joinRoom(item._id)} // Call joinRoom when the button is pressed
+                className="mt-4 px-4 py-3 bg-accent rounded-xl"
+                onPress={() => joinRoom(item._id)}
               >
                 <Text className="text-white text-center">Join Room</Text>
               </TouchableOpacity>
@@ -96,8 +138,7 @@ const ExploreDiscussions = ({ navigation }) => {
           )}
         />
       )}
-      <Toast />
-    </View>
+    </Background>
   );
 };
 

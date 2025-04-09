@@ -56,7 +56,7 @@ const EditBlog = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -223,7 +223,7 @@ const EditBlog = () => {
               navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={30} color="#7871AA" />
+            <Ionicons name="close" size={30} color="#8B8F92" />
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -232,7 +232,7 @@ const EditBlog = () => {
           className="flex-1 w-full"
         >
           <TextInput
-            className="text-3xl font-bold text-primaryWhite"
+            className="text-2xl font-bold text-primaryWhite"
             placeholder="Title"
             placeholderTextColor="#8B8F92"
             value={title}
@@ -241,7 +241,7 @@ const EditBlog = () => {
             scrollEnabled={false}
           />
           <TextInput
-            className="text-lg text-darkGray mt-1 italic"
+            className="text-lg text-lightGray italic"
             placeholder="Subtitle"
             placeholderTextColor="#8B8F92"
             value={subtitle}
@@ -256,7 +256,7 @@ const EditBlog = () => {
               {section.type === "text" ? (
                 <View className="relative">
                   <TextInput
-                    className="text-base justify-start text-gray-200 mt-2"
+                    className="text-base justify-start text-lightGray mt-2"
                     placeholder="Add text here..."
                     placeholderTextColor="#8B8F92"
                     value={section.value}
@@ -275,7 +275,7 @@ const EditBlog = () => {
                 <View className="relative mt-1">
                   {section.value.uri ? (
                     <View
-                      className="w-full h-52 mt-2 rounded-3xl border-2 border-accent overflow-hidden"
+                      className="w-full h-52 mt-2 rounded-2xl  overflow-hidden"
                       key={index}
                     >
                       <Image
@@ -286,7 +286,7 @@ const EditBlog = () => {
                     </View>
                   ) : (
                     <View
-                      className="w-full h-52 mt-2 rounded-3xl border-2 border-accent overflow-hidden"
+                      className="w-full h-52 mt-2 rounded-2xl  overflow-hidden"
                       key={index}
                     >
                       <Image
@@ -333,7 +333,7 @@ const EditBlog = () => {
       <View className=" bottom-0  w-full bg-secondaryBlack p-5">
         <View className="flex-row space-x-2 items-center">
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={addTextSection}
             accessible
             accessibilityLabel="Add text section"
@@ -342,14 +342,14 @@ const EditBlog = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={pickImage}
           >
             <Ionicons name="image-outline" size={24} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-accent flex-1 rounded-xl p-3 items-center"
+            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
             onPress={() => addBulletPoint(contentSections.length)}
           >
             <Ionicons name="list-outline" size={24} />

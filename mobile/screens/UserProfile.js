@@ -46,7 +46,7 @@ const UserProfile = () => {
         <Image
           source={{ uri: imageUrl }}
           className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg"
-          style={{ borderWidth: 4, borderColor: "#E9ECEF" }}
+          style={{ borderWidth: 4, borderColor: "#2840B5" }}
         />
       </View>
 
@@ -54,7 +54,7 @@ const UserProfile = () => {
         <Text className="text-primaryWhite text-2xl font-bold text-center">
           {user?.name}
         </Text>
-        <Text className="text-darkGray text-sm text-center">
+        <Text className="text-lightGray text-sm text-center">
           @{user?.username}
         </Text>
 
@@ -63,7 +63,7 @@ const UserProfile = () => {
             {user.bio}
           </Text>
         ) : (
-          <Text className="text-lightGray text-sm text-center mt-2 italic">
+          <Text className="text-lightGray text-sm text-center mt-2">
             No bio added.
           </Text>
         )}
@@ -74,7 +74,7 @@ const UserProfile = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -82,7 +82,7 @@ const UserProfile = () => {
   if (!user) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <Text className="text-white text-lg">User not found.</Text>
+        <Text className="text-primaryWhite text-lg">User not found.</Text>
       </View>
     );
   }
@@ -90,7 +90,7 @@ const UserProfile = () => {
   return (
     <Background>
       <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#7871AA" />
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
       </TouchableOpacity>
       <FlatList
         data={[]}

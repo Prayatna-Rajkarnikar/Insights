@@ -33,7 +33,7 @@ import ExploreDiscussions from "./screens/ExploreDiscussions";
 import CreateDiscussionScreen from "./screens/CreateDiscussionScreen";
 
 axios.defaults.baseURL = "http://192.168.1.6:3001";
-// axios.defaults.baseURL = "http://100.64.200.232:3001";
+// axios.defaults.baseURL = "http://100.64.197.6:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -93,8 +93,8 @@ const BottomNav = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           height: 62,
-          backgroundColor: "#2D3135",
-          borderColor: "#E9ECEF",
+          backgroundColor: "#080A09",
+          borderColor: "#2840B5",
           borderTopWidth: 2,
           borderWidth: 2,
           borderRadius: 25,
@@ -116,10 +116,10 @@ const BottomNav = () => {
               <Ionicons
                 name="home"
                 size={24}
-                color={focused ? "#7871AA" : "#4B5563"}
+                color={focused ? "#E4E6E7" : "#8B8F92"}
               />
               {focused && (
-                <View className="w-8 h-1 rounded-xl bg-[#7871AA] mt-1" />
+                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
               )}
             </View>
           ),
@@ -141,10 +141,10 @@ const BottomNav = () => {
               <Ionicons
                 name="add-circle"
                 size={26}
-                color={focused ? "#7871AA" : "#4B5563"}
+                color={focused ? "#E4E6E7" : "#8B8F92"}
               />
               {focused && (
-                <View className="w-8 h-1 rounded-xl bg-[#7871AA] mt-1" />
+                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
               )}
             </View>
           ),
@@ -160,10 +160,10 @@ const BottomNav = () => {
               <Ionicons
                 name="person-circle-outline"
                 size={26}
-                color={focused ? "#7871AA" : "#4B5563"}
+                color={focused ? "#E4E6E7" : "#8B8F92"}
               />
               {focused && (
-                <View className="w-8 h-1 rounded-xl bg-[#7871AA] mt-1" />
+                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
               )}
             </View>
           ),

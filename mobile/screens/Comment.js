@@ -113,17 +113,17 @@ const Comment = () => {
           className="rounded-full h-9 w-9 bg-primaryWhite"
         />
         <View className="ml-3 flex-1">
-          <Text className="text-primaryWhite font-medium text-base">
+          <Text className="text-primaryWhite font-normal text-base">
             {item.author.name}
           </Text>
-          <Text className="text-darkGray text-xs font-normal">
+          <Text className="text-lightGray text-xs font-thin">
             {new Date(item.createdAt).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
               year: "2-digit",
             })}
           </Text>
-          <Text className="text-primaryWhite mt-1 text-base font-bold">
+          <Text className="text-primaryWhite mt-1 text-base font-medium">
             {item.content}
           </Text>
         </View>
@@ -134,7 +134,7 @@ const Comment = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -148,12 +148,12 @@ const Comment = () => {
             navigation.goBack();
           }}
         >
-          <Ionicons name="close" size={30} color="#7871AA" />
+          <Ionicons name="close" size={30} color="#8B8F92" />
         </TouchableOpacity>
       </View>
 
       {/* heading */}
-      <Text className="text-center font-bold text-darkGray text-base mb-4 mt-2">
+      <Text className="text-center font-bold text-lightGray text-base mb-4 mt-2">
         Comments
       </Text>
 
@@ -171,9 +171,9 @@ const Comment = () => {
         />
       )}
 
-      <View className="flex-row items-center bg-secondaryBlack p-3 rounded-full my-4">
+      <View className="flex-row items-center bg-secondaryBlack px-3 py-2 rounded-2xl my-4">
         <TextInput
-          className="flex-1 border border-darkGray rounded-full px-4 py-2 mr-2 bg-secondaryBlack text-primaryWhite text-sm font-semibold"
+          className="flex-1 bg-secondaryBlack text-primaryWhite text-base font-normal"
           placeholder="Add a comment..."
           placeholderTextColor="#8B8F92"
           value={userComment}
@@ -183,7 +183,7 @@ const Comment = () => {
         />
         <View className="rounded-full p-2 bg-accent">
           <TouchableOpacity onPress={addComment}>
-            <Ionicons name="arrow-up-circle" size={28} color="#212529" />
+            <Ionicons name="arrow-up-circle" size={28} color="#E4E6E7" />
           </TouchableOpacity>
         </View>
       </View>
@@ -195,9 +195,9 @@ const Comment = () => {
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-darkGray">
+        <View className="flex-1 justify-center items-center">
           <View className="bg-secondaryBlack p-5 rounded-xl">
-            <Text className="text-center font-semibold text-lg mb-3 text-darkGray">
+            <Text className="text-center font-semibold text-lg mb-3 text-primaryWhite">
               {user.email === selectedComment?.author.email
                 ? "Delete this comment?"
                 : "Flag this comment?"}
@@ -205,11 +205,11 @@ const Comment = () => {
 
             {selectedComment && (
               <View className="p-3 rounded-md mb-4">
-                <Text className="text-darkGray font-bold">
+                <Text className="text-lightGray">
                   {selectedComment.author.name}
                 </Text>
                 <Text
-                  className="text-secondaryWhite mt-1 "
+                  className="text-primaryWhite mt-1 "
                   numberOfLines={2}
                   ellipsizeMode="tail"
                 >
@@ -234,11 +234,11 @@ const Comment = () => {
                     setShowModal(false);
                   }}
                 >
-                  <Ionicons name="flag" size={30} color="#7871AA" />
+                  <Ionicons name="flag" size={30} color="#2840B5" />
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => setShowModal(false)}>
-                <Ionicons name="close-circle" size={30} color="gray" />
+                <Ionicons name="close-circle" size={30} color="#25292D" />
               </TouchableOpacity>
             </View>
           </View>

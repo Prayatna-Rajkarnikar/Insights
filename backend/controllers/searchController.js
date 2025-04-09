@@ -1,6 +1,7 @@
 import topicModel from "../models/topics.js";
 import blogModel from "../models/blog.js";
 import userModel from "../models/user.js";
+import roomModel from "../models/roomModel.js";
 
 export const searchTopic = async (req, res) => {
   try {
@@ -19,13 +20,7 @@ export const searchBlogs = async (req, res) => {
     const { query } = req.query;
     const blog = await blogModel
       .find({
-        // $or Operator:
-        // Combines multiple conditions.
-        // At least one of the conditions in the $or array must be true for a document to match.
-        $or: [
-          { title: { $regex: query, $options: "i" } },
-          // { subTitle: { $regex: query, $options: "i" } },
-        ],
+        title: { $regex: query, $options: "i" },
       })
       .populate("author", "name");
     res.json(blog);
@@ -37,14 +32,49 @@ export const searchBlogs = async (req, res) => {
 export const searchUsers = async (req, res) => {
   try {
     const { query } = req.query;
+    const loggedInUserId = req.user.id;
 
-    const user = await userModel.find({
+    const users = await userModel.find({
+      _id: { $ne: loggedInUserId },
       role: { $ne: "Admin" },
-      $or: [
-        // { name: { $regex: query, $options: "i" } },
-        { username: { $regex: query, $options: "i" } },
-      ],
+      username: { $regex: query, $options: "i" },
     });
-    res.json(user);
-  } catch (error) {}
+
+    res.json(users);
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const searchAllChat = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const rooms = await roomModel.find({
+      name: { $regex: query, $options: "i" },
+    });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error("Error searching rooms:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const searchUserChat = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const loggedInUserId = req.user.id;
+
+    const rooms = await roomModel.find({
+      name: { $regex: query, $options: "i" },
+      members: { $in: [loggedInUserId] },
+    });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error("Error searching rooms:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
 };

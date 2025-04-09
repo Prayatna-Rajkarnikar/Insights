@@ -76,7 +76,7 @@ const LoginScreen = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#E9ECEF"
+              color="#8B8F92"
             />
           </TouchableOpacity>
         </View>
@@ -87,7 +87,7 @@ const LoginScreen = () => {
         onPress={() => navigation.navigate("ForgetPassword")}
         className="mt-1 mb-6"
       >
-        <Text className="text-darkGray font-medium  text-base text-right">
+        <Text className="text-lightGray font-medium  text-base text-right">
           Forget Password ?
         </Text>
       </TouchableOpacity>
@@ -98,10 +98,13 @@ const LoginScreen = () => {
       {/* Go to Register Btn */}
       <TouchableOpacity
         onPress={() => navigation.navigate("Register")}
-        className="rounded-full py-5 border-2 border-accent mt-64"
+        className="mt-72 flex-row justify-center space-x-1"
       >
-        <Text className="text-primaryWhite text-xl font-bold  text-center">
-          Create new account
+        <Text className="text-lightGray text-base font-normal  text-center">
+          Dont have an account?
+        </Text>
+        <Text className="text-primaryWhite text-base font-normal  text-center">
+          Create
         </Text>
       </TouchableOpacity>
 

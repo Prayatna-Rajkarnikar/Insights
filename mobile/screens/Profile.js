@@ -63,7 +63,7 @@ const Profile = () => {
           <Ionicons
             name={menuVisible ? "close" : "menu"}
             size={30}
-            color="#7871AA"
+            color="#E4E6E7"
           />
         </TouchableOpacity>
       </View>
@@ -71,8 +71,8 @@ const Profile = () => {
       <View className="flex justify-center items-center">
         <Image
           source={{ uri: imageUrl }}
-          className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg"
-          style={{ borderWidth: 4, borderColor: "#E9ECEF" }}
+          className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg "
+          style={{ borderWidth: 4, borderColor: "#2840B5" }}
         />
       </View>
 
@@ -80,17 +80,17 @@ const Profile = () => {
         <Text className="text-primaryWhite text-2xl font-bold text-center">
           {user?.name}
         </Text>
-        <Text className="text-darkGray text-sm text-center">
+        <Text className="text-lightGray text-sm text-center">
           @{user?.username}
         </Text>
 
         {user?.bio ? (
-          <Text className="text-primaryWhite text-sm text-center mt-2">
+          <Text className="text-lightGray text-sm text-center mt-2">
             {user.bio}
           </Text>
         ) : (
           <TouchableOpacity
-            className="w-36 bg-accent p-2 rounded-lg mt-2 self-center"
+            className="w-36 bg-primaryWhite p-2 rounded-lg mt-2 self-center"
             onPress={() => navigation.navigate("UpdateProfile")}
           >
             <Text className="text-primaryBlack text-sm text-center">
@@ -105,7 +105,7 @@ const Profile = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#7871AA" />
+        <ActivityIndicator size="large" color="#2840B5" />
       </View>
     );
   }
@@ -130,10 +130,12 @@ const Profile = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate("UpdateProfile")}
             >
-              <Text className="text-lightGray font-bold">Edit Profile</Text>
+              <Text className="text-primaryWhite font-medium">
+                Edit Profile
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout}>
-              <Text className="text-lightGray font-bold">Logout</Text>
+              <Text className="text-primaryWhite font-medium">Logout</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>

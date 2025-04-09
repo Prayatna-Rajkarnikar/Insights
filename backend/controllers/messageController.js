@@ -6,7 +6,7 @@ export const getMessages = async (req, res) => {
 
     const messages = await messageModel
       .find({ roomId })
-      .populate("user", "name");
+      .populate("user", "name image");
 
     res.status(200).json({ messages });
   } catch (error) {

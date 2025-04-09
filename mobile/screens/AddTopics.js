@@ -86,7 +86,7 @@ const AddTopics = ({ route, navigation }) => {
       {/* Back Icon */}
       <View className="mt-8">
         <TouchableOpacity onPress={() => navigation.navigate("Create")}>
-          <Ionicons name="arrow-back-outline" size={30} color="#7871AA" />
+          <Ionicons name="arrow-back-outline" size={30} color="#8B8F92" />
         </TouchableOpacity>
       </View>
       {/* heading */}
@@ -95,13 +95,13 @@ const AddTopics = ({ route, navigation }) => {
       </View>
       {/*sub heading */}
       <View className="mt-1">
-        <Text className="text-sm font-normal text-darkGray">
+        <Text className="text-sm font-normal text-lightGray">
           Add topics to let readers know what your topic is about.
         </Text>
       </View>
       {/* Search bar */}
       <View className="flex-row bg-secondaryBlack rounded-xl px-2 py-1 items-center mt-4">
-        <Ionicons name="search-outline" size={30} color="#7871AA" />
+        <Ionicons name="search-outline" size={30} color="#8B8F92" />
         <TextInput
           className="text-xl font-bold text-lightGray w-full"
           placeholder="Search topics"

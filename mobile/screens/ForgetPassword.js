@@ -54,7 +54,7 @@ const ForgetPassword = () => {
     <Background>
       {/* close icon */}
       <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#E9ECEF" />
+        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
       </TouchableOpacity>
 
       {/* heading */}
@@ -86,7 +86,7 @@ const ForgetPassword = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#E9ECEF"
+              color="#8B8F92"
             />
           </TouchableOpacity>
         </View>
@@ -105,23 +105,13 @@ const ForgetPassword = () => {
             <Ionicons
               name={isConfPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#E9ECEF"
+              color="#8B8F92"
             />
           </TouchableOpacity>
         </View>
 
         {/* Btn */}
         <Button onPress={resetPassword} label="Done" />
-
-        {/* Login Navigation */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Login")}
-          className="mt-[278px]"
-        >
-          <Text className="text-accent text-xl font-bold  text-center">
-            Go back to Login
-          </Text>
-        </TouchableOpacity>
       </View>
     </Background>
   );

@@ -1,22 +1,26 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
   TextInput,
   FlatList,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  Image,
 } from "react-native";
 import axios from "axios";
-import { useRoute } from "@react-navigation/native";
-import socket from "../utils/socket"; // ✅ import from the utils
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+
+import socket from "../utils/socket";
+import Background from "../helpers/Background";
 
 const RoomChat = () => {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
   const route = useRoute();
   const { roomId, roomName, userId, userName } = route.params;
+  const navigation = useNavigation();
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     // Join the room
@@ -48,6 +52,12 @@ const RoomChat = () => {
     fetchMessages();
   }, [roomId]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
+
   const handleSend = async () => {
     if (!msg.trim()) return;
 
@@ -78,64 +88,98 @@ const RoomChat = () => {
     }
   };
 
+  const handleLeaveRoom = async () => {
+    try {
+      // Call the backend API to leave the room
+      const response = await axios.put(`/room/leaveRoom/${roomId}`);
+
+      // Emit the leave room event via socket
+      socket.emit("leaveRoom", { roomId });
+
+      // Navigate back to the previous screen
+      navigation.goBack();
+    } catch (error) {
+      console.error(
+        "Error leaving room:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#fff", padding: 16 }}
-    >
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 8 }}>
-        {roomName}
-      </Text>
+    <Background>
+      <View className="flex-row items-center justify-between mt-8 mb-4 px-4">
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={28} color="#8B8F92" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-primaryWhite">{roomName}</Text>
+        <TouchableOpacity
+          onPress={handleLeaveRoom}
+          className="bg-red-600 px-3 py-1.5 rounded-full"
+        >
+          <Text className="text-sm text-primaryWhite">Leave</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
+        ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => {
-          console.log("Rendering item:", item);
+        renderItem={({ item, index }) => {
+          const isOwnMessage = item.user._id === userId;
+
+          const prevMsg = messages[index - 1];
+          const isDifferentSender =
+            !prevMsg || prevMsg.user._id !== item.user._id;
+
+          const marginTopStyle = isDifferentSender ? "mt-4" : "mt-1";
+
           return (
             <View
-              style={{
-                backgroundColor: "#f2f2f2",
-                padding: 8,
-                marginBottom: 4,
-                borderRadius: 8,
-              }}
+              className={`${marginTopStyle} ${
+                isOwnMessage
+                  ? "self-end bg-accent"
+                  : "self-start bg-secondaryBlack"
+              } p-2 rounded-xl max-w-[80%]`}
             >
-              <Text style={{ fontWeight: "600" }}>{item.user.name}</Text>
-              <Text>{item.message}</Text>
+              {!isOwnMessage && isDifferentSender && (
+                <View className="flex-row items-center mb-1">
+                  <Image
+                    source={{
+                      uri: `${axios.defaults.baseURL}${item.user.image}`,
+                    }}
+                    className="rounded-full h-10 w-10 bg-primaryWhite mr-2"
+                  />
+                  <Text className="font-medium text-sm text-lightGray">
+                    {item.user.name}
+                  </Text>
+                </View>
+              )}
+              <Text className="text-base text-primaryWhite">
+                {item.message}
+              </Text>
             </View>
           );
         }}
-        contentContainerStyle={{ paddingBottom: 80 }}
       />
 
-      <View
-        style={{
-          position: "absolute",
-          bottom: 16,
-          left: 16,
-          right: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: "#f2f2f2",
-          borderRadius: 20,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-        }}
-      >
+      <View className="flex-row items-center bg-secondaryBlack px-3 py-2 rounded-2xl my-4">
         <TextInput
           value={msg}
           onChangeText={setMsg}
           placeholder="Type a message..."
-          style={{ flex: 1, fontSize: 16 }}
+          placeholderTextColor="#8B8F92"
+          multiline
+          scrollEnabled={false}
+          className="flex-1 bg-secondaryBlack text-primaryWhite text-base font-normal"
         />
-        <TouchableOpacity onPress={handleSend}>
-          <Text style={{ color: "#007AFF", fontWeight: "600", marginLeft: 8 }}>
-            Send
-          </Text>
-        </TouchableOpacity>
+        <View className="rounded-full p-2 bg-accent">
+          <TouchableOpacity onPress={handleSend}>
+            <Ionicons name="arrow-up-circle" size={28} color="#E4E6E7" />
+          </TouchableOpacity>
+        </View>
       </View>
-    </KeyboardAvoidingView>
+    </Background>
   );
 };
 

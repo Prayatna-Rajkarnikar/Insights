@@ -58,7 +58,7 @@ const Register = () => {
       </View>
 
       <View className="mt-1">
-        <Text className="text-sm font-normal text-darkGray">
+        <Text className="text-sm font-normal text-lightGray">
           Password must be at least 8 characters long and must include 1
           uppercase, 1 lowercase, 1 number, and @ or _ .
         </Text>
@@ -86,7 +86,7 @@ const Register = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#E9ECEF"
+              color="#8B8F92"
             />
           </TouchableOpacity>
         </View>
@@ -105,7 +105,7 @@ const Register = () => {
             <Ionicons
               name={isConfPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#E9ECEF"
+              color="#8B8F92"
             />
           </TouchableOpacity>
         </View>
@@ -116,10 +116,13 @@ const Register = () => {
         {/* Login Navigation */}
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
-          className="mt-[210px]"
+          className="mt-56 flex-row justify-center space-x-1"
         >
-          <Text className="text-accent text-xl font-bold  text-center">
-            Go back to Login
+          <Text className="text-lightGray text-base font-normal  text-center">
+            Already have an account?
+          </Text>
+          <Text className="text-primaryWhite text-base font-normal  text-center">
+            Login
           </Text>
         </TouchableOpacity>
       </View>
