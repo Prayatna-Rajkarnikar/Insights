@@ -6,46 +6,51 @@ import { validate } from "email-validator";
 export const validDetails = async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
+
+    // Check if all fields are filled
+    if (!email || !password || !confirmPassword) {
+      return res.status(400).json({ error: "Please fill all the fields" });
+    }
+
     const trimmedEmail = email.trim();
-    //It ensures that email is in correct format.
-    const emailValidation = validate(trimmedEmail);
-    if (!emailValidation) {
+
+    // Validate email format
+    if (!validate(trimmedEmail)) {
       return res.status(400).json({ error: "Email is not valid." });
     }
 
-    //It checks if same email exist in database.
+    // Check if email already exists in the database
     const emailExist = await userModel.findOne({ email: trimmedEmail });
     if (emailExist) {
       return res.status(400).json({ error: "Email already exists." });
     }
 
-    //It ensures the length of password is greater or equal to 8.
+    // Ensure password meets length and complexity requirements
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: "Password must be at least 8 characters long." });
+      return res.status(400).json({
+        error: "Password must be at least 8 characters long.",
+      });
     }
 
-    //It ensures that password can must contain at least one uppercase, one lowercase and one number.
-    //It ensures that only @ or underscores are allowed.
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=[A-Za-z\d@_]*$)[A-Za-z\d@_]{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
-        error: "Invalid Password.",
+        error: "Invalid Password",
       });
     }
 
-    // It ensures that passoword and confirm passoword field matches.
+    // Ensure password and confirm password match
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and Confirm password doesn't match." });
+      return res.status(400).json({
+        error: "Password and Confirm password don't match.",
+      });
     }
 
     return res.status(202).json({ message: "Valid details." });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(error); // Log the error for debugging purposes
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -53,10 +58,10 @@ export const registerUser = async (req, res) => {
   try {
     // This pulls the user's input data directly from the request body,
     // allowing us to access email and password as variables
-    const { name, email, username, password, role, verifyPassword } = req.body;
+    const { name, email, username, password, role } = req.body;
 
     //It ensures that fields are not empty.
-    if (!name || !email || !username || !password || !verifyPassword) {
+    if (!name || !username) {
       return res.status(400).json({ error: "Please fill all the fields" });
     }
 
@@ -70,6 +75,12 @@ export const registerUser = async (req, res) => {
     if (!nameRegex.test(trimmedName)) {
       return res.status(400).json({
         error: "Name cannot contain any numbers/symbols.",
+      });
+    }
+
+    if (username.length < 4 || username.length > 20) {
+      return res.status(400).json({
+        error: "Username must be 4-20 characters long.",
       });
     }
 
@@ -142,11 +153,9 @@ export const loginUser = async (req, res) => {
     }
 
     if (!user.isActive) {
-      return res
-        .status(403)
-        .json({
-          error: "Your account has been deactivated. Please contact support.",
-        });
+      return res.status(403).json({
+        error: "Your account has been deactivated. Please contact support.",
+      });
     }
 
     // Generate JWT token

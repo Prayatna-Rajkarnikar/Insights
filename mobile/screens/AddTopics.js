@@ -23,8 +23,10 @@ const AddTopics = ({ route, navigation }) => {
     if (selectedTopics.length === 0) {
       Toast.show({
         type: "error",
-        position: "top",
-        text1: "Please select at least one topic before creating the blog.",
+        position: "bottom",
+        text1: "Please select at least one topic.",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       return;
     }
@@ -49,8 +51,10 @@ const AddTopics = ({ route, navigation }) => {
     if (selectedTopics.some((selectedItem) => selectedItem._id === topic._id)) {
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "This topic is already selected.",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       return;
     }
@@ -58,8 +62,10 @@ const AddTopics = ({ route, navigation }) => {
     if (selectedTopics.length >= 5) {
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "You can select up to 5 topics only.",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       return;
     }
@@ -101,9 +107,9 @@ const AddTopics = ({ route, navigation }) => {
       </View>
       {/* Search bar */}
       <View className="flex-row bg-secondaryBlack rounded-xl px-2 py-1 items-center mt-4">
-        <Ionicons name="search-outline" size={30} color="#8B8F92" />
+        <Ionicons name="search-outline" size={26} color="#8B8F92" />
         <TextInput
-          className="text-xl font-bold text-lightGray w-full"
+          className="text-lg font-normal text-primaryWhite w-full"
           placeholder="Search topics"
           placeholderTextColor="#8B8F92"
           value={query}

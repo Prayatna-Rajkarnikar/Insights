@@ -27,11 +27,6 @@ const Register = () => {
 
   const goToRegTwo = async () => {
     try {
-      if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-        alert("Please fill all the fields.");
-        return;
-      }
-
       await axios.post("/auth/validDetails", {
         email,
         password,
@@ -39,13 +34,14 @@ const Register = () => {
       });
 
       const userData = { email, password, confirmPassword };
-      console.log(userData);
       navigation.navigate("CompleteProfile", { userData });
     } catch (error) {
       Toast.show({
         type: "error",
         position: "bottom",
         text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };

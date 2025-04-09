@@ -45,8 +45,10 @@ const UserBlogs = ({ userId }) => {
           console.error("Error fetching blogs:", error);
           Toast.show({
             type: "error",
-            position: "top",
+            position: "bottom",
             text1: "Failed to fetch blogs",
+            visibilityTime: 2000,
+            autoHide: true,
           });
         } finally {
           setLoading(false);
@@ -63,14 +65,21 @@ const UserBlogs = ({ userId }) => {
       setSelectedBlogId(null);
       Toast.show({
         type: "success",
-        position: "top",
+        position: "bottom",
         text1: "Blog deleted successfully",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     } catch (error) {
       const errorMessage =
         error.response?.data?.error || error.message || "Something went wrong";
-      Toast.show({ type: "error", position: "top", text1: errorMessage });
-      console.error("Error deleting blog:", errorMessage);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: errorMessage,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -144,7 +153,7 @@ const UserBlogs = ({ userId }) => {
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
         <View className="h-48 rounded-2xl bg-secondaryBlack">
-          <View className="px-4 py-1">
+          <View className="px-4 py-2">
             <Text
               className="text-xl font-bold text-primaryWhite"
               numberOfLines={1}
@@ -155,7 +164,7 @@ const UserBlogs = ({ userId }) => {
           {firstImg && (
             <Image
               source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-              className="w-full h-40 rounded-2xl mt-2"
+              className="w-full h-36 rounded-2xl mt-2"
               resizeMode="cover"
             />
           )}
@@ -186,6 +195,14 @@ const UserBlogs = ({ userId }) => {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
+  if (blogs.length === 0) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-lg text-lightGray">No blogs available</Text>
       </View>
     );
   }

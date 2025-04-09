@@ -85,7 +85,7 @@ const Profile = () => {
         </Text>
 
         {user?.bio ? (
-          <Text className="text-lightGray text-sm text-center mt-2">
+          <Text className="text-primaryWhite text-sm text-center mt-2">
             {user.bio}
           </Text>
         ) : (

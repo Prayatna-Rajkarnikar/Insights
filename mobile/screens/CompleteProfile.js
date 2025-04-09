@@ -18,12 +18,6 @@ const CompleteProfile = ({ route, navigation }) => {
 
   const registerUser = async () => {
     try {
-      //It ensures the length of username
-      if (username.length < 4 || username.length > 20) {
-        alert("Invalid Username");
-        return;
-      }
-
       await axios.post("/auth/register", {
         name,
         email,
@@ -37,6 +31,8 @@ const CompleteProfile = ({ route, navigation }) => {
         type: "success",
         position: "bottom",
         text1: "Register Successful",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       navigation.navigate("Login");
     } catch (error) {
@@ -44,6 +40,8 @@ const CompleteProfile = ({ route, navigation }) => {
         type: "error",
         position: "bottom",
         text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };

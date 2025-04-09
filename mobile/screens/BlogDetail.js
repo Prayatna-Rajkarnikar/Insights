@@ -180,7 +180,7 @@ const BlogDetail = () => {
               <Ionicons
                 name={isLiked ? "heart" : "heart-outline"}
                 size={30}
-                color={isLiked ? "#2840B5" : "#E4E6E7"}
+                style={{ color: isLiked ? "#2840B5" : "#E4E6E7" }}
               />
             </TouchableOpacity>
             <Text className="w-10 text-start text-lg font-semibold text-primaryWhite">

@@ -42,8 +42,10 @@ const EditBlog = () => {
       } catch (error) {
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Failed to load blog data",
+          visibilityTime: 2000,
+          autoHide: true,
         });
       } finally {
         setLoading(false);
@@ -112,10 +114,12 @@ const EditBlog = () => {
         navigation.goBack();
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Changes made successfully",
+          visibilityTime: 2000,
+          autoHide: true,
         });
-        break; // Exit the loop if the request is successful
+        break;
       } catch (error) {
         attempts++;
         const errorMessage =
@@ -126,8 +130,10 @@ const EditBlog = () => {
         if (attempts >= maxAttempts) {
           Toast.show({
             type: "error",
-            position: "top",
+            position: "bottom",
             text1: errorMessage,
+            visibilityTime: 2000,
+            autoHide: true,
           });
         }
       } finally {
@@ -148,6 +154,8 @@ const EditBlog = () => {
         type: "error",
         position: "bottom",
         text1: "You can only upload up to 5 images",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       return;
     }

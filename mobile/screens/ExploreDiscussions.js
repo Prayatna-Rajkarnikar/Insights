@@ -79,7 +79,10 @@ const ExploreDiscussions = () => {
       if (response.data.message) {
         Toast.show({
           type: "success",
+          position: "bottom",
           text1: response.data.message,
+          visibilityTime: 2000,
+          autoHide: true,
         });
         const { userId, userName, roomName } = response.data;
 
@@ -89,7 +92,10 @@ const ExploreDiscussions = () => {
       console.log(error);
       Toast.show({
         type: "error",
+        position: "bottom",
         text1: error.response?.data?.message || error.message,
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };
@@ -123,7 +129,9 @@ const ExploreDiscussions = () => {
           keyExtractor={(item) => item._id.toString()}
           renderItem={({ item }) => (
             <View className="bg-secondaryBlack p-4 mb-4 rounded-lg ">
-              <Text className="text-xl font-bold mb-2">{item.name}</Text>
+              <Text className="text-xl font-bold mb-2 text-primaryWhite">
+                {item.name}
+              </Text>
               <Text className="text-lightGray mb-2">{item.description}</Text>
               <Text className="text-sm text-lightGray">
                 Admin: {item.admin?.name || "Unknown"}

@@ -126,7 +126,7 @@ const Home = () => {
     <Background>
       <View className="flex-row justify-between items-center mt-8">
         <Text className="text-primaryWhite font-medium text-xl">Insights</Text>
-        <View className="flex-row items-center justify-around space-x-4">
+        <View className="flex-row items-center justify-around space-x-6">
           <TouchableOpacity onPress={() => navigation.navigate("Discussions")}>
             <Ionicons name="chatbubble-outline" size={26} color="#E4E6E7" />
           </TouchableOpacity>

@@ -39,6 +39,8 @@ const ForgetPassword = () => {
         type: "success",
         position: "bottom",
         text1: "Password reset successful. You can now log in",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       navigation.navigate("Login");
     } catch (error) {
@@ -46,6 +48,8 @@ const ForgetPassword = () => {
         type: "error",
         position: "bottom",
         text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };

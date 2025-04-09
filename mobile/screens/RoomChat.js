@@ -97,7 +97,7 @@ const RoomChat = () => {
       socket.emit("leaveRoom", { roomId });
 
       // Navigate back to the previous screen
-      navigation.goBack();
+      navigation.navigate("Discussions");
     } catch (error) {
       console.error(
         "Error leaving room:",

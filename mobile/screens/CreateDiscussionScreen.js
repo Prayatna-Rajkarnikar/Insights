@@ -32,6 +32,10 @@ const CreateDiscussionScreen = () => {
       });
 
       if (response.status === 201) {
+        const userInfo = {
+          userId: response.data.userId,
+          name: response.data.name,
+        };
         Alert.alert("Success", "Room created successfully!", [
           {
             text: "Go to Room",
@@ -39,6 +43,8 @@ const CreateDiscussionScreen = () => {
               navigation.navigate("RoomChat", {
                 roomId: response.data.room._id,
                 roomName: response.data.room.name,
+                userId: userInfo.userId,
+                userName: userInfo.name,
               }),
           },
         ]);

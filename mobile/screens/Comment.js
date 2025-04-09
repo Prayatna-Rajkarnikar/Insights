@@ -54,8 +54,10 @@ const Comment = () => {
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "top",
-        text1: "Failed to submit your comment",
+        position: "bottom",
+        text1: error.response.data.error || "Failed to submit your comment",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };
@@ -72,14 +74,18 @@ const Comment = () => {
       setShowModal(false);
       Toast.show({
         type: "success",
-        position: "top",
+        position: "bottom",
         text1: "Comment deleted successfully",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "top",
-        text1: "Failed to delete comment",
+        position: "bottom",
+        text1: error.response.data.error || "Failed to delete comment",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };
@@ -90,14 +96,18 @@ const Comment = () => {
       setShowModal(false);
       Toast.show({
         type: "success",
-        position: "top",
+        position: "bottom",
         text1: "Comment flagged successfully",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "top",
-        text1: "Failed to flag comment",
+        position: "bottom",
+        text1: error.response.data.error || "Failed to flag comment",
+        visibilityTime: 2000,
+        autoHide: true,
       });
     }
   };
@@ -234,7 +244,11 @@ const Comment = () => {
                     setShowModal(false);
                   }}
                 >
-                  <Ionicons name="flag" size={30} color="#2840B5" />
+                  <Ionicons
+                    name="flag"
+                    size={30}
+                    style={{ color: "#2840B5" }}
+                  />
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => setShowModal(false)}>

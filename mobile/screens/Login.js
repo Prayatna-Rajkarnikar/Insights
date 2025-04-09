@@ -32,6 +32,8 @@ const LoginScreen = () => {
         type: "success",
         position: "bottom",
         text1: "Login Successful",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       navigation.navigate("Home");
     } catch (error) {
@@ -42,6 +44,8 @@ const LoginScreen = () => {
           type: "error",
           position: "bottom",
           text1: error.response.data.error || "Something went wrong",
+          visibilityTime: 2000,
+          autoHide: true,
         });
       }
     }
@@ -109,12 +113,12 @@ const LoginScreen = () => {
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-center items-center bg-darkGray">
+        <View className="flex-1 justify-center items-center bg-secondaryBlack">
           <View className="w-3/4 p-5 bg-primaryBlack rounded-xl">
             <Text className="text-center text-lg font-bold text-primaryWhite">
               Account Deactivated
             </Text>
-            <Text className="text-center text-sm font-light text-darkGray mt-3">
+            <Text className="text-center text-sm font-light text-lightGray mt-3">
               Your account has been deactivated due to a policy violation. It
               will be reactivated in a few days.
             </Text>

@@ -6,6 +6,10 @@ export const createRoom = async (req, res) => {
     const { name, description } = req.body;
     const userId = req.user.id;
 
+    if (!name || !description) {
+      return res.status(404).json("Please fill all the fields.");
+    }
+
     const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -18,7 +22,9 @@ export const createRoom = async (req, res) => {
     });
     await newRoom.save();
 
-    res.status(201).json({ message: "Room created", room: newRoom });
+    res
+      .status(201)
+      .json({ message: "Room created", room: newRoom, userId: userId });
   } catch (error) {
     res.status(500).json({ message: "Failed to create room", error });
   }
@@ -111,7 +117,7 @@ export const leaveRoom = async (req, res) => {
       if (room.members.length > 0) {
         room.admin = room.members[0];
       } else {
-        await room.remove();
+        await room.deleteOne();
         return res.status(200).json({ message: "Room deleted as admin left" });
       }
     }

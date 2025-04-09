@@ -30,6 +30,30 @@ const Create = () => {
         type: "error",
         position: "bottom",
         text1: "Please fill all the fields",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      return;
+    }
+
+    // Validate each content section
+    const hasEmptySection = contentSections.some((section) => {
+      if (section.type === "text" || section.type === "bullet") {
+        return !section.value.trim(); // empty text or bullet
+      }
+      if (section.type === "image") {
+        return !section.value || !section.value.uri; // missing image
+      }
+      return false;
+    });
+
+    if (hasEmptySection) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Please fill all the fields.",
+        visibilityTime: 2000,
+        autoHide: true,
       });
       return;
     }
@@ -53,6 +77,8 @@ const Create = () => {
           type: "error",
           position: "bottom",
           text1: "You can only upload up to 5 images",
+          visibilityTime: 2000,
+          autoHide: true,
         });
         return;
       }

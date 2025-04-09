@@ -9,9 +9,7 @@ export const createBlog = async (req, res) => {
 
     // Ensure that none of the required fields are empty
     if (!title || !subTitle || !content) {
-      return res
-        .status(404)
-        .json({ error: "Title, Subtitle, and Content are required." });
+      return res.status(404).json({ error: "Please fill all the fields." });
     }
 
     if (typeof topics === "string") {

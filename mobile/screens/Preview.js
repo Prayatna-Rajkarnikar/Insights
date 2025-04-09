@@ -56,8 +56,10 @@ const Preview = ({ route }) => {
 
         Toast.show({
           type: "success",
-          position: "top",
-          text1: "Yay! You just created a blog",
+          position: "bottom",
+          text1: "Blog created successfully",
+          visibilityTime: 2000,
+          autoHide: true,
         });
 
         navigation.navigate("Home");
@@ -74,8 +76,10 @@ const Preview = ({ route }) => {
         if (attempts >= maxAttempts) {
           Toast.show({
             type: "error",
-            position: "top",
-            text1: errorMessage,
+            position: "bottom",
+            text1: "Something went wrong",
+            visibilityTime: 2000,
+            autoHide: true,
           });
         }
       } finally {
@@ -133,13 +137,6 @@ const Preview = ({ route }) => {
             ellipsizeMode="tail"
           >
             {title}
-          </Text>
-          <Text
-            className="text-sm font-normal text-lightGray italic"
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            {subtitle}
           </Text>
         </View>
       </View>

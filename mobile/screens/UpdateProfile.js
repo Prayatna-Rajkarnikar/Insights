@@ -40,8 +40,10 @@ const UpdateProfile = () => {
         console.error("Error fetching user data:", error);
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Failed to load user data",
+          visibilityTime: 2000,
+          autoHide: true,
         });
       }
     };
@@ -72,44 +74,63 @@ const UpdateProfile = () => {
 
   const updateProfile = async () => {
     setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("username", username);
-      formData.append("bio", bio || "");
+    const maxAttempts = 2;
+    let attempts = 0;
 
-      if (image) {
-        formData.append("image", {
-          uri: image,
-          type: "image/jpeg",
-          name: image.split("/").pop(),
+    while (attempts < maxAttempts) {
+      try {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("username", username);
+        formData.append("bio", bio || "");
+
+        if (image) {
+          formData.append("image", {
+            uri: image,
+            type: "image/jpeg",
+            name: image.split("/").pop(),
+          });
+        }
+
+        await axios.put("/user/updateProfile", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
+
+        navigation.goBack();
+        Toast.show({
+          type: "success",
+          position: "bottom",
+          text1: "Profile updated successfully!",
+          visibilityTime: 2000,
+          autoHide: true,
+        });
+
+        break;
+      } catch (error) {
+        attempts++;
+        const errorMessage =
+          error.response && error.response.data
+            ? error.response.data.error
+            : error.message || "Something went wrong";
+
+        console.error("Update profile error:", error);
+
+        if (attempts >= maxAttempts) {
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: "Something went wrong",
+            visibilityTime: 2000,
+            autoHide: true,
+          });
+        }
+      } finally {
+        if (attempts >= maxAttempts) {
+          setLoading(false);
+        }
       }
-
-      await axios.put("/user/updateProfile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigation.goBack();
-      Toast.show({
-        type: "success",
-        position: "top",
-        text1: "Profile updated successfully!",
-      });
-    } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.error
-          : error.message || "Something went wrong";
-
-      Toast.show({
-        type: "error",
-        position: "top",
-        text1: errorMessage,
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -143,7 +164,7 @@ const UpdateProfile = () => {
       </View>
       {/* Text Fields */}
       <TextInput
-        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-primaryWhite"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-lg font-normal text-primaryWhite"
         value={name}
         onChangeText={setName}
         placeholder="Enter your name"
@@ -151,7 +172,7 @@ const UpdateProfile = () => {
         scrollEnabled={false}
       />
       <TextInput
-        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-xl font-bold text-primaryWhite"
+        className="bg-secondaryBlack rounded-xl p-3 items-center mb-2 text-lg font-normal text-primaryWhite"
         value={username}
         onChangeText={setUsername}
         placeholder="Enter your username"
@@ -159,7 +180,7 @@ const UpdateProfile = () => {
         scrollEnabled={false}
       />
       <TextInput
-        className="bg-secondaryBlack text-gray-200 rounded-xl p-4 text-xl h-24"
+        className="bg-secondaryBlack text-gray-200 rounded-xl p-4 text-base font-normal h-24"
         value={bio}
         onChangeText={setBio}
         placeholder="Write something about yourself..."

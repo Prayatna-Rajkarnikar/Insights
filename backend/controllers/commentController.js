@@ -17,6 +17,10 @@ export const createComment = async (req, res) => {
       return res.status(404).json({ error: "Blog not found" });
     }
 
+    if (!content) {
+      return res.status(404).json({ error: "Please fill the field." });
+    }
+
     const { filteredText, isBlurred } = await filterSlangword(content);
 
     const newComment = new commentModel({
@@ -78,7 +82,7 @@ export const hideComment = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Failed to create comment", details: error.message });
+      .json({ error: "Failed to hide comment", details: error.message });
   }
 };
 
@@ -99,9 +103,12 @@ export const getComments = async (req, res) => {
 export const getTotalComments = async (req, res) => {
   try {
     const { blogId } = req.params;
-    const totalComments = await commentModel.countDocuments({ blog: blogId, isHidden: { $ne: true }, });
+    const totalComments = await commentModel.countDocuments({
+      blog: blogId,
+      isHidden: { $ne: true },
+    });
     res.status(200).json({ totalComments });
   } catch (error) {
-    res.status(500).json({ error: "Failed to get total comments in blog" });
+    res.status(500).json({ error: "Failed to get total comments" });
   }
 };
