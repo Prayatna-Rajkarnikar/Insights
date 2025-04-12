@@ -80,7 +80,7 @@ const LoginScreen = () => {
             <Ionicons
               name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#8B8F92"
+              color="#ABABAB"
             />
           </TouchableOpacity>
         </View>

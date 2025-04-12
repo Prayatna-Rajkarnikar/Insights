@@ -58,7 +58,7 @@ const EditBlog = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
@@ -225,15 +225,13 @@ const EditBlog = () => {
     <View className="flex-1">
       <Background>
         {/* Back Icon */}
-        <View className="mt-8 items-end">
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Ionicons name="close" size={30} color="#8B8F92" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+        </TouchableOpacity>
         <ScrollView
           showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
@@ -242,7 +240,7 @@ const EditBlog = () => {
           <TextInput
             className="text-2xl font-bold text-primaryWhite"
             placeholder="Title"
-            placeholderTextColor="#8B8F92"
+            placeholderTextColor="#ABABAB"
             value={title}
             onChangeText={setTitle}
             multiline
@@ -251,7 +249,7 @@ const EditBlog = () => {
           <TextInput
             className="text-lg text-lightGray italic"
             placeholder="Subtitle"
-            placeholderTextColor="#8B8F92"
+            placeholderTextColor="#ABABAB"
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
@@ -266,7 +264,7 @@ const EditBlog = () => {
                   <TextInput
                     className="text-base justify-start text-lightGray mt-2"
                     placeholder="Add text here..."
-                    placeholderTextColor="#8B8F92"
+                    placeholderTextColor="#ABABAB"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
@@ -366,7 +364,7 @@ const EditBlog = () => {
 
         {loading ? (
           <View className="rounded-full py-5 mt-8">
-            <ActivityIndicator size="large" color="#2D3135" />
+            <ActivityIndicator size="large" color="#3949AB" />
           </View>
         ) : (
           <Button onPress={editBlog} label="Done" />

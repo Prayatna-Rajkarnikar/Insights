@@ -108,9 +108,13 @@ const RoomChat = () => {
 
   return (
     <Background>
-      <View className="flex-row items-center justify-between mt-8 mb-4 px-4">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={28} color="#8B8F92" />
+      <View className="flex-row items-center justify-between mb-4 px-4">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-lg ml-2">Back</Text>
         </TouchableOpacity>
         <Text className="text-xl font-bold text-primaryWhite">{roomName}</Text>
         <TouchableOpacity
@@ -168,14 +172,14 @@ const RoomChat = () => {
           value={msg}
           onChangeText={setMsg}
           placeholder="Type a message..."
-          placeholderTextColor="#8B8F92"
+          placeholderTextColor="#ABABAB"
           multiline
           scrollEnabled={false}
           className="flex-1 bg-secondaryBlack text-primaryWhite text-base font-normal"
         />
         <View className="rounded-full p-2 bg-accent">
           <TouchableOpacity onPress={handleSend}>
-            <Ionicons name="arrow-up-circle" size={28} color="#E4E6E7" />
+            <Ionicons name="arrow-up-circle" size={28} color="#E8E8E8" />
           </TouchableOpacity>
         </View>
       </View>

@@ -61,8 +61,12 @@ const CreateDiscussionScreen = () => {
   return (
     <Background>
       <ScrollView contentContainerStyle="flex-1 justify-center">
-        <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-lg ml-2">Back</Text>
         </TouchableOpacity>
         <Text className="text-xl font-bold text-center mb-8 mt-2 text-primaryWhite">
           Create New Discussion Room
@@ -75,13 +79,17 @@ const CreateDiscussionScreen = () => {
           className="text-lg font-medium"
         />
 
-        <InputField
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Room Description"
-          multiline
-          className="text-lg font-medium h-20"
-        />
+        <View className="bg-secondaryBlack px-3 py-2 rounded-2xl mb-3">
+          <TextInput
+            placeholderTextColor="#ABABAB"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            scrollEnabled={false}
+            placeholder="Room Description"
+            className=" text-primaryWhite text-lg font-medium h-20"
+          />
+        </View>
 
         <Button onPress={handleCreateRoom} label="Create" />
       </ScrollView>

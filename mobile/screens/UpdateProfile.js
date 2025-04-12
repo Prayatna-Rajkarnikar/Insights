@@ -137,8 +137,12 @@ const UpdateProfile = () => {
   return (
     <Background>
       {/* close icon */}
-      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
 
       {/* Image */}
@@ -150,7 +154,7 @@ const UpdateProfile = () => {
               className="w-36 h-36 rounded-full bg-primaryWhite"
               style={{
                 borderWidth: 4,
-                borderColor: "#2840B5",
+                borderColor: "#3949AB",
               }}
             />
           )}
@@ -168,7 +172,7 @@ const UpdateProfile = () => {
         value={name}
         onChangeText={setName}
         placeholder="Enter your name"
-        placeholderTextColor="#8B8F92"
+        placeholderTextColor="#ABABAB"
         scrollEnabled={false}
       />
       <TextInput
@@ -176,7 +180,7 @@ const UpdateProfile = () => {
         value={username}
         onChangeText={setUsername}
         placeholder="Enter your username"
-        placeholderTextColor="#8B8F92"
+        placeholderTextColor="#ABABAB"
         scrollEnabled={false}
       />
       <TextInput
@@ -184,7 +188,7 @@ const UpdateProfile = () => {
         value={bio}
         onChangeText={setBio}
         placeholder="Write something about yourself..."
-        placeholderTextColor="#8B8F92"
+        placeholderTextColor="#ABABAB"
         multiline
         numberOfLines={2}
         textAlignVertical="top"
@@ -193,7 +197,7 @@ const UpdateProfile = () => {
 
       {loading ? (
         <View className="rounded-full py-5 mt-8 bg-accent">
-          <ActivityIndicator size="large" color="#2D3135" />
+          <ActivityIndicator size="large" color="#3949AB" />
         </View>
       ) : (
         <Button onPress={updateProfile} label="Update" />

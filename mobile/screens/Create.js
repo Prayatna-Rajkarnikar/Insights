@@ -162,7 +162,7 @@ const Create = () => {
               navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={30} color="#8B8F92" />
+            <Ionicons name="close" size={30} color="#ABABAB" />
           </TouchableOpacity>
         </View>
 
@@ -176,7 +176,7 @@ const Create = () => {
           <TextInput
             className="text-2xl font-bold text-primaryWhite"
             placeholder="Title"
-            placeholderTextColor="#8B8F92"
+            placeholderTextColor="#ABABAB"
             value={title}
             onChangeText={setTitle}
             multiline
@@ -187,7 +187,7 @@ const Create = () => {
           <TextInput
             className="text-lg text-lightGray mt-1"
             placeholder="Subtitle"
-            placeholderTextColor="#8B8F92"
+            placeholderTextColor="#ABABAB"
             value={subtitle}
             onChangeText={setSubtitle}
             multiline
@@ -200,7 +200,7 @@ const Create = () => {
                   <TextInput
                     className="text-base justify-start text-lightGray mt-2"
                     placeholder="Add text here..."
-                    placeholderTextColor="#8B8F92"
+                    placeholderTextColor="#ABABAB"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline
@@ -220,7 +220,7 @@ const Create = () => {
               ) : section.type === "bullet" ? (
                 <View className="relative">
                   <TextInput
-                    className="text-base justify-start text-lightGray mt-2"
+                    className="text-lg font-semibold justify-start text-lightGray mt-2"
                     value={section.value}
                     onChangeText={(text) => updateText(text, index)}
                     multiline

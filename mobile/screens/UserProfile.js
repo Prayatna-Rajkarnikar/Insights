@@ -46,7 +46,7 @@ const UserProfile = () => {
         <Image
           source={{ uri: imageUrl }}
           className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg"
-          style={{ borderWidth: 4, borderColor: "#2840B5" }}
+          style={{ borderWidth: 4, borderColor: "#3949AB" }}
         />
       </View>
 
@@ -74,7 +74,7 @@ const UserProfile = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
@@ -89,8 +89,12 @@ const UserProfile = () => {
 
   return (
     <Background>
-      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
       <FlatList
         data={[]}

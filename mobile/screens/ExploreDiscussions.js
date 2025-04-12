@@ -59,7 +59,7 @@ const ExploreDiscussions = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
@@ -104,18 +104,19 @@ const ExploreDiscussions = () => {
     <Background>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
-        className="w-10 mt-8"
+        className="flex-row items-center"
       >
-        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
       <Text className="text-2xl font-bold my-4 text-primaryWhite">
         Explore Discussions
       </Text>
       <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center space-x-2 mb-4">
-        <Ionicons name="search-outline" size={24} color="#E4E6E7" />
+        <Ionicons name="search-outline" size={24} color="#E8E8E8" />
         <TextInput
           placeholder="Search rooms..."
-          placeholderTextColor="#8B8F92"
+          placeholderTextColor="#ABABAB"
           value={searchQuery}
           onChangeText={handleSearch}
           className="text-base font-normal text-primaryWhite flex-1"

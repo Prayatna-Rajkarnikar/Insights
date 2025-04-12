@@ -8,6 +8,7 @@ import {
   getBlogDetail,
   deleteBlog,
   getTrendingBlogs,
+  getBlogsByTopic,
 } from "../controllers/blogController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/imgMiddleware.js";
@@ -24,5 +25,6 @@ router.get("/getUserBlogsById/:userId", userBlogsById);
 router.get("/getBlogDetail/:id", authMiddleware, getBlogDetail);
 router.delete("/deleteBlog/:blogId", deleteBlog);
 router.get("/trending", getTrendingBlogs);
+router.get("/getBlogsByTopic", getBlogsByTopic);
 
 export default router;

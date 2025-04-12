@@ -54,16 +54,13 @@ const Profile = () => {
     : `${axios.defaults.baseURL}/default-user.png`;
 
   const renderHeader = () => (
-    <>
-      <View className="flex justify-center items-end mt-4">
-        <TouchableOpacity
-          onPress={() => setMenuVisible(!menuVisible)}
-          className="p-4"
-        >
+    <View>
+      <View className="flex justify-center items-end">
+        <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)}>
           <Ionicons
             name={menuVisible ? "close" : "menu"}
             size={30}
-            color="#E4E6E7"
+            color="#E8E8E8"
           />
         </TouchableOpacity>
       </View>
@@ -71,8 +68,8 @@ const Profile = () => {
       <View className="flex justify-center items-center">
         <Image
           source={{ uri: imageUrl }}
-          className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg "
-          style={{ borderWidth: 4, borderColor: "#2840B5" }}
+          className="w-40 h-40 rounded-full bg-primaryWhite"
+          style={{ borderWidth: 4, borderColor: "#3949AB" }}
         />
       </View>
 
@@ -99,13 +96,13 @@ const Profile = () => {
           </TouchableOpacity>
         )}
       </View>
-    </>
+    </View>
   );
 
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }

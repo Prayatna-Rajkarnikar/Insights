@@ -93,45 +93,58 @@ const BlogDetail = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <Background>
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-primaryWhite text-lg">Blog not found</Text>
+          <TouchableOpacity
+            className="mt-4 bg-accent px-4 py-2 rounded-lg"
+            onPress={() => navigation.goBack()}
+          >
+            <Text className="text-primaryWhite">Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </Background>
     );
   }
 
   return (
     <Background>
       {/* Back Icon */}
-      <View className="mt-8 items-end">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="close" size={30} color="#8B8F92" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+      </TouchableOpacity>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 60 }}
         className="mt-6 flex space-y-6"
       >
-        <View className="flex">
-          <Text className="text-2xl font-bold text-primaryWhite">
-            {blog.title}
-          </Text>
-          <Text className="text-base font-normal italic text-lightGray">
-            {blog.subTitle}
-          </Text>
-        </View>
-        <View className="flex-row justify-start space-x-3">
-          <Image
-            source={{ uri: `${axios.defaults.baseURL}${blog.author.image}` }}
-            className="rounded-full w-14 h-14 bg-primaryWhite"
-          />
-          <View className="flex justify-center space-y-2">
-            <Text className="text-sm font-thin text-primaryWhite">
-              {blog.author.name}
+        {/* Author Info */}
+        <View className="flex-row items-center py-2">
+          {blog.author?.image && (
+            <Image
+              source={{
+                uri: `${axios.defaults.baseURL}${blog.author.image}`,
+              }}
+              className="rounded-full w-10 h-10 bg-primaryWhite"
+            />
+          )}
+          <View className="ml-3">
+            <Text className="text-primaryWhite font-bold">
+              {blog.author?.name}
             </Text>
-            <Text className="text-lightGray text-sm">
+            <Text className="text-lightGray text-xs">
               {new Date(blog.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -139,6 +152,15 @@ const BlogDetail = () => {
               })}
             </Text>
           </View>
+        </View>
+
+        <View className="py-2">
+          <Text className="text-2xl font-bold text-primaryWhite">
+            {blog.title}
+          </Text>
+          <Text className="text-base font-normal italic text-lightGray">
+            {blog.subTitle}
+          </Text>
         </View>
 
         <View className="">
@@ -169,9 +191,9 @@ const BlogDetail = () => {
             return null;
           })}
         </View>
-        <View className="h-2" />
       </ScrollView>
-      <View className="flex-row justify-evenly h-16 pt-2">
+
+      <View className="flex-row justify-evenly py-5">
         <TouchableOpacity
           onPress={() => navigation.navigate("Like", { blogId })}
         >
@@ -180,7 +202,7 @@ const BlogDetail = () => {
               <Ionicons
                 name={isLiked ? "heart" : "heart-outline"}
                 size={30}
-                style={{ color: isLiked ? "#2840B5" : "#E4E6E7" }}
+                style={{ color: isLiked ? "#3949AB" : "#E8E8E8" }}
               />
             </TouchableOpacity>
             <Text className="w-10 text-start text-lg font-semibold text-primaryWhite">
@@ -192,7 +214,7 @@ const BlogDetail = () => {
           onPress={() => navigation.navigate("Comment", { blogId, user })}
         >
           <View className="flex-row items-center space-x-2">
-            <Ionicons name="chatbubble-outline" size={30} color="#E4E6E7" />
+            <Ionicons name="chatbubble-outline" size={30} color="#E8E8E8" />
             <Text className="w-10 text-start text-lg font-semibold text-primaryWhite">
               {totalComments}
             </Text>

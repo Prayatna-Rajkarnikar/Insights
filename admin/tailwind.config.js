@@ -12,7 +12,7 @@ export default {
         primaryWhite: "#F8F9FA",
         secondaryWhite: "#F1F3F5",
         lightGray: "#E9ECEF",
-        darkGray: "#8B8F92",
+        darkGray: "#ABABAB",
         primaryBlack: "#212529",
         secondaryBlack: "#2D3135",
       },

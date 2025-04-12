@@ -98,13 +98,13 @@ const Preview = ({ route }) => {
   return (
     <Background>
       {/* Back Icon */}
-      <View className="mt-8">
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AddTopics", { blogData })}
-        >
-          <Ionicons name="arrow-back-outline" size={30} color="#8B8F92" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+      </TouchableOpacity>
 
       {/* Heading */}
       <View className="mt-5">
@@ -159,7 +159,7 @@ const Preview = ({ route }) => {
       {/* Publish button */}
       {loading ? (
         <View className="rounded-full py-5 mt-8">
-          <ActivityIndicator size="large" color="#2840B5" />
+          <ActivityIndicator size="large" color="#3949AB" />
         </View>
       ) : (
         <Button onPress={createBlog} label="Publish" />

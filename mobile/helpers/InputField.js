@@ -7,7 +7,7 @@ const InputField = ({ placeholder, value, onChangeText, ...props }) => {
       <TextInput
         placeholder={placeholder}
         value={value}
-        placeholderTextColor="#8B8F92"
+        placeholderTextColor="#ABABAB"
         onChangeText={onChangeText}
         scrollEnabled={false}
         {...props}

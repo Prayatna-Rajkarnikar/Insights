@@ -33,7 +33,7 @@ export const getMostUsedTopics = async (req, res) => {
   try {
     const blogs = await blogModel.find({}, "topics").populate("topics", "name");
 
-    const topicCount = {}; // Object to store topic occurrences
+    const topicCount = {};
 
     // Count occurrences of each topic in the blogs
     blogs.forEach((blog) => {

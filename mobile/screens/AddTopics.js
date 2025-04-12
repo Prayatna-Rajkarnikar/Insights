@@ -90,11 +90,14 @@ const AddTopics = ({ route, navigation }) => {
   return (
     <Background>
       {/* Back Icon */}
-      <View className="mt-8">
-        <TouchableOpacity onPress={() => navigation.navigate("Create")}>
-          <Ionicons name="arrow-back-outline" size={30} color="#8B8F92" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Create")}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+      </TouchableOpacity>
+
       {/* heading */}
       <View className="mt-5">
         <Text className="text-3xl font-bold text-primaryWhite">Add Topics</Text>
@@ -107,11 +110,11 @@ const AddTopics = ({ route, navigation }) => {
       </View>
       {/* Search bar */}
       <View className="flex-row bg-secondaryBlack rounded-xl px-2 py-1 items-center mt-4">
-        <Ionicons name="search-outline" size={26} color="#8B8F92" />
+        <Ionicons name="search-outline" size={26} color="#ABABAB" />
         <TextInput
           className="text-lg font-normal text-primaryWhite w-full"
           placeholder="Search topics"
-          placeholderTextColor="#8B8F92"
+          placeholderTextColor="#ABABAB"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchTopics}
@@ -124,7 +127,7 @@ const AddTopics = ({ route, navigation }) => {
           <View className="flex-row flex-wrap gap-1">
             {selectedTopics.map((topic) => (
               <View key={topic._id} className="flex-row">
-                <View className="bg-darkGray rounded-full p-2">
+                <View className="bg-secondaryBlack rounded-full p-2">
                   <Text className="text-primaryWhite text-xs font-medium">
                     {topic.name}
                   </Text>

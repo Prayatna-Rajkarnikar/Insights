@@ -1,174 +1,269 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Text,
   View,
   Image,
   TouchableOpacity,
-  FlatList,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+
 import Background from "../helpers/Background";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [trendings, setTrendings] = useState([]);
   const [latest, setLatest] = useState([]);
-  const [selectedTab, setSelectedTab] = useState("Trending");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [categories, setCategories] = useState(["All"]);
 
   const navigation = useNavigation();
 
-  const fetchBlogs = async () => {
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("/topic/getMostUsedTopics");
+      const topicNames = res.data.map((topic) => topic.name);
+      setCategories(["All", ...topicNames]);
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+    }
+  };
+
+  const fetchTrending = async () => {
+    try {
+      const res = await axios.get("/blog/trending");
+      setTrendings(res.data);
+    } catch (error) {
+      console.error("Error fetching trending blogs:", error);
+    }
+  };
+
+  const fetchBlogsByCategory = async (category) => {
     try {
       setLoading(true);
-      const trendingResponse = await axios.get("/blog/trending");
-      const latestResponse = await axios.get("/blog/getLatestBlogs");
-      setTrendings(trendingResponse.data);
-      setLatest(latestResponse.data);
+      if (category === "All") {
+        const res = await axios.get("/blog/getLatestBlogs");
+        setLatest(res.data);
+      } else {
+        const res = await axios.get(`/blog/getBlogsByTopic?topic=${category}`);
+        setLatest(res.data);
+      }
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      console.error("Error fetching blogs by category:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const onCategoryPress = (category) => {
+    setActiveCategory(category);
+    fetchBlogsByCategory(category);
+  };
+
+  const initialFetch = async () => {
+    setLoading(true);
+    await fetchCategories();
+    await fetchTrending();
+    await fetchBlogsByCategory("All");
+    setLoading(false);
+  };
+
   useFocusEffect(
     useCallback(() => {
-      fetchBlogs();
+      initialFetch();
     }, [])
   );
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+      <View className="flex-1 justify-center items-center bg-primaryBlack">
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
 
-  const renderItem = ({ item }) => {
-    const firstImg =
-      item.content.find((contentItem) => contentItem.type === "image")?.value ||
-      null;
+  const trendingPost = trendings.length > 0 ? trendings[0] : null;
 
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
+  return (
+    <Background>
+      {/* Header */}
+      <View className="flex-row justify-between items-center pt-2 pb-4">
+        <Text className="text-primaryWhite text-2xl font-bold">Insights</Text>
+        <View className="flex-row gap-4">
+          <TouchableOpacity onPress={() => navigation.navigate("Discussions")}>
+            <Ionicons name="chatbubble-outline" size={24} color="#E8E8E8" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+            <Ionicons name="search-outline" size={24} color="#E8E8E8" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 80 }}
       >
-        <View className="px-4 py-6 mb-4 rounded-2xl bg-secondaryBlack">
-          <View className="flex-row space-x-2 items-center">
-            {item.author?.image && (
-              <Image
-                source={{
-                  uri: `${axios.defaults.baseURL}${item.author.image}`,
-                }}
-                className="rounded-full w-8 h-8 bg-primaryWhite"
-              />
-            )}
-            <Text className="text-sm font-thin  text-lightGray">
-              {item.author?.name}
-            </Text>
-          </View>
-          <View className=" flex mt-6 space-y-2">
-            {firstImg && (
-              <Image
-                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                className="w-full h-40 rounded-xl"
-                resizeMode="cover"
-              />
-            )}
-            <Text
-              className="text-2xl font-bold text-primaryWhite"
-              numberOfLines={2}
+        {/* Categories */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
+        >
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category}
+              onPress={() => onCategoryPress(category)}
+              className={`mr-3 px-4 py-2 rounded-full ${
+                activeCategory === category ? "bg-accent" : "bg-secondaryBlack"
+              }`}
             >
-              {item.title}
-            </Text>
-          </View>
-
-          {/* Footer section */}
-          <View className="mt-6">
-            <View className="flex-row justify-around items-center">
-              <Text className="text-lightGray text-xs">
-                {new Date(item.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+              <Text
+                className={`${
+                  activeCategory === category
+                    ? "text-primaryWhite"
+                    : "text-lightGray"
+                }`}
+              >
+                {category}
               </Text>
-              <View className="flex-row space-x-4">
-                <View className="flex-row space-x-1">
-                  <Text className="text-sm text-primaryWhite font-bold">
-                    {item.likes.length}
-                  </Text>
-                  <Text className="text-sm text-lightGray font-bold">
-                    Likes
-                  </Text>
-                </View>
-                <View className="flex-row space-x-1">
-                  <Text className="text-sm text-primaryWhite font-bold">
-                    {item.comments.length}
-                  </Text>
-                  <Text className="text-sm text-lightGray font-bold">
-                    Comments
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Featured Post */}
+        {trendingPost && (
+          <TouchableOpacity
+            className="py-3"
+            onPress={() =>
+              navigation.navigate("BlogDetail", { blogId: trendingPost._id })
+            }
+          >
+            <View className="bg-secondaryBlack rounded-xl overflow-hidden">
+              {trendingPost.content &&
+              trendingPost.content.find((item) => item.type === "image") ? (
+                <Image
+                  source={{
+                    uri: `${axios.defaults.baseURL}${
+                      trendingPost.content.find((item) => item.type === "image")
+                        .value
+                    }`,
+                  }}
+                  className="w-full h-48"
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="w-full h-48 bg-secondaryBlack" />
+              )}
+              <View className="absolute top-3 left-3 bg-accent px-3 py-1 rounded-full">
+                <Text className="text-primaryWhite text-xs font-medium">
+                  Trending
+                </Text>
+              </View>
+              <View className="p-4">
+                <Text
+                  className="text-primaryWhite text-xl font-bold mb-2"
+                  numberOfLines={2}
+                >
+                  {trendingPost.title}
+                </Text>
+                <Text className="text-lightGray mb-3" numberOfLines={1}>
+                  {trendingPost.subTitle}
+                </Text>
+                <View className="flex-row justify-between items-center">
+                  <View className="flex-row items-center">
+                    {trendingPost.author?.image ? (
+                      <Image
+                        source={{
+                          uri: `${axios.defaults.baseURL}${trendingPost.author.image}`,
+                        }}
+                        className="w-6 h-6 rounded-full mr-2"
+                      />
+                    ) : (
+                      <View className="w-6 h-6 rounded-full bg-accent mr-2" />
+                    )}
+                    <Text className="text-lightGray text-sm">
+                      {trendingPost.author?.name || "Anonymous"}
+                    </Text>
+                  </View>
+                  <Text className="text-lightGray text-xs">
+                    {new Date(trendingPost.createdAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
                   </Text>
                 </View>
               </View>
             </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  return (
-    <Background>
-      <View className="flex-row justify-between items-center mt-8">
-        <Text className="text-primaryWhite font-medium text-xl">Insights</Text>
-        <View className="flex-row items-center justify-around space-x-6">
-          <TouchableOpacity onPress={() => navigation.navigate("Discussions")}>
-            <Ionicons name="chatbubble-outline" size={26} color="#E4E6E7" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-            <Ionicons name="search-outline" size={26} color="#E4E6E7" />
-          </TouchableOpacity>
+        )}
+
+        {/* Recent Posts */}
+        <View className="px-4 pt-2">
+          <Text className="text-primaryWhite text-lg font-bold mb-3">
+            {activeCategory === "All"
+              ? "Recent Posts"
+              : `Posts in "${activeCategory}"`}
+          </Text>
+
+          {latest.map((post) => (
+            <TouchableOpacity
+              key={post._id}
+              className="flex-row bg-secondaryBlack rounded-xl overflow-hidden mb-4"
+              onPress={() =>
+                navigation.navigate("BlogDetail", { blogId: post._id })
+              }
+            >
+              {post.content &&
+              post.content.find((item) => item.type === "image") ? (
+                <Image
+                  source={{
+                    uri: `${axios.defaults.baseURL}${
+                      post.content.find((item) => item.type === "image").value
+                    }`,
+                  }}
+                  className="w-24 h-24"
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="w-24 h-24 bg-secondaryBlack" />
+              )}
+              <View className="flex-1 p-3">
+                <Text
+                  className="text-primaryWhite font-bold mb-1"
+                  numberOfLines={2}
+                >
+                  {post.title}
+                </Text>
+                <Text className="text-lightGray text-xs mb-2" numberOfLines={2}>
+                  {post.content &&
+                  post.content.find((item) => item.type === "text")
+                    ? post.content
+                        .find((item) => item.type === "text")
+                        .value.substring(0, 60) + "..."
+                    : "No description available"}
+                </Text>
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-lightGray text-xs">
+                    {post.author?.name || "Anonymous"}
+                  </Text>
+                  <Text className="text-lightGray text-xs">
+                    {new Date(post.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
-      </View>
-
-      {/* Filter Toggle Buttons */}
-      <View className="flex-row justify-center space-x-4 mt-5">
-        <Text
-          onPress={() => setSelectedTab("Trending")}
-          className={`px-4 py-2 ${
-            selectedTab === "Trending"
-              ? "text-primaryWhite text-3xl font-bold"
-              : "text-lightGray text-lg font-normal"
-          }`}
-        >
-          Trending
-        </Text>
-
-        <Text
-          onPress={() => setSelectedTab("Latest")}
-          className={`px-4 py-2 ${
-            selectedTab === "Latest"
-              ? "text-primaryWhite text-3xl font-semibold"
-              : "text-lightGray text-lg font-normal"
-          }`}
-        >
-          Latest
-        </Text>
-      </View>
-
-      {/* Conditional Rendering of Blogs */}
-      <FlatList
-        data={selectedTab === "Trending" ? trendings : latest}
-        renderItem={renderItem}
-        keyExtractor={(item) => item._id}
-        showsVerticalScrollIndicator={false}
-        className="mt-5"
-      />
+      </ScrollView>
     </Background>
   );
 };

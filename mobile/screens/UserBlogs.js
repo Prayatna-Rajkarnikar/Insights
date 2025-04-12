@@ -122,7 +122,7 @@ const UserBlogs = ({ userId }) => {
             setSelectedTopic(topic);
           }}
           className={`px-4 py-2 rounded-full mr-2 ${
-            selectedTopic === topic ? "bg-primaryWhite" : "bg-secondaryBlack"
+            selectedTopic === topic ? "bg-accent" : "bg-secondaryBlack"
           }`}
         >
           <Text
@@ -177,7 +177,7 @@ const UserBlogs = ({ userId }) => {
                 navigation.navigate("EditBlog", { blogId: item._id })
               }
             >
-              <Ionicons name="pencil-outline" size={22} color="#2840B5" />
+              <Ionicons name="pencil-outline" size={22} color="#3949AB" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => confirmDelete(item._id)}>
               <Ionicons name="trash-outline" size={22} color="red" />

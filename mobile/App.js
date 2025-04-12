@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 import Login from "./screens/Login";
 import Register from "./screens/Register";
@@ -33,7 +33,7 @@ import ExploreDiscussions from "./screens/ExploreDiscussions";
 import CreateDiscussionScreen from "./screens/CreateDiscussionScreen";
 
 axios.defaults.baseURL = "http://192.168.1.6:3001";
-// axios.defaults.baseURL = "http://100.64.197.6:3001";
+// axios.defaults.baseURL = "http://100.64.202.20:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
@@ -92,18 +92,14 @@ const BottomNav = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 62,
-          backgroundColor: "#080A09",
-          borderColor: "#2840B5",
-          borderTopWidth: 2,
-          borderWidth: 2,
-          borderRadius: 25,
-          overflow: "hidden",
+          height: 70,
+          backgroundColor: "#121212",
+          borderColor: "#1E1E1E",
+          borderTopWidth: 1,
           position: "absolute",
-          bottom: 40,
-          width: 220,
-          left: "50%",
-          transform: [{ translateX: -110 }],
+          bottom: 0,
+          start: 0,
+          end: 0,
         },
       }}
     >
@@ -112,15 +108,18 @@ const BottomNav = () => {
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", paddingVertical: 10 }}>
               <Ionicons
                 name="home"
                 size={24}
-                color={focused ? "#E4E6E7" : "#8B8F92"}
+                color={focused ? "#3949AB" : "#ABABAB"}
               />
-              {focused && (
-                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
-              )}
+              <Text
+                style={{ color: focused ? "#3949AB" : "#ABABAB" }}
+                className="text-xs mt-1"
+              >
+                Home
+              </Text>
             </View>
           ),
         }}
@@ -137,15 +136,18 @@ const BottomNav = () => {
         }}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", paddingVertical: 10 }}>
               <Ionicons
                 name="add-circle"
-                size={26}
-                color={focused ? "#E4E6E7" : "#8B8F92"}
+                size={24}
+                color={focused ? "#3949AB" : "#ABABAB"}
               />
-              {focused && (
-                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
-              )}
+              <Text
+                style={{ color: focused ? "#3949AB" : "#ABABAB" }}
+                className="text-xs mt-1"
+              >
+                Create
+              </Text>
             </View>
           ),
         }}
@@ -156,15 +158,18 @@ const BottomNav = () => {
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", paddingVertical: 10 }}>
               <Ionicons
-                name="person-circle-outline"
-                size={26}
-                color={focused ? "#E4E6E7" : "#8B8F92"}
+                name="person-outline"
+                size={24}
+                color={focused ? "#3949AB" : "#ABABAB"}
               />
-              {focused && (
-                <View className="w-8 h-1 rounded-xl bg-primaryWhite mt-1" />
-              )}
+              <Text
+                style={{ color: focused ? "#3949AB" : "#ABABAB" }}
+                className="text-xs mt-1"
+              >
+                Profile
+              </Text>
             </View>
           ),
         }}

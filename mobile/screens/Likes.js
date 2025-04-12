@@ -40,51 +40,55 @@ const Likes = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
 
   const renderItem = ({ item }) => {
     return (
-      <View className="flex-row space-x-4 mb-4">
-        <Image
-          source={{ uri: `${axios.defaults.baseURL}${item.user.image}` }}
-          className="rounded-full h-12 w-12 bg-primaryWhite"
-        />
-        <View>
-          <Text className="text-lg text-primaryWhite font-medium">
-            {item.user.name}
-          </Text>
-          <Text className="text-sm text-lightGray font-thin">
-            {item.user.username}
-          </Text>
-        </View>
+      <View className="flex-row justify-between items-center py-3 border-b border-primaryBlack">
+        <TouchableOpacity className="flex-row items-center">
+          <Image
+            source={{ uri: `${axios.defaults.baseURL}${item.user.image}` }}
+            className="w-14 h-14 rounded-full bg-primaryWhite"
+          />
+          <View className="ml-3">
+            <Text className="text-primaryWhite font-bold text-lg">
+              {item.user.name}
+            </Text>
+            <Text className="text-lightGray text-xs">{item.user.username}</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
   return (
     <Background>
       {/* close icon */}
-      <View className="mt-8 items-end">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="close" size={30} color="#8B8F92" />
-        </TouchableOpacity>
-      </View>
-      <Text
-        className="text-center font-bold text-lightGray text-base
-         mb-4 mt-2"
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
       >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+      </TouchableOpacity>
+      <Text className="text-primaryWhite text-xl font-bold mt-6 text-center">
         Likes
       </Text>
+
       {likeList.length === 0 ? (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-primaryWhite">No Likes yet.</Text>
-        </View>
+        <Background>
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-primaryWhite text-lg">No Likes yet</Text>
+            <TouchableOpacity
+              className="mt-4 bg-accent px-4 py-2 rounded-lg"
+              onPress={() => navigation.goBack()}
+            >
+              <Text className="text-primaryWhite">Go Back</Text>
+            </TouchableOpacity>
+          </View>
+        </Background>
       ) : (
         <FlatList
           data={likeList}

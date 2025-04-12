@@ -49,8 +49,12 @@ const CompleteProfile = ({ route, navigation }) => {
   return (
     <Background>
       {/* close icon */}
-      <TouchableOpacity className="mt-12" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
 
       {/* heading */}

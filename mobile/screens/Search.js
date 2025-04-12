@@ -130,16 +130,20 @@ const Search = () => {
   return (
     <Background>
       {/* close icon */}
-      <TouchableOpacity className="mt-8" onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#8B8F92" />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
 
       {/* search bar */}
       <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center mt-4 space-x-2">
-        <Ionicons name="search-outline" size={26} color="#E4E6E7" />
+        <Ionicons name="search-outline" size={26} color="#E8E8E8" />
         <TextInput
           placeholder="Search"
-          placeholderTextColor="#8B8F92"
+          placeholderTextColor="#ABABAB"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={fetchBlogs}
@@ -153,7 +157,7 @@ const Search = () => {
         <TouchableOpacity
           onPress={() => setFilter("blogs")}
           style={{
-            backgroundColor: filter === "blogs" ? "#2840B5" : "#2D3135",
+            backgroundColor: filter === "blogs" ? "#3949AB" : "#1E1E1E",
             borderRadius: 25,
             paddingHorizontal: 12,
             paddingVertical: 8,
@@ -170,7 +174,7 @@ const Search = () => {
         <TouchableOpacity
           onPress={() => setFilter("users")}
           style={{
-            backgroundColor: filter === "users" ? "#2840B5" : "#2D3135",
+            backgroundColor: filter === "users" ? "#3949AB" : "#1E1E1E",
             borderRadius: 25,
             paddingHorizontal: 12,
             paddingVertical: 8,

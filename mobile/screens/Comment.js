@@ -115,27 +115,29 @@ const Comment = () => {
   const renderItem = ({ item }) => (
     <TouchableHighlight
       onLongPress={() => handleLongPress(item)}
-      underlayColor="#2D3135"
+      underlayColor="#1E1E1E"
+      className
     >
-      <View className="flex-row bg-secondaryBlack rounded-lg p-3 mt-3">
-        <Image
-          source={{ uri: `${axios.defaults.baseURL}${item.author.image}` }}
-          className="rounded-full h-9 w-9 bg-primaryWhite"
-        />
-        <View className="ml-3 flex-1">
-          <Text className="text-primaryWhite font-normal text-base">
-            {item.author.name}
-          </Text>
-          <Text className="text-lightGray text-xs font-thin">
-            {new Date(item.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "2-digit",
-            })}
-          </Text>
-          <Text className="text-primaryWhite mt-1 text-base font-medium">
-            {item.content}
-          </Text>
+      <View className="mb-4">
+        <View className="flex-row">
+          <Image
+            source={{ uri: `${axios.defaults.baseURL}${item.author.image}` }}
+            className="w-10 h-10 rounded-full bg-primaryWhite"
+          />
+          <View className="bg-secondaryBlack rounded-2xl p-3 mx-1 max-w-[260px]">
+            <Text className="text-primaryWhite font-bold">
+              {item.author.name}
+            </Text>
+            <Text className="text-primaryWhite">{item.content}</Text>
+          </View>
+          <View className="flex-row items-center mt-1 ml-2">
+            <Text className="text-lightGray text-xs">
+              {new Date(item.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableHighlight>
@@ -144,7 +146,7 @@ const Comment = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-secondaryBlack">
-        <ActivityIndicator size="large" color="#2840B5" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
@@ -152,25 +154,30 @@ const Comment = () => {
   return (
     <Background>
       {/* close icon */}
-      <View className="mt-8 items-end">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="close" size={30} color="#8B8F92" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="flex-row items-center"
+      >
+        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+      </TouchableOpacity>
 
-      {/* heading */}
-      <Text className="text-center font-bold text-lightGray text-base mb-4 mt-2">
+      <Text className="text-primaryWhite text-xl font-bold mt-6 text-center">
         Comments
       </Text>
 
       {comments.length === 0 ? (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-primaryWhite">No Comments yet.</Text>
-        </View>
+        <Background>
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-primaryWhite text-lg">No Comments yet</Text>
+            <TouchableOpacity
+              className="mt-4 bg-accent px-4 py-2 rounded-lg"
+              onPress={() => navigation.goBack()}
+            >
+              <Text className="text-primaryWhite">Go Back</Text>
+            </TouchableOpacity>
+          </View>
+        </Background>
       ) : (
         <FlatList
           data={comments}
@@ -182,10 +189,16 @@ const Comment = () => {
       )}
 
       <View className="flex-row items-center bg-secondaryBlack px-3 py-2 rounded-2xl my-4">
+        {user?.image && (
+          <Image
+            source={{ uri: `${axios.defaults.baseURL}${user.image}` }}
+            className="w-8 h-8 rounded-full bg-primaryWhite mr-2"
+          />
+        )}
         <TextInput
-          className="flex-1 bg-secondaryBlack text-primaryWhite text-base font-normal"
+          className="flex-1 text-primaryWhite rounded-full px-4 py-2 mr-2"
           placeholder="Add a comment..."
-          placeholderTextColor="#8B8F92"
+          placeholderTextColor="#ABABAB"
           value={userComment}
           onChangeText={setUserComment}
           multiline
@@ -205,8 +218,8 @@ const Comment = () => {
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
       >
-        <View className="flex-1 justify-center items-center">
-          <View className="bg-secondaryBlack p-5 rounded-xl">
+        <View className="flex-1 justify-center items-center bg-lightGray">
+          <View className="bg-secondaryBlack p-5 rounded-xl mx-10">
             <Text className="text-center font-semibold text-lg mb-3 text-primaryWhite">
               {user.email === selectedComment?.author.email
                 ? "Delete this comment?"
@@ -215,11 +228,11 @@ const Comment = () => {
 
             {selectedComment && (
               <View className="p-3 rounded-md mb-4">
-                <Text className="text-lightGray">
+                <Text className="text-lightGray text-sm ">
                   {selectedComment.author.name}
                 </Text>
                 <Text
-                  className="text-primaryWhite mt-1 "
+                  className="text-primaryWhite mt-1 text-base"
                   numberOfLines={2}
                   ellipsizeMode="tail"
                 >
@@ -235,7 +248,7 @@ const Comment = () => {
                     setShowModal(false);
                   }}
                 >
-                  <Ionicons name="trash-bin" size={30} color="red" />
+                  <Ionicons name="trash-bin" size={24} color="red" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -246,13 +259,13 @@ const Comment = () => {
                 >
                   <Ionicons
                     name="flag"
-                    size={30}
-                    style={{ color: "#2840B5" }}
+                    size={24}
+                    style={{ color: "#3949AB" }}
                   />
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => setShowModal(false)}>
-                <Ionicons name="close-circle" size={30} color="#25292D" />
+                <Ionicons name="close-circle" size={24} color="#25292D" />
               </TouchableOpacity>
             </View>
           </View>
