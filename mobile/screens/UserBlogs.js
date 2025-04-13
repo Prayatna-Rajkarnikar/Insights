@@ -14,7 +14,7 @@ import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
-const UserBlogs = ({ userId }) => {
+const UserBlogs = ({ userId, onBlogDeleted }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
@@ -63,6 +63,9 @@ const UserBlogs = ({ userId }) => {
       await axios.delete(`/blog/deleteBlog/${blogId}`);
       setBlogs((prev) => prev.filter((b) => b._id !== blogId));
       setSelectedBlogId(null);
+      if (onBlogDeleted) {
+        onBlogDeleted();
+      }
       Toast.show({
         type: "success",
         position: "bottom",
@@ -113,7 +116,7 @@ const UserBlogs = ({ userId }) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="px-4 py-2"
+      contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
     >
       {topics.map((topic, index) => (
         <TouchableOpacity
@@ -121,15 +124,13 @@ const UserBlogs = ({ userId }) => {
           onPress={() => {
             setSelectedTopic(topic);
           }}
-          className={`px-4 py-2 rounded-full mr-2 ${
+          className={`mr-3 px-4 py-2 rounded-full ${
             selectedTopic === topic ? "bg-accent" : "bg-secondaryBlack"
           }`}
         >
           <Text
-            className={`text-sm ${
-              selectedTopic === topic
-                ? "text-primaryBlack font-bold"
-                : "text-lightGray"
+            className={`${
+              selectedTopic === topic ? "text-primaryWhite" : "text-lightGray"
             }`}
           >
             {topic}
@@ -149,44 +150,63 @@ const UserBlogs = ({ userId }) => {
       <TouchableOpacity
         onLongPress={isAuthor ? () => handleLongPress(item._id) : null}
         activeOpacity={0.9}
-        style={{ flex: 1, margin: 5 }}
+        style={{ flex: 1, margin: 6 }}
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
       >
-        <View className="h-48 rounded-2xl bg-secondaryBlack">
-          <View className="px-4 py-2">
-            <Text
-              className="text-xl font-bold text-primaryWhite"
-              numberOfLines={1}
-            >
-              {item.title}
-            </Text>
-          </View>
-          {firstImg && (
+        <View className="rounded-xl overflow-hidden bg-secondaryBlack shadow-md">
+          {firstImg ? (
             <Image
               source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-              className="w-full h-36 rounded-2xl mt-2"
+              className="w-full h-28"
               resizeMode="cover"
             />
+          ) : (
+            <View className="w-full h-28 bg-primaryBlack justify-center items-center">
+              <Ionicons
+                name="document-text-outline"
+                size={30}
+                color="#ABABAB"
+              />
+            </View>
+          )}
+          <View className="p-3">
+            <Text className="text-primaryWhite font-bold" numberOfLines={1}>
+              {item.title}
+            </Text>
+            <View className="flex-row justify-between items-center mt-2">
+              <Text className="text-lightGray text-xs">
+                {new Date(item.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </Text>
+              <View className="flex-row items-center">
+                <Ionicons name="heart-outline" size={14} color="#ABABAB" />
+                <Text className="text-lightGray text-xs ml-1">
+                  {item.likes?.length || 0}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {selectedBlogId === item._id && (
+            <View className="absolute top-2 right-2 bg-primaryBlack p-2 rounded-lg flex-row space-x-3">
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("EditBlog", { blogId: item._id })
+                }
+              >
+                <Ionicons name="pencil-outline" size={24} color="#3949AB" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => confirmDelete(item._id)}>
+                <Ionicons name="trash-outline" size={24} color="#FF5252" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSelectedBlogId(null)}>
+                <Ionicons name="close-outline" size={24} color="#E8E8E8" />
+              </TouchableOpacity>
+            </View>
           )}
         </View>
-
-        {selectedBlogId === item._id && (
-          <View className="absolute top-1 left-2 bg-primaryBlack p-4 rounded-lg flex-row space-x-5">
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("EditBlog", { blogId: item._id })
-              }
-            >
-              <Ionicons name="pencil-outline" size={22} color="#3949AB" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => confirmDelete(item._id)}>
-              <Ionicons name="trash-outline" size={22} color="red" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSelectedBlogId(null)}>
-              <Ionicons name="close-outline" size={22} color="white" />
-            </TouchableOpacity>
-          </View>
-        )}
       </TouchableOpacity>
     );
   };
@@ -194,15 +214,16 @@ const UserBlogs = ({ userId }) => {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#000" />
+        <ActivityIndicator size="large" color="#3949AB" />
       </View>
     );
   }
 
   if (blogs.length === 0) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-lg text-lightGray">No blogs available</Text>
+      <View className="items-center justify-center py-10">
+        <Ionicons name="document-text-outline" size={60} color="#ABABAB" />
+        <Text className="text-lightGray text-lg mt-4">No blogs found</Text>
       </View>
     );
   }

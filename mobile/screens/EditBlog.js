@@ -336,29 +336,30 @@ const EditBlog = () => {
       </Background>
 
       {/* Buttons */}
-      <View className=" bottom-0  w-full bg-secondaryBlack p-5">
-        <View className="flex-row space-x-2 items-center">
+      <View className=" bottom-0 left-0 right-0 bg-secondaryBlack border-t border-primaryBlack p-4">
+        <Text className="text-sm text-lightGray text-center mb-2">
+          Image size limit: 10MB
+        </Text>
+        <View className="flex-row justify-between mb-3">
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
-            onPress={addTextSection}
-            accessible
-            accessibilityLabel="Add text section"
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
+            onPress={() => addTextSection(contentSections.length)}
           >
-            <Ionicons name="text-outline" size={24} />
+            <Ionicons name="document-text-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
-            onPress={pickImage}
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
+            onPress={() => pickImage(contentSections.length)}
           >
-            <Ionicons name="image-outline" size={24} />
+            <Ionicons name="image-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
             onPress={() => addBulletPoint(contentSections.length)}
           >
-            <Ionicons name="list-outline" size={24} />
+            <Ionicons name="list-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
         </View>
 
@@ -367,7 +368,12 @@ const EditBlog = () => {
             <ActivityIndicator size="large" color="#3949AB" />
           </View>
         ) : (
-          <Button onPress={editBlog} label="Done" />
+          <TouchableOpacity
+            onPress={editBlog}
+            className="bg-accent rounded-xl py-3 items-center"
+          >
+            <Text className="text-primaryWhite font-bold text-base">Done</Text>
+          </TouchableOpacity>
         )}
       </View>
     </View>

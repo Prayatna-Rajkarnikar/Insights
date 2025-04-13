@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -156,21 +157,28 @@ const Create = () => {
     <View className="flex-1">
       <Background>
         {/* close icon */}
-        <View className="mt-8 items-end">
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Ionicons name="close" size={30} color="#ABABAB" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert(
+              "Discard Changes?",
+              "Are you sure ypou want to go back? Your blog post will not be saved.",
+              [
+                { text: "Cancel", style: "cancel" },
+                { text: "Yes", onPress: () => navigation.goBack() },
+              ]
+            )
+          }
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+        </TouchableOpacity>
 
         {/* Input section */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
-          className="mt-5 mb-1"
+          className="mt-5 mb-3"
         >
           {/* Title */}
           <TextInput
@@ -265,39 +273,41 @@ const Create = () => {
       </Background>
 
       {/* Buttons */}
-      <View className=" bottom-0 w-full bg-secondaryBlack p-5">
+      <View className=" bottom-0 left-0 right-0 bg-secondaryBlack border-t border-primaryBlack p-4">
         <Text className="text-sm text-lightGray text-center mb-2">
           Image size limit: 10MB
         </Text>
-        <View className="flex-row space-x-2 items-center">
+        <View className="flex-row justify-between mb-3">
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
             onPress={() => addTextSection(contentSections.length)}
           >
-            <Ionicons name="text-outline" size={24} />
+            <Ionicons name="document-text-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
             onPress={() => pickImage(contentSections.length)}
           >
-            <Ionicons name="image-outline" size={24} />
+            <Ionicons name="image-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="bg-lightGray flex-1 rounded-xl p-3 items-center"
+            className="flex-1 bg-primaryBlack rounded-xl py-3 mx-1 items-center"
             onPress={() => addBulletPoint(contentSections.length)}
           >
-            <Ionicons name="list-outline" size={24} />
+            <Ionicons name="list-outline" size={22} color="#E8E8E8" />
           </TouchableOpacity>
         </View>
 
         {/* Publish Button */}
         <TouchableOpacity
-          className="bg-accent w-full mt-3 rounded-xl p-3 items-center"
           onPress={goToTopics}
+          className="bg-accent rounded-xl py-3 items-center"
         >
-          <Text className="text-primaryWhite font-bold text-lg">Next</Text>
+          <Text className="text-primaryWhite font-bold text-base">
+            Next: Add Topics
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

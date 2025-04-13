@@ -29,6 +29,7 @@ export const getUserInfo = async (req, res) => {
       image: `${user.image}`,
       role: user.role,
       bio: user.bio,
+      totalBlogs: user.blogs?.length || 0,
     });
   } catch (error) {
     console.error("Token Verification/Error Fetching User:", error);

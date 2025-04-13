@@ -22,7 +22,7 @@ export const searchBlogs = async (req, res) => {
       .find({
         title: { $regex: query, $options: "i" },
       })
-      .populate("author", "name");
+      .populate("author", "name image");
     res.json(blog);
   } catch (error) {
     res.status(500).json({ error: "Failed to get blogs." });

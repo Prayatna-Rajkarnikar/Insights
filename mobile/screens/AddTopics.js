@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   FlatList,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
-import Button from "../helpers/Button";
+
 import Background from "../helpers/Background";
+import Button from "../helpers/Button";
 
 const AddTopics = ({ route, navigation }) => {
   const { blogData } = route.params;
@@ -18,6 +23,7 @@ const AddTopics = ({ route, navigation }) => {
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState("");
   const [selectedTopics, setSelectedTopics] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const goToPreview = () => {
     if (selectedTopics.length === 0) {
@@ -39,11 +45,26 @@ const AddTopics = ({ route, navigation }) => {
   };
 
   const fetchTopics = async () => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
     try {
+      setLoading(true);
       const response = await axios.get(`/search/searchTopic?query=${query}`);
       setResults(response.data);
     } catch (error) {
       console.error("Error fetching topics:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Failed to fetch topics",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,6 +92,7 @@ const AddTopics = ({ route, navigation }) => {
     }
 
     setSelectedTopics((prevTopics) => [...prevTopics, topic]);
+    setQuery(""); // Clear search after selection
   };
 
   const handleDeselectedTopic = (topic) => {
@@ -81,7 +103,11 @@ const AddTopics = ({ route, navigation }) => {
 
   useEffect(() => {
     if (query.trim()) {
-      fetchTopics();
+      const delayDebounceFn = setTimeout(() => {
+        fetchTopics();
+      }, 300);
+
+      return () => clearTimeout(delayDebounceFn);
     } else {
       setResults([]);
     }
@@ -89,77 +115,125 @@ const AddTopics = ({ route, navigation }) => {
 
   return (
     <Background>
-      {/* Back Icon */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Create")}
-        className="flex-row items-center"
-      >
-        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
-        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
-      </TouchableOpacity>
+      {/* Header */}
+      <View className="flex-row justify-between items-center mb-6">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-base ml-2">Back</Text>
+        </TouchableOpacity>
 
-      {/* heading */}
-      <View className="mt-5">
-        <Text className="text-3xl font-bold text-primaryWhite">Add Topics</Text>
+        <Text className="text-primaryWhite text-lg font-bold">Add Topics</Text>
+
+        <View style={{ width: 70 }} />
       </View>
-      {/*sub heading */}
-      <View className="mt-1">
-        <Text className="text-sm font-normal text-lightGray">
-          Add topics to let readers know what your topic is about.
+
+      <View className="mb-6">
+        <Text className="text-primaryWhite text-lg font-bold mb-2">
+          Select Topics
         </Text>
-      </View>
-      {/* Search bar */}
-      <View className="flex-row bg-secondaryBlack rounded-xl px-2 py-1 items-center mt-4">
-        <Ionicons name="search-outline" size={26} color="#ABABAB" />
-        <TextInput
-          className="text-lg font-normal text-primaryWhite w-full"
-          placeholder="Search topics"
-          placeholderTextColor="#ABABAB"
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={fetchTopics}
-          scrollEnabled={false}
-        />
-      </View>
-      {/* Selected topic */}
-      {selectedTopics && (
-        <View className="mt-2 px-2 mb-2 min-h-20">
-          <View className="flex-row flex-wrap gap-1">
-            {selectedTopics.map((topic) => (
-              <View key={topic._id} className="flex-row">
-                <View className="bg-secondaryBlack rounded-full p-2">
-                  <Text className="text-primaryWhite text-xs font-medium">
-                    {topic.name}
-                  </Text>
-                </View>
+        <Text className="text-lightGray mb-4">
+          Choose topics that best describe your blog post. This helps readers
+          find your content. You can select up to 5 topics.
+        </Text>
 
-                <TouchableOpacity
-                  onPress={() => handleDeselectedTopic(topic)}
-                  className="bg-primaryWhite rounded-full  w-4 h-4"
-                >
-                  <Ionicons name="close" size={15} color="black" />
-                </TouchableOpacity>
-              </View>
-            ))}
+        {/* Search bar */}
+        <View className="bg-secondaryBlack rounded-xl p-4 mb-4">
+          <View className="flex-row items-center bg-primaryBlack rounded-full px-4 py-2">
+            <Ionicons name="search-outline" size={20} color="#ABABAB" />
+            <TextInput
+              className="flex-1 text-primaryWhite ml-2"
+              placeholder="Search topics..."
+              placeholderTextColor="#ABABAB"
+              value={query}
+              onChangeText={setQuery}
+              onSubmitEditing={fetchTopics}
+            />
+            {query.length > 0 && (
+              <TouchableOpacity onPress={() => setQuery("")}>
+                <Ionicons name="close-circle" size={20} color="#ABABAB" />
+              </TouchableOpacity>
+            )}
           </View>
+
+          {/* Search Results */}
+          {loading ? (
+            <View className="items-center justify-center py-4">
+              <ActivityIndicator size="small" color="#3949AB" />
+            </View>
+          ) : results.length > 0 && query.trim() ? (
+            <View className="mt-4 border-t border-primaryBlack pt-3">
+              <Text className="text-primaryWhite font-bold mb-2">
+                Search Results
+              </Text>
+              <FlatList
+                data={results}
+                keyExtractor={(item) => item._id}
+                scrollEnabled={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectedTopics(item)}
+                    className="flex-row justify-between items-center py-3 px-2 border-b border-primaryBlack"
+                  >
+                    <Text className="text-lightGray text-base">
+                      {item.name}
+                    </Text>
+                    <Ionicons
+                      name="add-circle-outline"
+                      size={20}
+                      color="#3949AB"
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          ) : query.trim() ? (
+            <View className="items-center justify-center py-4 mt-2">
+              <Text className="text-lightGray">
+                No topics found matching "{query}"
+              </Text>
+            </View>
+          ) : null}
         </View>
-      )}
-      {/* Search Result */}
-      {results.length > 0 && (
-        <FlatList
-          className="bg-secondaryBlack p-1 max-h-48"
-          data={results}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleSelectedTopics(item)}
-              className="p-2"
-            >
-              <Text className="text-lightGray text-base">{item.name}</Text>
-            </TouchableOpacity>
+
+        {/* Selected Topics */}
+        <View className="bg-secondaryBlack rounded-xl p-4 mb-4">
+          <Text className="text-primaryWhite font-bold mb-3">
+            Selected Topics ({selectedTopics.length}/5)
+          </Text>
+
+          {selectedTopics.length > 0 ? (
+            <View className="flex-row flex-wrap">
+              {selectedTopics.map((topic) => (
+                <View key={topic._id} className="mr-2 mb-2">
+                  <TouchableOpacity
+                    onPress={() => handleDeselectedTopic(topic)}
+                    className="bg-accent rounded-full px-3 py-2 flex-row items-center"
+                  >
+                    <Text className="text-primaryWhite">{topic.name}</Text>
+                    <View className="ml-2 bg-primaryWhite rounded-full w-5 h-5 items-center justify-center">
+                      <Ionicons name="close" size={14} color="#000000" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View className="items-center justify-center py-6 bg-primaryBlack rounded-lg">
+              <Ionicons name="pricetags-outline" size={40} color="#ABABAB" />
+              <Text className="text-lightGray mt-2">
+                No topics selected yet
+              </Text>
+              <Text className="text-lightGray text-xs mt-1">
+                Search and select topics above
+              </Text>
+            </View>
           )}
-        />
-      )}
+        </View>
+      </View>
+
       <Button onPress={goToPreview} label="Save" />
     </Background>
   );

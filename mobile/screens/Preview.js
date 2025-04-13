@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  ScrollView,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Button from "../helpers/Button";
 import Background from "../helpers/Background";
+import Button from "../helpers/Button";
 
 const Preview = ({ route }) => {
   const { blogData } = route.params;
@@ -19,6 +23,24 @@ const Preview = ({ route }) => {
   const navigation = useNavigation();
 
   const [loading, setLoading] = useState(false);
+
+  // Get the first image from content sections if available
+  const firstImage = contentSections.find(
+    (section) => section.type === "image"
+  )?.value;
+
+  // Get text preview from content sections
+  const getTextPreview = () => {
+    const textSection = contentSections.find(
+      (section) => section.type === "text"
+    );
+    if (textSection && textSection.value) {
+      return textSection.value.length > 120
+        ? textSection.value.substring(0, 120) + "..."
+        : textSection.value;
+    }
+    return "";
+  };
 
   const createBlog = async () => {
     setLoading(true);
@@ -90,80 +112,103 @@ const Preview = ({ route }) => {
     }
   };
 
-  console.log(
-    "Selected Topics:",
-    selectedTopics.map((topic) => topic._id)
-  );
+  // Confirm publish
+  const confirmPublish = () => {
+    Alert.alert("Publish Blog", "Are you sure you want to publish this blog?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Publish", onPress: createBlog },
+    ]);
+  };
 
   return (
     <Background>
-      {/* Back Icon */}
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className="flex-row items-center"
-      >
-        <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
-        <Text className="text-primaryWhite text-lg ml-2">Back</Text>
-      </TouchableOpacity>
+      {/* Header */}
+      <View className="flex-row justify-between items-center mb-6">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-base ml-2">Back</Text>
+        </TouchableOpacity>
 
-      {/* Heading */}
-      <View className="mt-5">
-        <Text className="text-3xl font-bold text-primaryWhite">Preview</Text>
+        <Text className="text-primaryWhite text-lg font-bold">Preview</Text>
+
+        <View style={{ width: 70 }} />
       </View>
 
-      {/* SubHeading */}
-      <View className="mt-1 mb-3">
-        <Text className="text-sm font-normal text-lightGray">
-          This is how the blog will be shown to readers in public places.
+      {/* Preview Description */}
+      <View className="mb-6">
+        <Text className="text-primaryWhite text-xl font-bold mb-2">
+          Ready to Publish
+        </Text>
+        <Text className="text-lightGray">
+          This is how your blog will appear to readers. Review everything before
+          publishing.
         </Text>
       </View>
 
-      {/* Card for Preview */}
-      <View className="p-4 mb-4 rounded-2xl bg-secondaryBlack">
-        {contentSections.some((section) => section.type === "image") && (
+      {/* Blog Preview Card */}
+      <View className="bg-secondaryBlack rounded-xl overflow-hidden mb-6">
+        {firstImage ? (
           <Image
-            source={{
-              uri: contentSections.find((section) => section.type === "image")
-                .value.uri,
-            }}
-            className="w-full h-40 rounded-2xl"
+            source={{ uri: firstImage.uri }}
+            className="w-full h-48"
             resizeMode="cover"
           />
+        ) : (
+          <View className="w-full h-48 bg-primaryBlack items-center justify-center">
+            <Ionicons name="image-outline" size={40} color="#ABABAB" />
+            <Text className="text-lightGray mt-2">No cover image</Text>
+          </View>
         )}
-        <View className="mt-2">
-          <Text
-            className="text-2xl font-bold text-primaryWhite"
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
+
+        <View className="p-4">
+          <Text className="text-primaryWhite text-xl font-bold mb-2">
             {title}
           </Text>
-        </View>
-      </View>
 
-      <Text className="text-base font-medium text-primaryWhite mb-1">
-        Selected Topics:
-      </Text>
+          {subtitle ? (
+            <Text className="text-lightGray mb-3">{subtitle}</Text>
+          ) : (
+            getTextPreview() && (
+              <Text className="text-lightGray mb-3">{getTextPreview()}</Text>
+            )
+          )}
 
-      {/* Selected Topics */}
-      <View className="flex-row flex-wrap gap-1">
-        {selectedTopics.map((topic) => (
-          <View key={topic._id} className="bg-secondaryBlack rounded-full p-2">
-            <Text className="text-primaryWhite text-xs font-medium text-center">
-              {topic.name}
+          {/* Author and Date */}
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-lightGray text-xs">
+              {new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
             </Text>
           </View>
-        ))}
+        </View>
       </View>
 
-      {/* Publish button */}
-      {loading ? (
-        <View className="rounded-full py-5 mt-8">
-          <ActivityIndicator size="large" color="#3949AB" />
+      {/* Topics Section */}
+      <View className="bg-secondaryBlack rounded-xl p-4 mb-6">
+        <Text className="text-primaryWhite font-bold mb-3">
+          Selected Topics
+        </Text>
+
+        <View className="flex-row flex-wrap">
+          {selectedTopics.map((topic) => (
+            <View
+              key={topic._id}
+              className="bg-accent rounded-full px-3 py-2 mr-2 mb-2"
+            >
+              <Text className="text-primaryWhite">{topic.name}</Text>
+            </View>
+          ))}
         </View>
-      ) : (
-        <Button onPress={createBlog} label="Publish" />
-      )}
+      </View>
+
+      {/* Publish Button */}
+      <Button onPress={createBlog} label="Publish" />
     </Background>
   );
 };

@@ -16,6 +16,7 @@ const Search = () => {
   const [query, setQuery] = useState("");
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
+  const [searching, setSearching] = useState(false);
   const [filter, setFilter] = useState("blogs");
   const navigation = useNavigation();
 
@@ -39,9 +40,13 @@ const Search = () => {
 
   useEffect(() => {
     if (query.trim()) {
+      setSearching(true);
+
       if (filter === "blogs") fetchBlogs();
       else fetchUsers();
     } else {
+      setSearching(false);
+
       setBlogs([]);
       setUsers([]);
     }
@@ -54,49 +59,51 @@ const Search = () => {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("BlogDetail", { blogId: item._id })}
+        className="mb-4 bg-secondaryBlack rounded-xl overflow-hidden"
       >
-        <View className="px-4 py-2 mb-4 rounded-2xl bg-secondaryBlack">
-          <View className="mt-4 mb-2">
-            {firstImg && (
-              <Image
-                source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
-                className="w-full h-40 rounded-2xl"
-                resizeMode="cover"
+        <View className="flex-row">
+          {firstImg ? (
+            <Image
+              source={{ uri: `${axios.defaults.baseURL}${firstImg}` }}
+              className="w-20 h-20"
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="w-20 h-20 bg-primaryBlack justify-center items-center">
+              <Ionicons
+                name="document-text-outline"
+                size={24}
+                color="#ABABAB"
               />
-            )}
-          </View>
-          <Text className="text-2xl font-bold text-primaryWhite">
-            {item.title}
-          </Text>
+            </View>
+          )}
+          <View className="flex-1 p-3">
+            <Text className="text-primaryWhite font-bold" numberOfLines={1}>
+              {item.title}
+            </Text>
 
-          {/* Footer section */}
-          <View className="mt-4">
-            <View className="flex-row justify-around items-center">
-              <Text className="text-lightGray text-sm">
-                {new Date(item.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+            <Text className="text-lightGray text-xs mt-1" numberOfLines={2}>
+              {item.subTitle}
+            </Text>
+
+            <View className="flex-row items-center mt-2">
+              {item.author?.image ? (
+                <Image
+                  source={{
+                    uri: `${axios.defaults.baseURL}${item.author.image}`,
+                  }}
+                  className="w-5 h-5 rounded-full"
+                />
+              ) : (
+                <Ionicons
+                  name="person-circle-outline"
+                  size={16}
+                  color="#ABABAB"
+                />
+              )}
+              <Text className="text-lightGray text-xs ml-1">
+                {item.author?.name || "Unknown author"}
               </Text>
-              <View className="flex-row space-x-4">
-                <View className="flex-row space-x-1">
-                  <Text className="text-sm text-primaryWhite font-bold">
-                    {item.likes.length}
-                  </Text>
-                  <Text className="text-sm text-lightGray font-bold">
-                    Likes
-                  </Text>
-                </View>
-                <View className="flex-row space-x-1">
-                  <Text className="text-sm text-primaryWhite font-bold">
-                    {item.comments.length}
-                  </Text>
-                  <Text className="text-sm text-lightGray font-bold">
-                    Comments
-                  </Text>
-                </View>
-              </View>
             </View>
           </View>
         </View>
@@ -108,19 +115,16 @@ const Search = () => {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("UserProfile", { userId: item._id })}
+        className="mb-4 bg-secondaryBlack rounded-xl p-3"
       >
-        <View className="flex-row space-x-4 mb-4">
+        <View className="flex-row items-center">
           <Image
             source={{ uri: `${axios.defaults.baseURL}${item.image}` }}
-            className="rounded-full h-10 w-10 bg-primaryWhite"
+            className="w-12 h-12 rounded-full"
           />
-          <View>
-            <Text className="text-xl text-primaryWhite font-medium">
-              {item.name}
-            </Text>
-            <Text className="text-xs text-lightGray font-normal">
-              {item.username}
-            </Text>
+          <View className="ml-3 flex-1">
+            <Text className="text-primaryWhite font-bold">{item.name}</Text>
+            <Text className="text-lightGray text-xs">@{item.username}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -139,33 +143,44 @@ const Search = () => {
       </TouchableOpacity>
 
       {/* search bar */}
-      <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center mt-4 space-x-2">
-        <Ionicons name="search-outline" size={26} color="#E8E8E8" />
-        <TextInput
-          placeholder="Search"
-          placeholderTextColor="#ABABAB"
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={fetchBlogs}
-          className="text-base font-normals text-primaryWhite flex-1"
-          scrollEnabled={false}
-        />
+      <View className="mb-4 mt-6">
+        <View className="flex-row items-center bg-secondaryBlack rounded-full px-4 py-2">
+          <Ionicons name="search-outline" size={20} color="#ABABAB" />
+          <TextInput
+            placeholder="Search.."
+            placeholderTextColor="#ABABAB"
+            value={query}
+            onChangeText={setQuery}
+            onSubmitEditing={fetchBlogs}
+            className="flex-1 text-primaryWhite ml-2"
+            scrollEnabled={false}
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery("")}>
+              <Ionicons name="close-circle" size={20} color="#ABABAB" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Filter Btns */}
-      <View className="flex-row space-x-5 my-3 items-center justify-center">
+      <View className="flex-row bg-secondaryBlack mx-4 rounded-full mb-4 p-1">
         <TouchableOpacity
           onPress={() => setFilter("blogs")}
-          style={{
-            backgroundColor: filter === "blogs" ? "#3949AB" : "#1E1E1E",
-            borderRadius: 25,
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-          }}
+          className={`flex-1 py-2 rounded-full flex-row justify-center items-center ${
+            filter === "blogs" ? "bg-accent" : ""
+          }`}
         >
+          <Ionicons
+            name="document-text-outline"
+            size={16}
+            color={filter === "blogs" ? "#E8E8E8" : "#ABABAB"}
+          />
           <Text
-            className={`text-base font-bold text-center ${
-              filter === "blogs" ? "text-primaryWhite" : "text-lightGray"
+            className={`ml-2 ${
+              filter === "blogs"
+                ? "text-primaryWhite font-medium"
+                : "text-lightGray"
             }`}
           >
             Blogs
@@ -173,16 +188,20 @@ const Search = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setFilter("users")}
-          style={{
-            backgroundColor: filter === "users" ? "#3949AB" : "#1E1E1E",
-            borderRadius: 25,
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-          }}
+          className={`flex-1 py-2 rounded-full flex-row justify-center items-center ${
+            filter === "users" ? "bg-accent" : ""
+          }`}
         >
+          <Ionicons
+            name="people-outline"
+            size={16}
+            color={filter === "users" ? "#E8E8E8" : "#ABABAB"}
+          />
           <Text
-            className={`text-base font-bold text-center ${
-              filter === "users" ? "text-primaryWhite" : "text-lightGray"
+            className={`ml-2 ${
+              filter === "users"
+                ? "text-primaryWhite font-medium"
+                : "text-lightGray"
             }`}
           >
             Users
@@ -190,22 +209,52 @@ const Search = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Search Result */}
-      {filter === "blogs" && blogs.length > 0 && (
-        <FlatList
-          data={blogs}
-          keyExtractor={(item) => item._id}
-          renderItem={renderSearchedBlogs}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-      {filter === "users" && users.length > 0 && (
-        <FlatList
-          data={users}
-          keyExtractor={(item) => item._id}
-          renderItem={renderSearchedUsers}
-          showsVerticalScrollIndicator={false}
-        />
+      {searching && (
+        <>
+          {filter === "blogs" ? (
+            blogs.length > 0 ? (
+              <FlatList
+                data={blogs}
+                keyExtractor={(item) => item._id}
+                renderItem={renderSearchedBlogs}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <View className="flex-1 justify-center items-center">
+                <Ionicons
+                  name="document-text-outline"
+                  size={60}
+                  color="#ABABAB"
+                />
+                <Text className="text-lightGray text-lg mt-4">
+                  No results found
+                </Text>
+                <Text className="text-lightGray text-sm mt-2 text-center">
+                  We couldn't find any blogs matching "{query}"
+                </Text>
+              </View>
+            )
+          ) : filter === "users" ? (
+            users.length > 0 ? (
+              <FlatList
+                data={users}
+                keyExtractor={(item) => item._id}
+                renderItem={renderSearchedUsers}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <View className="flex-1 justify-center items-center">
+                <Ionicons name="people-outline" size={60} color="#ABABAB" />
+                <Text className="text-lightGray text-lg mt-4">
+                  No results found
+                </Text>
+                <Text className="text-lightGray text-sm mt-2 text-center">
+                  We couldn't find any users matching "{query}"
+                </Text>
+              </View>
+            )
+          ) : null}
+        </>
       )}
     </Background>
   );

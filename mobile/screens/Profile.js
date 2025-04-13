@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import UserBlogs from "./UserBlogs";
 import Background from "../helpers/Background";
 
@@ -21,24 +21,25 @@ const Profile = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
 
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get("/user/profile");
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setUser(null);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const fetchUserData = async () => {
-        try {
-          const response = await axios.get("/user/profile");
-
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          setUser(null);
-        } finally {
-          setLoading(false);
-        }
-      };
-
       fetchUserData();
     }, [])
   );
+
+  const handleBlogDeleted = () => {
+    fetchUserData();
+  };
 
   const handleLogout = async () => {
     try {
@@ -55,7 +56,14 @@ const Profile = () => {
 
   const renderHeader = () => (
     <View>
-      <View className="flex justify-center items-end">
+      <View className="flex-row justify-between items-center px-4 pt-2 pb-4">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="flex-row items-center"
+        >
+          <Ionicons name="arrow-back" size={24} color="#E8E8E8" />
+          <Text className="text-primaryWhite text-lg ml-2">Back</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)}>
           <Ionicons
             name={menuVisible ? "close" : "menu"}
@@ -65,36 +73,52 @@ const Profile = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex justify-center items-center">
-        <Image
-          source={{ uri: imageUrl }}
-          className="w-40 h-40 rounded-full bg-primaryWhite"
-          style={{ borderWidth: 4, borderColor: "#3949AB" }}
-        />
-      </View>
+      {/* Profile Card */}
+      <View className="bg-secondaryBlack rounded-xl overflow-hidden">
+        {/* Cover Image */}
+        <View className="h-32 bg-accent/30" />
 
-      <View className="bg-secondaryBlack mx-4 p-4 mt-4 rounded-xl shadow-lg">
-        <Text className="text-primaryWhite text-2xl font-bold text-center">
-          {user?.name}
-        </Text>
-        <Text className="text-lightGray text-sm text-center">
-          @{user?.username}
-        </Text>
-
-        {user?.bio ? (
-          <Text className="text-primaryWhite text-sm text-center mt-2">
-            {user.bio}
-          </Text>
-        ) : (
-          <TouchableOpacity
-            className="w-36 bg-primaryWhite p-2 rounded-lg mt-2 self-center"
-            onPress={() => navigation.navigate("UpdateProfile")}
-          >
-            <Text className="text-primaryBlack text-sm text-center">
-              + Add a Bio
+        {/* Profile Info */}
+        <View className="px-4 pb-4 -mt-16">
+          <View className="flex-row justify-between">
+            <Image
+              source={{ uri: imageUrl }}
+              className="w-24 h-24 rounded-full border-4 border-secondaryBlack bg-primaryWhite"
+            />
+            <TouchableOpacity
+              className="mt-16 bg-accent px-4 py-2 rounded-full"
+              onPress={() => navigation.navigate("UpdateProfile")}
+            >
+              <Text className="text-primaryWhite font-medium">
+                Edit Profile
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="mt-2">
+            <Text className="text-primaryWhite text-xl font-bold">
+              {user?.name}
             </Text>
-          </TouchableOpacity>
-        )}
+            <Text className="text-lightGray">@{user?.username}</Text>
+            {user?.bio ? (
+              <Text className="text-primaryWhite mt-2">{user.bio}</Text>
+            ) : (
+              <TouchableOpacity
+                className="mt-2"
+                onPress={() => navigation.navigate("UpdateProfile")}
+              >
+                <Text className="text-accent">+ Add a bio</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View className="flex-row justify-between mt-4 pt-4 border-t border-primaryBlack">
+            <View className="items-center">
+              <Text className="text-primaryWhite font-bold">
+                {user.totalBlogs}
+              </Text>
+              <Text className="text-lightGray text-xs">Posts</Text>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -114,27 +138,48 @@ const Profile = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={() => null}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={<UserBlogs userId={user?._id} />}
+        ListFooterComponent={
+          <UserBlogs userId={user?._id} onBlogDeleted={handleBlogDeleted} />
+        }
         contentContainerStyle={{ paddingBottom: 20 }}
       />
 
       {menuVisible && (
         <Animated.View
-          className="absolute right-4 w-28 p-4 bg-secondaryBlack rounded-md"
-          style={{ top: 70 }}
+          className="absolute right-4 z-10 bg-secondaryBlack rounded-xl shadow-lg"
+          style={{
+            top: 60,
+          }}
         >
-          <View className="flex-col justify-center items-center space-y-4">
-            <TouchableOpacity
-              onPress={() => navigation.navigate("UpdateProfile")}
-            >
-              <Text className="text-primaryWhite font-medium">
-                Edit Profile
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleLogout}>
-              <Text className="text-primaryWhite font-medium">Logout</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            className="px-4 py-3 border-b border-primaryBlack flex-row items-center"
+            onPress={() => {
+              navigation.navigate("UpdateProfile");
+            }}
+          >
+            <Ionicons
+              name="person-outline"
+              size={18}
+              color="#E8E8E8"
+              className="mr-2"
+            />
+            <Text className="text-primaryWhite ml-2">Edit Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="px-4 py-3 flex-row items-center"
+            onPress={() => {
+              handleLogout();
+            }}
+          >
+            <Ionicons
+              name="log-out-outline"
+              size={18}
+              color="#E8E8E8"
+              className="mr-2"
+            />
+            <Text className="text-primaryWhite ml-2">Logout</Text>
+          </TouchableOpacity>
         </Animated.View>
       )}
     </Background>

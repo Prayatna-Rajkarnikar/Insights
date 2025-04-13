@@ -41,34 +41,40 @@ const UserProfile = () => {
     : `${axios.defaults.baseURL}/default-user.png`;
 
   const renderHeader = () => (
-    <>
-      <View className="flex justify-center items-center mt-4">
-        <Image
-          source={{ uri: imageUrl }}
-          className="w-40 h-40 rounded-full bg-primaryWhite shadow-lg"
-          style={{ borderWidth: 4, borderColor: "#3949AB" }}
-        />
+    <View>
+      {/* Profile Card */}
+      <View className="bg-secondaryBlack rounded-xl overflow-hidden">
+        {/* Cover Image */}
+        <View className="h-32 bg-accent/30" />
+        <View className="px-4 pb-4 -mt-16">
+          <Image
+            source={{ uri: imageUrl }}
+            className="w-24 h-24 rounded-full border-4 border-secondaryBlack bg-primaryWhite"
+          />
+          <View className="mt-2">
+            <Text className="text-primaryWhite text-xl font-bold">
+              {user?.name}
+            </Text>
+            <Text className="text-lightGray">@{user?.username}</Text>
+            {user?.bio ? (
+              <Text className="text-primaryWhite mt-2">{user.bio}</Text>
+            ) : (
+              <Text className="text-lightGray text-sm  mt-2">
+                No bio added.
+              </Text>
+            )}
+          </View>
+          <View className="flex-row justify-between mt-4 pt-4 border-t border-primaryBlack">
+            <View className="items-center">
+              <Text className="text-primaryWhite font-bold">
+                {user.totalBlogs}
+              </Text>
+              <Text className="text-lightGray text-xs">Posts</Text>
+            </View>
+          </View>
+        </View>
       </View>
-
-      <View className="bg-secondaryBlack mx-4 p-4 mt-4 rounded-xl shadow-lg">
-        <Text className="text-primaryWhite text-2xl font-bold text-center">
-          {user?.name}
-        </Text>
-        <Text className="text-lightGray text-sm text-center">
-          @{user?.username}
-        </Text>
-
-        {user?.bio ? (
-          <Text className="text-primaryWhite text-sm text-center mt-2">
-            {user.bio}
-          </Text>
-        ) : (
-          <Text className="text-lightGray text-sm text-center mt-2">
-            No bio added.
-          </Text>
-        )}
-      </View>
-    </>
+    </View>
   );
 
   if (loading) {
@@ -102,7 +108,7 @@ const UserProfile = () => {
         renderItem={() => null}
         ListHeaderComponent={renderHeader}
         ListFooterComponent={<UserBlogs userId={userId} />}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, paddingTop: 12 }}
       />
     </Background>
   );
