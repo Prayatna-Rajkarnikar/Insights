@@ -15,7 +15,7 @@ import Background from "../helpers/Background";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
-  const [trendings, setTrendings] = useState([]);
+  const [trending, setTrending] = useState([]);
   const [latest, setLatest] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [categories, setCategories] = useState(["All"]);
@@ -35,7 +35,7 @@ const Home = () => {
   const fetchTrending = async () => {
     try {
       const res = await axios.get("/blog/trending");
-      setTrendings(res.data);
+      setTrending(res.data);
     } catch (error) {
       console.error("Error fetching trending blogs:", error);
     }
@@ -85,8 +85,6 @@ const Home = () => {
     );
   }
 
-  const trendingPost = trendings.length > 0 ? trendings[0] : null;
-
   return (
     <Background>
       {/* Header */}
@@ -134,20 +132,20 @@ const Home = () => {
         </ScrollView>
 
         {/* Featured Post */}
-        {trendingPost && (
+        {trending && (
           <TouchableOpacity
             className="py-3"
             onPress={() =>
-              navigation.navigate("BlogDetail", { blogId: trendingPost._id })
+              navigation.navigate("BlogDetail", { blogId: trending._id })
             }
           >
             <View className="bg-secondaryBlack rounded-xl overflow-hidden">
-              {trendingPost.content &&
-              trendingPost.content.find((item) => item.type === "image") ? (
+              {trending.content &&
+              trending.content.find((item) => item.type === "image") ? (
                 <Image
                   source={{
                     uri: `${axios.defaults.baseURL}${
-                      trendingPost.content.find((item) => item.type === "image")
+                      trending.content.find((item) => item.type === "image")
                         .value
                     }`,
                   }}
@@ -167,17 +165,17 @@ const Home = () => {
                   className="text-primaryWhite text-xl font-bold mb-2"
                   numberOfLines={2}
                 >
-                  {trendingPost.title}
+                  {trending.title}
                 </Text>
                 <Text className="text-lightGray mb-3" numberOfLines={1}>
-                  {trendingPost.subTitle}
+                  {trending.subTitle}
                 </Text>
                 <View className="flex-row justify-between items-center">
                   <View className="flex-row items-center">
-                    {trendingPost.author?.image ? (
+                    {trending.author?.image ? (
                       <Image
                         source={{
-                          uri: `${axios.defaults.baseURL}${trendingPost.author.image}`,
+                          uri: `${axios.defaults.baseURL}${trending.author.image}`,
                         }}
                         className="w-6 h-6 rounded-full mr-2"
                       />
@@ -185,17 +183,14 @@ const Home = () => {
                       <View className="w-6 h-6 rounded-full bg-accent mr-2" />
                     )}
                     <Text className="text-lightGray text-sm">
-                      {trendingPost.author?.name || "Anonymous"}
+                      {trending.author?.name || "Anonymous"}
                     </Text>
                   </View>
                   <Text className="text-lightGray text-xs">
-                    {new Date(trendingPost.createdAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )}
+                    {new Date(trending.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </Text>
                 </View>
               </View>

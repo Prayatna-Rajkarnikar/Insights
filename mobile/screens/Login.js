@@ -107,7 +107,7 @@ const LoginScreen = () => {
         <Text className="text-lightGray text-base font-normal  text-center">
           Dont have an account?
         </Text>
-        <Text className="text-primaryWhite text-base font-normal  text-center">
+        <Text className="text-accent text-base font-normal  text-center">
           Create
         </Text>
       </TouchableOpacity>

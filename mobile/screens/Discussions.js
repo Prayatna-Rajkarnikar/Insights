@@ -91,19 +91,34 @@ const Discussions = () => {
           </Text>
         </TouchableOpacity>
 
-        <Text className="text-lg font-bold mb-4 text-primaryWhite">
-          Your Discussions
-        </Text>
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-primaryWhite text-lg font-bold">
+            Your Discussions
+          </Text>
+          <Text className="text-accent">{filteredRooms.length} rooms</Text>
+        </View>
 
-        <View className="flex-row bg-secondaryBlack rounded-xl p-2 items-center space-x-2 mb-4">
-          <Ionicons name="search-outline" size={24} color="#E8E8E8" />
-          <TextInput
-            placeholder="Search rooms..."
-            placeholderTextColor="#ABABAB"
-            value={searchQuery}
-            onChangeText={handleSearch}
-            className="text-base font-normal text-primaryWhite flex-1"
-          />
+        <View className="mb-4">
+          <View className="flex-row items-center bg-secondaryBlack rounded-full px-4 py-2">
+            <Ionicons name="search-outline" size={20} color="#ABABAB" />
+            <TextInput
+              placeholder="Search rooms..."
+              placeholderTextColor="#ABABAB"
+              value={searchQuery}
+              onChangeText={handleSearch}
+              className="flex-1 text-primaryWhite ml-2"
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity
+                onPress={async () => {
+                  setSearchQuery("");
+                  await fetchUserRooms();
+                }}
+              >
+                <Ionicons name="close-circle" size={20} color="#ABABAB" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {loading ? (
@@ -111,9 +126,17 @@ const Discussions = () => {
             <ActivityIndicator size="large" color="#3949AB" />
           </View>
         ) : filteredRooms.length === 0 ? (
-          <Text className="text-center text-lightGray">
-            No rooms joined yet.
-          </Text>
+          <View className="flex-1 items-center justify-center py-20 bg-secondaryBlack rounded-xl">
+            <Ionicons name="chatbubbles-outline" size={60} color="#ABABAB" />
+            <Text className="text-primaryWhite text-lg font-bold mt-4">
+              No discussions found
+            </Text>
+            <Text className="text-lightGray text-center mt-2 px-6">
+              {searchQuery
+                ? `No results matching "${searchQuery}"`
+                : "You haven't joined any discussion rooms yet"}
+            </Text>
+          </View>
         ) : (
           filteredRooms.map((item) => (
             <TouchableOpacity
@@ -128,13 +151,23 @@ const Discussions = () => {
                 })
               }
             >
-              <Text
-                className="text-xl font-bold text-primaryWhite"
-                numberOfLines={1}
-              >
-                {item.name || "Unknown"}
-              </Text>
-              <Text className="text-xs font-thin text-accent">Message</Text>
+              <View className="flex-row items-center justify-between">
+                <View>
+                  <Text
+                    className="text-xl font-bold text-primaryWhite"
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text className="text-xs font-thin text-accent">Message</Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color="#ABABAB"
+                  className="ml-2"
+                />
+              </View>
             </TouchableOpacity>
           ))
         )}

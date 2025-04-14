@@ -3,7 +3,7 @@ import { View, TextInput } from "react-native";
 
 const InputField = ({ placeholder, value, onChangeText, ...props }) => {
   return (
-    <View className="bg-secondaryBlack px-3 py-2 rounded-2xl mb-3">
+    <View className="bg-secondaryBlack px-3 py-2 rounded-xl mb-4">
       <TextInput
         placeholder={placeholder}
         value={value}

@@ -28,6 +28,8 @@ const Profile = () => {
     } catch (error) {
       console.error("Error fetching user data:", error);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 

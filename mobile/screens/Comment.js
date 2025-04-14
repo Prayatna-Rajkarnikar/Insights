@@ -218,7 +218,7 @@ const Comment = () => {
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-lightGray">
+        <View className="flex-1 justify-center items-center bg-primaryBlack">
           <View className="bg-secondaryBlack p-5 rounded-xl mx-10">
             <Text className="text-center font-semibold text-lg mb-3 text-primaryWhite">
               {user.email === selectedComment?.author.email
@@ -265,7 +265,7 @@ const Comment = () => {
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={() => setShowModal(false)}>
-                <Ionicons name="close-circle" size={24} color="#25292D" />
+                <Ionicons name="close-circle" size={24} color="#ABABAB" />
               </TouchableOpacity>
             </View>
           </View>

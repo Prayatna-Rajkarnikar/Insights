@@ -294,25 +294,28 @@ export const getTrendingBlogs = async (req, res) => {
       .populate("likes", "_id")
       .populate({
         path: "comments",
-        match: { isHidden: { $ne: true } }, // Exclude hidden comments
+        match: { isHidden: { $ne: true } },
         select: "_id",
       })
-      .lean(); // Convert Mongoose documents to plain objects
+      .lean();
+
+    if (!blogs || blogs.length === 0) {
+      return res.status(404).json({ message: "No blogs found" });
+    }
 
     const trending = blogs
       .map((blog) => ({
         ...blog,
         likeCount: blog.likes.length,
         commentCount: blog.comments.length,
-        trendingScore: blog.likes.length + blog.comments.length, // Dynamic score
+        trendingScore: blog.likes.length + blog.comments.length,
       }))
-      .sort((a, b) => b.trendingScore - a.trendingScore) // Sort in descending order
-      .slice(0, 5); // Get top 5 trending blogs
+      .sort((a, b) => b.trendingScore - a.trendingScore)[0]; // Get the top blog only
 
     res.status(200).json(trending);
   } catch (error) {
-    console.error("Error fetching trending blogs:", error);
-    res.status(500).json({ error: "Failed to get trending blogs" });
+    console.error("Error fetching trending blog:", error);
+    res.status(500).json({ error: "Failed to get trending blog" });
   }
 };
 
