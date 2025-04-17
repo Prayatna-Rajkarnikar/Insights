@@ -24,15 +24,25 @@ const RoomChat = () => {
 
   useEffect(() => {
     // Join the room
-    socket.emit("joinRoom", { roomId });
+    socket.emit("joinRoom", {
+      roomId,
+      user: {
+        name: userName,
+        _id: userId,
+      },
+    });
 
     // Listen for incoming messages
     socket.on("receiveMessage", (data) => {
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) => {
+        const exists = prev.find((m) => m._id === data._id);
+        return exists ? prev : [...prev, data]; //
+      });
     });
 
     return () => {
       socket.off("receiveMessage");
+      socket.disconnect();
     };
   }, [roomId]);
 
@@ -58,34 +68,20 @@ const RoomChat = () => {
     }
   }, [messages]);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!msg.trim()) return;
 
-    // Sending the message to the backend
-    try {
-      const response = await axios.post(`/message/sendMessage/${roomId}`, {
-        message: msg,
-        userId,
-      });
-      await fetchMessages();
+    // Emit the send message event
+    socket.emit("sendMessage", {
+      roomId,
+      message: msg,
+      user: {
+        name: userName,
+        _id: userId,
+      },
+    });
 
-      // Emit the message to the socket
-      socket.emit("sendMessage", {
-        roomId,
-        message: msg,
-        user: {
-          name: userName,
-          _id: userId,
-        },
-      });
-
-      setMsg(""); // Clear the input field
-    } catch (error) {
-      console.error(
-        "Error sending message:",
-        error.response?.data || error.message
-      );
-    }
+    setMsg(""); // Clear the input
   };
 
   const handleLeaveRoom = async () => {

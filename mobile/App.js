@@ -33,7 +33,7 @@ import ExploreDiscussions from "./screens/ExploreDiscussions";
 import CreateDiscussionScreen from "./screens/CreateDiscussionScreen";
 
 axios.defaults.baseURL = "http://192.168.1.8:3001";
-// axios.defaults.baseURL = "http://100.64.226.165:3001";
+// axios.defaults.baseURL = "http://100.64.245.19:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();

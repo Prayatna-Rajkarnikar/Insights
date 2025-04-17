@@ -9,7 +9,7 @@ export const validDetails = async (req, res) => {
 
     // Check if all fields are filled
     if (!email || !password || !confirmPassword) {
-      return res.status(400).json({ error: "Please fill all the fields" });
+      return res.status(401).json({ error: "Please fill all the fields" });
     }
 
     const trimmedEmail = email.trim();
@@ -62,7 +62,7 @@ export const registerUser = async (req, res) => {
 
     //It ensures that fields are not empty.
     if (!name || !username) {
-      return res.status(400).json({ error: "Please fill all the fields" });
+      return res.status(401).json({ error: "Please fill all the fields" });
     }
 
     //Trim Inputs

@@ -7,7 +7,7 @@ import UserBG from "../assets/User.jpg";
 export default function Dashboard() {
   const [totalUser, setTotalUser] = useState(0);
   const [totalBlog, setTotalBlog] = useState(0);
-  const [trendings, setTrendings] = useState([]);
+  const [trending, setTrending] = useState(null); // null since it's one blog
   const [topics, setTopics] = useState([]);
 
   const fetchTotalUser = async () => {
@@ -30,10 +30,11 @@ export default function Dashboard() {
 
   const fetchBlogs = async () => {
     try {
-      const trendingResponse = await axios.get("/blog/trending");
-      setTrendings(trendingResponse.data);
+      const response = await axios.get("/blog/trending");
+      setTrending(response.data);
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      console.error("Error fetching trending blog:", error);
+      setTrending(null);
     }
   };
 
@@ -54,6 +55,12 @@ export default function Dashboard() {
     fetchTopics();
   }, []);
 
+  const getFirstImage = () => {
+    return (
+      trending?.content?.find((item) => item.type === "image")?.value || null
+    );
+  };
+
   return (
     <div className="h-full px-6 py-7 bg-primaryWhite">
       {/* Header */}
@@ -64,7 +71,7 @@ export default function Dashboard() {
 
       {/* Cards */}
       <div className="flex flex-wrap gap-6 mb-7 items-center justify-center">
-        {/* First Card */}
+        {/* Blogs Card */}
         <div className="relative w-full lg:w-[640px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
@@ -80,7 +87,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Second Card */}
+        {/* Users Card */}
         <div className="relative w-full lg:w-[470px] h-[200px] rounded-xl shadow-lg shadow-darkGray p-4">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 rounded-xl"
@@ -104,65 +111,79 @@ export default function Dashboard() {
           <h3 className="font-medium text-base text-secondaryBlack">
             Most Used Topics
           </h3>
-          {topics.map((topic) => {
-            return (
-              <div
-                key={topic.name}
-                className="p-3 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-darkGray m-4"
-              >
-                <h5 className="text-sm text-secondaryBlack">{topic.name}</h5>
-                <span className="text-base font-bold text-primaryBlack">
-                  {topic.count}
-                </span>
-              </div>
-            );
-          })}
+          {topics.map((topic) => (
+            <div
+              key={topic.name}
+              className="p-3 bg-lightGray rounded-xl flex justify-between shadow-sm shadow-darkGray m-4"
+            >
+              <h5 className="text-sm text-secondaryBlack">{topic.name}</h5>
+              <span className="text-base font-bold text-primaryBlack">
+                {topic.count}
+              </span>
+            </div>
+          ))}
         </div>
 
-        {/* Blog Section */}
+        {/* Trending Blog Section */}
+        {/* Trending Blog Section */}
         <div className="lg:w-[75%] h-full">
-          <h3 className="font-medium text-base text-secondaryBlack ml-10">
-            Top Blogs
+          <h3 className="font-medium text-base text-secondaryBlack ml-10 mb-3">
+            Top Blog
           </h3>
-          <div className="gap-4 flex flex-wrap justify-start items-center p-4">
-            {trendings.map((blog, index) => {
-              const firstImage = blog.content.find(
-                (contentItem) => contentItem.type === "image"
-              )?.value;
-              const imageUrl = firstImage
-                ? `${axios.defaults.baseURL}${firstImage}`
-                : null;
 
-              return (
-                <div
-                  key={blog._id || index}
-                  className="bg-lightGray p-4 h-24 w-64 flex items-center justify-center rounded-xl shadow-sm shadow-darkGray"
-                >
-                  <div className="flex space-x-4">
-                    <div className="w-28 space-y-1">
-                      <h3 className="text-base font-bold text-primaryBlack truncate">
-                        {blog.title}
-                      </h3>
-                      <p className="text-xs font-normal text-secondaryBlack truncate">
-                        {blog.subTitle}
-                      </p>
+          <div className="flex justify-center items-center p-4 h-full">
+            {trending ? (
+              <div className="bg-lightGray p-5 h-[220px] w-full max-w-[700px] flex gap-5 rounded-2xl shadow-md shadow-darkGray">
+                <div className="w-[40%] h-full">
+                  {getFirstImage() ? (
+                    <img
+                      src={`${axios.defaults.baseURL}${getFirstImage()}`}
+                      alt="Blog"
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-300 rounded-xl flex items-center justify-center text-sm text-darkGray">
+                      No Image
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col justify-between w-[60%]">
+                  <div>
+                    <h2 className="text-xl font-bold text-primaryBlack line-clamp-2">
+                      {trending.title}
+                    </h2>
+                    <p className="text-sm text-secondaryBlack mt-1 line-clamp-2">
+                      {trending.subTitle}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center space-x-2">
+                      {trending.author?.image && (
+                        <img
+                          src={`${axios.defaults.baseURL}${trending.author.image}`}
+                          alt="Author"
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      )}
+                      <span className="text-sm font-medium text-primaryBlack">
+                        {trending.author?.name}
+                      </span>
                     </div>
 
-                    <div>
-                      {firstImage ? (
-                        <img
-                          src={imageUrl}
-                          alt="Blog"
-                          className="w-32 h-16 rounded-xl object-cover"
-                        />
-                      ) : (
-                        <span className="text-sm text-darkGray">No Image</span>
-                      )}
+                    <div className="flex space-x-4 text-sm text-secondaryBlack font-semibold">
+                      <span> {trending.likeCount} Likes</span>
+                      <span>{trending.commentCount} Comments</span>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ) : (
+              <p className="text-sm text-darkGray italic">
+                No trending blog available.
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -75,6 +75,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = new Server(server, {
   cors: {
+    origin: "http://192.168.1.8:3001", //
     credentials: true,
   },
 });

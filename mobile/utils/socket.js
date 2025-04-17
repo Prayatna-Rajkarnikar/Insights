@@ -1,9 +1,10 @@
 // utils/socket.js
 import { io } from "socket.io-client";
 
-// Replace with your backend IP if testing on real device
-const socket = io("http://localhost:3001", {
-  transports: ["websocket"], // 👈 recommended for React Native
+const socket = io("http://192.168.1.8:3001", {
+  path: "/socket.io",
+  transports: ["websocket"],
+  withCredentials: true,
 });
 
 export default socket;
