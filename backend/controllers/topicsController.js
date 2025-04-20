@@ -1,5 +1,5 @@
-import topicModel from "../models/topics.js";
-import blogModel from "../models/blog.js";
+import topicModel from "../models/topicModel.js";
+import blogModel from "../models/blogModel.js";
 
 export const addTopic = async (req, res) => {
   try {
@@ -42,9 +42,8 @@ export const getMostUsedTopics = async (req, res) => {
       });
     });
 
-    // Convert the object to an array, sort by count, and get the top 5
     const sortedTopics = Object.entries(topicCount)
-      .sort((a, b) => b[1] - a[1]) // Sort in descending order of frequency
+      .sort((a, b) => b[1] - a[1]) // Sort in descending
       .slice(0, 5)
       .map(([name, count]) => ({ name, count }));
 

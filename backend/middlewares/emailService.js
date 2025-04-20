@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import userModel from "../models/user.js";
+import userModel from "../models/userModel.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config();
@@ -30,13 +30,13 @@ export const sendCommentRemovalEmail = async (authorId) => {
 
     const text = `Dear ${user.name},  
       
-     We hope you're doing well.  
+      We hope you're doing well.  
 
-We would like to inform you that one of your recent comments contains slang words that do not align with our platform's community guidelines.  
+      We would like to inform you that one of your recent comments contains slang words that do not align with our platform's community guidelines.  
 
-To maintain a respectful and professional environment for all users, we kindly request you to remove or edit the comment at your earliest convenience.  
+      To maintain a respectful and professional environment for all users, we kindly request you to remove or edit the comment at your earliest convenience.  
 
-Please note that repeated use of inappropriate language may lead to further actions, including temporary restrictions on your account.  
+      Please note that repeated use of inappropriate language may lead to further actions, including temporary restrictions on your account.  
       
       Best regards,  
       Insights`;
@@ -79,8 +79,8 @@ The following user has exceeded the allowed warning limit and requires deactivat
 - **Username:** ${user.username}  
 - **Warning Count:** ${user.warnings}  
       
-      Best regards,  
-      Insights`;
+  Best regards,  
+  Insights`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,

@@ -11,6 +11,7 @@ import axios from "axios";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Background from "../helpers/Background";
+import Toast from "react-native-toast-message";
 
 const Discussions = () => {
   const [loading, setLoading] = useState(true);
@@ -26,11 +27,14 @@ const Discussions = () => {
       setFilteredRooms(response.data.rooms);
       setUserId(response.data.userId);
       setUserName(response.data.userName);
-    } catch (err) {
-      console.error(
-        "Error fetching user rooms:",
-        err.response?.data || err.message
-      );
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -54,10 +58,13 @@ const Discussions = () => {
         setFilteredRooms(response.data);
       }
     } catch (error) {
-      console.error(
-        "Error searching user chats:",
-        error.response?.data || error.message
-      );
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

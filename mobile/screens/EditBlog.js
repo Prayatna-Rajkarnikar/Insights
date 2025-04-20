@@ -17,7 +17,6 @@ import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 
 import Background from "../helpers/Background";
-import Button from "../helpers/Button";
 
 const EditBlog = () => {
   const route = useRoute();
@@ -186,7 +185,6 @@ const EditBlog = () => {
         ]);
         scrollViewRef.current?.scrollToEnd({ animated: true });
       } else {
-        console.error("Invalid URI", asset);
       }
     }
   };

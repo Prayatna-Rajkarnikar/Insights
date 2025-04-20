@@ -26,7 +26,7 @@ const Create = () => {
   const scrollViewRef = useRef(null);
 
   const goToTopics = () => {
-    if (!title.trim() || !subtitle.trim() || !contentSections) {
+    if (!title.trim() || !subtitle.trim()) {
       Toast.show({
         type: "error",
         position: "bottom",
@@ -112,7 +112,6 @@ const Create = () => {
           });
           scrollViewRef.current?.scrollToEnd({ animated: true });
         } else {
-          console.error("invalid uri", asset);
         }
       }
     },

@@ -15,11 +15,11 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["Admin", "Reader"],
+    enum: ["Admin", "Reader"], //Either one of these
     default: "Reader",
   },
   bio: { type: String, default: "" },
-  blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
+  blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }], //Array of objects
   warnings: {
     type: Number,
     default: 0,

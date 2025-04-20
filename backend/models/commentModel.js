@@ -13,8 +13,8 @@ const commentSchema = new mongoose.Schema(
     },
     blog: { type: mongoose.Schema.Types.ObjectId, ref: "Blog", required: true },
     flags: {
-      count: { type: Number, default: 0 }, // Number of times this comment has been flagged
-      isBlurred: { type: Boolean, default: false }, // True if the comment contains slang words and should be blurred
+      count: { type: Number, default: 0 },
+      isBlurred: { type: Boolean, default: false },
     },
     isHidden: { type: Boolean, default: false },
   },

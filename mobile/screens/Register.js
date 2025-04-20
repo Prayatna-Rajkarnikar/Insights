@@ -33,6 +33,7 @@ const Register = () => {
         confirmPassword,
       });
 
+      // If validation is successful, pass the user data object to the next screen
       const userData = { email, password, confirmPassword };
       navigation.navigate("CompleteProfile", { userData });
     } catch (error) {
@@ -48,11 +49,12 @@ const Register = () => {
 
   return (
     <Background>
-      {/* heading */}
+      {/* Heading Section */}
       <View className="mt-14">
         <Text className="text-3xl font-bold text-primaryWhite">Register</Text>
       </View>
 
+      {/* Password Requirements Notice */}
       <View className="mt-1">
         <Text className="text-sm font-normal text-lightGray">
           Password must be at least 8 characters long and must include 1
@@ -62,12 +64,14 @@ const Register = () => {
 
       {/* Input Fields */}
       <View className="mt-6">
+        {/* Email Input Field */}
         <InputField
           placeholder="Enter email address"
           value={email}
           onChangeText={setEmail}
         />
 
+        {/* Password Input Field */}
         <View className="relative">
           <InputField
             placeholder="Enter Password"
@@ -87,6 +91,7 @@ const Register = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Confirm Password Input Field */}
         <View className="relative">
           <InputField
             placeholder="Enter Confirm Password"
@@ -106,7 +111,7 @@ const Register = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Btn */}
+        {/*Next Btn */}
         <Button onPress={goToRegTwo} label="Next" />
 
         {/* Login Navigation */}

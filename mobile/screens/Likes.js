@@ -11,6 +11,7 @@ import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 import Background from "../helpers/Background";
 
 const Likes = () => {
@@ -33,7 +34,13 @@ const Likes = () => {
       const response = await axios.get(`/like/getUserLike/${blogId}`);
       setLikeList(response.data.likeList);
     } catch (error) {
-      console.error("Failed to get likes.", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

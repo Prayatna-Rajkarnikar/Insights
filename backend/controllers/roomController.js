@@ -1,5 +1,5 @@
 import roomModel from "../models/roomModel.js";
-import userModel from "../models/user.js";
+import userModel from "../models/userModel.js";
 
 export const createRoom = async (req, res) => {
   try {
@@ -61,10 +61,9 @@ export const getAllRooms = async (req, res) => {
 export const joinRoom = async (req, res) => {
   try {
     const userId = req.user.id;
-    const userName = req.user.name; // Assuming user name is stored in req.user
+    const userName = req.user.name;
     const { roomId } = req.params;
 
-    // Find the room by its ID
     const room = await roomModel.findById(roomId);
     if (!room) return res.status(404).json({ message: "Room not found" });
 
@@ -77,11 +76,10 @@ export const joinRoom = async (req, res) => {
     room.members.push(userId);
     await room.save();
 
-    // Return a response with the success message, room details, userId, userName, and roomName
     res.status(200).json({
       message: "Successfully joined the room",
       roomId,
-      roomName: room.name, // Include the room name here
+      roomName: room.name,
       userId,
       userName,
     });

@@ -1,6 +1,6 @@
-import blogModel from "../models/blog.js";
+import blogModel from "../models/blogModel.js";
 import commentModel from "../models/commentModel.js";
-import userModel from "../models/user.js";
+import userModel from "../models/userModel.js";
 import {
   sendCommentRemovalEmail,
   sendUserDeactivateEmail,
@@ -46,7 +46,7 @@ export const createComment = async (req, res) => {
           $push: { flaggedComments: newComment.id },
           $inc: { warnings: 1 },
         },
-        { new: true } // This ensures we get the updated user object
+        { new: true } // This ensures the updated user object
       );
 
       setImmediate(() => sendCommentRemovalEmail(author));

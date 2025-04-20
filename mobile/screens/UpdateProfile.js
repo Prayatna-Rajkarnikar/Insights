@@ -12,6 +12,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+
 import Button from "../helpers/Button";
 import Background from "../helpers/Background";
 
@@ -37,7 +38,6 @@ const UpdateProfile = () => {
         setBio(response.data.bio);
         setImage(`${axios.defaults.baseURL}${response.data.image}`);
       } catch (error) {
-        console.error("Error fetching user data:", error);
         Toast.show({
           type: "error",
           position: "bottom",
@@ -114,8 +114,6 @@ const UpdateProfile = () => {
           error.response && error.response.data
             ? error.response.data.error
             : error.message || "Something went wrong";
-
-        console.error("Update profile error:", error);
 
         if (attempts >= maxAttempts) {
           Toast.show({
@@ -197,7 +195,7 @@ const UpdateProfile = () => {
 
       {loading ? (
         <View className="rounded-full py-5 mt-8 bg-accent">
-          <ActivityIndicator size="large" color="#3949AB" />
+          <ActivityIndicator size="large" color="#E8E8E8" />
         </View>
       ) : (
         <Button onPress={updateProfile} label="Update" />

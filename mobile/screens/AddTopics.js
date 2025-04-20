@@ -53,7 +53,6 @@ const AddTopics = ({ route, navigation }) => {
       const response = await axios.get(`/search/searchTopic?query=${query}`);
       setResults(response.data);
     } catch (error) {
-      console.error("Error fetching topics:", error);
       Toast.show({
         type: "error",
         position: "bottom",
@@ -169,7 +168,6 @@ const AddTopics = ({ route, navigation }) => {
               <FlatList
                 data={results}
                 keyExtractor={(item) => item._id}
-                scrollEnabled={false}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     onPress={() => handleSelectedTopics(item)}

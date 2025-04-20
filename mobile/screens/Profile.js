@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+
 import UserBlogs from "./UserBlogs";
 import Background from "../helpers/Background";
 
@@ -26,7 +28,13 @@ const Profile = () => {
       const response = await axios.get("/user/profile");
       setUser(response.data);
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Error fecthing user data" || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
       setUser(null);
     } finally {
       setLoading(false);
@@ -46,9 +54,22 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await axios.post("/auth/logout");
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text1: "Logout Successful",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
       navigation.reset({ index: 0, routes: [{ name: "Login" }] });
     } catch (error) {
-      console.error("Error during logout:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

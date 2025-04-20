@@ -11,6 +11,8 @@ import axios from "axios";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
+
 import Background from "../helpers/Background";
 
 const BlogDetail = () => {
@@ -30,7 +32,7 @@ const BlogDetail = () => {
       const response = await axios.get(`/comments/getTotalComments/${blogId}`);
       setTotalComments(response.data.totalComments);
     } catch (error) {
-      console.error("Failed to get number of comments.");
+      console.log("Failed to get number of comments.");
     }
   };
 
@@ -41,7 +43,13 @@ const BlogDetail = () => {
       setIsLiked(response.data.isLiked);
       setLikes(response.data.likeCount);
     } catch (error) {
-      console.error("Failed to get like status", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Failed to get total likes",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -52,7 +60,13 @@ const BlogDetail = () => {
       setIsLiked(response.data.isLiked);
       setLikes(response.data.likeCount);
     } catch (error) {
-      console.error("Failed to toggle like", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -70,7 +84,13 @@ const BlogDetail = () => {
         setBlog(response.data);
         await likeStatus(blogId);
       } catch (error) {
-        console.error("Failed to fetch data", error.response.data);
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: error.response.data.error || "Something went wrong",
+          visibilityTime: 2000,
+          autoHide: true,
+        });
       } finally {
         setLoading(false);
       }
@@ -81,7 +101,13 @@ const BlogDetail = () => {
         const response = await axios.get("/user/profile");
         setUser(response.data);
       } catch (error) {
-        console.error("Failed to fetch data", error.response.data);
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: error.response.data.error || "Something went wrong",
+          visibilityTime: 2000,
+          autoHide: true,
+        });
       }
     };
 

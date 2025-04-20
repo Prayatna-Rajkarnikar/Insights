@@ -7,7 +7,7 @@ import UserBG from "../assets/User.jpg";
 export default function Dashboard() {
   const [totalUser, setTotalUser] = useState(0);
   const [totalBlog, setTotalBlog] = useState(0);
-  const [trending, setTrending] = useState(null); // null since it's one blog
+  const [trending, setTrending] = useState(null);
   const [topics, setTopics] = useState([]);
 
   const fetchTotalUser = async () => {

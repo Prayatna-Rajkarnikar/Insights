@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 import socket from "../utils/socket";
 import Background from "../helpers/Background";
@@ -23,7 +24,6 @@ const RoomChat = () => {
   const flatListRef = useRef(null);
 
   useEffect(() => {
-    // Join the room
     socket.emit("joinRoom", {
       roomId,
       user: {
@@ -41,8 +41,8 @@ const RoomChat = () => {
     });
 
     return () => {
+      socket.emit("leaveRoom", { roomId });
       socket.off("receiveMessage");
-      socket.disconnect();
     };
   }, [roomId]);
 
@@ -50,11 +50,14 @@ const RoomChat = () => {
     try {
       const res = await axios.get(`/message/getMessages/${roomId}`);
       setMessages(res.data.messages);
-    } catch (err) {
-      console.error(
-        "Failed to fetch messages:",
-        err.response?.data || err.message
-      );
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -95,10 +98,13 @@ const RoomChat = () => {
       // Navigate back to the previous screen
       navigation.navigate("Discussions");
     } catch (error) {
-      console.error(
-        "Error leaving room:",
-        error.response?.data || error.message
-      );
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

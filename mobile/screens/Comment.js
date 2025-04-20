@@ -15,6 +15,7 @@ import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
+
 import Background from "../helpers/Background";
 
 const Comment = () => {
@@ -37,7 +38,13 @@ const Comment = () => {
       const response = await axios.get(`/comments/getComments/${blogId}`);
       setComments(response.data.comments);
     } catch (error) {
-      console.error("Failed to fetch comments");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Failed to fetch total comments" || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     } finally {
       setLoading(false);
     }

@@ -10,6 +10,8 @@ import {
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+
 import UserBlogs from "./UserBlogs";
 import Background from "../helpers/Background";
 
@@ -26,8 +28,14 @@ const UserProfile = () => {
       try {
         const res = await axios.get(`/user/${userId}`);
         setUser(res.data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Error fetching user" || "Something went wrong",
+          visibilityTime: 2000,
+          autoHide: true,
+        });
       } finally {
         setLoading(false);
       }

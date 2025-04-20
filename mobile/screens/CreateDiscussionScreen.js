@@ -50,7 +50,6 @@ const CreateDiscussionScreen = () => {
         ]);
       }
     } catch (error) {
-      console.error("Error creating room:", error);
       Alert.alert(
         "Error",
         error.response?.data?.message || "Failed to create room."

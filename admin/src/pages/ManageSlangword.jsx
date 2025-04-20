@@ -98,7 +98,7 @@ export default function ManageSlangWords() {
   return (
     <div className="h-full px-6 py-7 bg-primaryWhite overflow-x-hidden">
       {/* Header */}
-      <div className="mb-7 flex justify-between items-center">
+      <div className="mb-7 justify-between items-center">
         <h1 className="font-bold text-4xl text-primaryBlack">Slangwords</h1>
         <h3 className="font-normal text-base text-darkGray">Welcome Admin</h3>
       </div>

@@ -1,20 +1,19 @@
-import blogModel from "../models/blog.js";
+import blogModel from "../models/blogModel.js";
 import mongoose from "mongoose";
-import userModel from "../models/user.js";
-import topicModel from "../models/topics.js";
+import userModel from "../models/userModel.js";
+import topicModel from "../models/topicModel.js";
 
 export const createBlog = async (req, res) => {
   try {
     let { title, subTitle, content, topics } = req.body;
     const authorId = req.user.id;
 
-    // Ensure that none of the required fields are empty
     if (!title || !subTitle || !content) {
       return res.status(404).json({ error: "Please fill all the fields." });
     }
 
     if (typeof topics === "string") {
-      topics = JSON.parse(topics); // Convert back to an array
+      topics = JSON.parse(topics); // Convert json string to js object/array
     }
 
     // Validate topics
@@ -25,7 +24,7 @@ export const createBlog = async (req, res) => {
       return res.status(400).json({ error: "Invalid topics format" });
     }
 
-    // Parse the `content` field from the request body
+    // Parse the content from the request body
     let parsedContent;
     try {
       parsedContent = JSON.parse(content); // Parse the content JSON string
@@ -48,20 +47,18 @@ export const createBlog = async (req, res) => {
       : [];
 
     // Update the parsed content with the image paths
-    let imageIndex = 0; // Keep track of image assignment
+    let imageIndex = 0;
     parsedContent.forEach((item) => {
       if (item.type === "image") {
         if (imageIndex < images.length) {
-          // Assign the next available image
           item.value = images[imageIndex];
-          imageIndex++; // Move to the next image
+          imageIndex++;
         } else {
-          item.value = ""; // No image available for this slot
+          item.value = "";
         }
       }
     });
 
-    // Create a new blog post in the database
     const newBlog = new blogModel({
       title,
       subTitle,
@@ -70,10 +67,8 @@ export const createBlog = async (req, res) => {
       topics,
     });
 
-    // Save the new blog post
     await newBlog.save();
 
-    // Find the author and associate the blog with the author
     const author = await userModel.findById(authorId);
     if (!author) {
       return res.status(404).json({ error: "Author not found." });
@@ -81,7 +76,6 @@ export const createBlog = async (req, res) => {
     author.blogs.push(newBlog._id);
     await author.save();
 
-    // Respond with success
     res.status(200).json({ message: "Blog created successfully", newBlog });
   } catch (error) {
     console.error("Error while creating blog:", error);
@@ -109,15 +103,14 @@ export const editBlog = async (req, res) => {
         .json({ error: "You are not authorized to edit this blog" });
     }
 
-    // Ensure that none of the required fields are empty
     if (!title || !subTitle || !content) {
       return res
         .status(404)
         .json({ error: "Title, Subtitle, and Content are required." });
     }
 
-    // Parse the `content` field
-    let parsedContent = blog.content; // Use existing content if not provided
+    // Parse the content field
+    let parsedContent = blog.content;
     if (content) {
       try {
         parsedContent = JSON.parse(content);
@@ -152,18 +145,17 @@ export const editBlog = async (req, res) => {
       ? req.files.map((file) => `/blogImages/${file.filename}`)
       : [];
 
-    let imageIndex = 0; // Index for new images
+    let imageIndex = 0;
     parsedContent = parsedContent.map((item, idx) => {
       if (item.type === "image") {
         if (item.value.startsWith("/blogImages/")) {
-          // Preserve existing image if not replaced
           return item;
         } else if (imageIndex < images.length) {
           // Replace with new image if available
           item.value = images[imageIndex];
           imageIndex++;
         } else {
-          // No image available for this slot
+          // No image available
           item.value = "";
         }
       }
@@ -223,7 +215,7 @@ export const getLatestBlogs = async (req, res) => {
       .populate("likes", " _id")
       .populate({
         path: "comments",
-        match: { isHidden: { $ne: true } }, // Exclude hidden comments
+        match: { isHidden: { $ne: true } },
         select: "_id",
       })
       .sort({ createdAt: -1 })
@@ -310,7 +302,7 @@ export const getTrendingBlogs = async (req, res) => {
         commentCount: blog.comments.length,
         trendingScore: blog.likes.length + blog.comments.length,
       }))
-      .sort((a, b) => b.trendingScore - a.trendingScore)[0]; // Get the top blog only
+      .sort((a, b) => b.trendingScore - a.trendingScore)[0];
 
     res.status(200).json(trending);
   } catch (error) {
@@ -326,13 +318,12 @@ export const getBlogsByTopic = async (req, res) => {
     let blogs;
 
     if (!topicName) {
-      // No topic specified – return all blogs
+      // No topic specified then return all blogs
       blogs = await blogModel
         .find()
         .populate("topics", "name")
         .populate("author", "name image");
     } else {
-      // Find topic by name
       const topic = await topicModel.findOne({ name: topicName });
 
       if (!topic) {
@@ -341,7 +332,6 @@ export const getBlogsByTopic = async (req, res) => {
           .json({ error: `Topic '${topicName}' not found` });
       }
 
-      // Find blogs by topic ID
       blogs = await blogModel
         .find({ topics: topic._id })
         .populate("topics", "name")

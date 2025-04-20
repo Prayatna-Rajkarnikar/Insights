@@ -1,5 +1,5 @@
 import commentModel from "../models/commentModel.js";
-import userModel from "../models/user.js";
+import userModel from "../models/userModel.js";
 
 export const flagComment = async (req, res) => {
   try {

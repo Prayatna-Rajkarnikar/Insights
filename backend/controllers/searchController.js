@@ -1,6 +1,6 @@
-import topicModel from "../models/topics.js";
-import blogModel from "../models/blog.js";
-import userModel from "../models/user.js";
+import topicModel from "../models/topicModel.js";
+import blogModel from "../models/blogModel.js";
+import userModel from "../models/userModel.js";
 import roomModel from "../models/roomModel.js";
 
 export const searchTopic = async (req, res) => {

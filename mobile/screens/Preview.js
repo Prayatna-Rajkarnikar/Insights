@@ -6,7 +6,6 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
-  Alert,
 } from "react-native";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -22,23 +21,10 @@ const Preview = ({ route }) => {
 
   const [loading, setLoading] = useState(false);
 
-  // Get the first image from content sections if available
+  // Get the first image from content sections
   const firstImage = contentSections.find(
     (section) => section.type === "image"
   )?.value;
-
-  // Get text preview from content sections
-  const getTextPreview = () => {
-    const textSection = contentSections.find(
-      (section) => section.type === "text"
-    );
-    if (textSection && textSection.value) {
-      return textSection.value.length > 120
-        ? textSection.value.substring(0, 120) + "..."
-        : textSection.value;
-    }
-    return "";
-  };
 
   const createBlog = async () => {
     setLoading(true);
@@ -91,8 +77,6 @@ const Preview = ({ route }) => {
             ? error.response.data.error
             : error.message || "Something went wrong";
 
-        console.error("Create blog error:", error);
-
         if (attempts >= maxAttempts) {
           Toast.show({
             type: "error",
@@ -108,14 +92,6 @@ const Preview = ({ route }) => {
         }
       }
     }
-  };
-
-  // Confirm publish
-  const confirmPublish = () => {
-    Alert.alert("Publish Blog", "Are you sure you want to publish this blog?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Publish", onPress: createBlog },
-    ]);
   };
 
   return (
@@ -135,78 +111,74 @@ const Preview = ({ route }) => {
         <View style={{ width: 70 }} />
       </View>
 
-      {/* Preview Description */}
-      <View className="mb-6">
-        <Text className="text-primaryWhite text-xl font-bold mb-2">
-          Ready to Publish
-        </Text>
-        <Text className="text-lightGray">
-          This is how your blog will appear to readers. Review everything before
-          publishing.
-        </Text>
-      </View>
-
-      {/* Blog Preview Card */}
-      <View className="bg-secondaryBlack rounded-xl overflow-hidden mb-6">
-        {firstImage ? (
-          <Image
-            source={{ uri: firstImage.uri }}
-            className="w-full h-48"
-            resizeMode="cover"
-          />
-        ) : (
-          <View className="w-full h-48 bg-primaryBlack items-center justify-center">
-            <Ionicons name="image-outline" size={40} color="#ABABAB" />
-            <Text className="text-lightGray mt-2">No cover image</Text>
-          </View>
-        )}
-
-        <View className="p-4">
+      <ScrollView>
+        {/* Preview Description */}
+        <View className="mb-6">
           <Text className="text-primaryWhite text-xl font-bold mb-2">
-            {title}
+            Ready to Publish
           </Text>
+          <Text className="text-lightGray">
+            This is how your blog will appear to readers. Review everything
+            before publishing.
+          </Text>
+        </View>
 
-          {subtitle ? (
-            <Text className="text-lightGray mb-3">{subtitle}</Text>
+        {/* Blog Preview Card */}
+        <View className="bg-secondaryBlack rounded-xl overflow-hidden mb-6">
+          {firstImage ? (
+            <Image
+              source={{ uri: firstImage.uri }}
+              className="w-full h-48"
+              resizeMode="cover"
+            />
           ) : (
-            getTextPreview() && (
-              <Text className="text-lightGray mb-3">{getTextPreview()}</Text>
-            )
+            <View className="w-full h-48 bg-primaryBlack items-center justify-center">
+              <Ionicons name="image-outline" size={40} color="#ABABAB" />
+              <Text className="text-lightGray mt-2">No cover image</Text>
+            </View>
           )}
 
-          {/* Author and Date */}
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lightGray text-xs">
-              {new Date().toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+          <View className="p-4">
+            <Text className="text-primaryWhite text-xl font-bold mb-2">
+              {title}
             </Text>
+
+            <Text className="text-lightGray mb-3">{subtitle}</Text>
+
+            {/* Author and Date */}
+            <View className="flex-row items-center justify-between mb-3">
+              <Text className="text-lightGray text-xs">
+                {new Date().toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Topics Section */}
-      <View className="bg-secondaryBlack rounded-xl p-4 mb-6">
-        <Text className="text-primaryWhite font-bold mb-3">
-          Selected Topics
-        </Text>
+        {/* Topics Section */}
+        <View className="bg-secondaryBlack rounded-xl p-4 mb-6">
+          <Text className="text-primaryWhite font-bold mb-3">
+            Selected Topics
+          </Text>
 
-        <View className="flex-row flex-wrap">
-          {selectedTopics.map((topic) => (
-            <View
-              key={topic._id}
-              className="bg-accent rounded-full px-3 py-2 mr-2 mb-2"
-            >
-              <Text className="text-primaryWhite">{topic.name}</Text>
-            </View>
-          ))}
+          <View className="flex-row flex-wrap">
+            {selectedTopics.map((topic) => (
+              <View
+                key={topic._id}
+                className="bg-accent rounded-full px-3 py-2 mr-2 mb-2"
+              >
+                <Text className="text-primaryWhite">{topic.name}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
 
-      {/* Publish Button */}
-      <Button onPress={createBlog} label="Publish" />
+        {/* Publish Button */}
+        <Button onPress={createBlog} label="Publish" />
+      </ScrollView>
     </Background>
   );
 };

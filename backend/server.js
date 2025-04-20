@@ -38,7 +38,11 @@ app.options("*", cors());
 
 app.use(express.json());
 app.use(morgan("combined"));
+
+//parse the cookies and make them available in req.cookies
 app.use(cookieParser());
+
+//allows to access form data
 app.use(express.urlencoded({ extended: false }));
 
 const __filename = fileURLToPath(import.meta.url);
@@ -75,7 +79,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://192.168.1.8:3001", //
+    origin: "http://100.64.197.40:3001", //
     credentials: true,
   },
 });
@@ -90,10 +94,9 @@ io.on("connection", (socket) => {
   });
   socket.on("sendMessage", async ({ roomId, message, user }) => {
     try {
-      // Save the message to the database
       const newMessage = new messageModel({
         roomId,
-        user: user._id, // Save the user ID
+        user: user._id,
         message,
       });
       await newMessage.save();

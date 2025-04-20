@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 import Background from "../helpers/Background";
 
 const Search = () => {
@@ -25,7 +26,13 @@ const Search = () => {
       const response = await axios.get(`/search/searchBlogs?query=${query}`);
       setBlogs(response.data);
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -34,7 +41,13 @@ const Search = () => {
       const response = await axios.get(`/search/searchUsers?query=${query}`);
       setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

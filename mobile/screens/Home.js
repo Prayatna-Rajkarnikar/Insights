@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 import Background from "../helpers/Background";
 
@@ -28,7 +29,13 @@ const Home = () => {
       const topicNames = res.data.map((topic) => topic.name);
       setCategories(["All", ...topicNames]);
     } catch (error) {
-      console.error("Error fetching topics:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Error fetching most used topics" || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -37,7 +44,13 @@ const Home = () => {
       const res = await axios.get("/blog/trending");
       setTrending(res.data);
     } catch (error) {
-      console.error("Error fetching trending blogs:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Error fetching trending post" || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -52,7 +65,13 @@ const Home = () => {
         setLatest(res.data);
       }
     } catch (error) {
-      console.error("Error fetching blogs by category:", error);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     } finally {
       setLoading(false);
     }

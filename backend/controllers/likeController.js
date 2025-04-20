@@ -1,5 +1,5 @@
 import likeModel from "../models/likeModel.js";
-import blogModel from "../models/blog.js";
+import blogModel from "../models/blogModel.js";
 
 export const toggleLike = async (req, res) => {
   try {

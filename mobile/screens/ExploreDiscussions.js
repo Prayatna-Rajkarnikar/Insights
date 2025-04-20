@@ -26,7 +26,13 @@ const ExploreDiscussions = () => {
       setFilteredRooms(response.data);
     } catch (err) {
       setError("Failed to fetch discussions");
-      console.error("Error fetching discussions:", err);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -49,10 +55,13 @@ const ExploreDiscussions = () => {
         setFilteredRooms(response.data);
       }
     } catch (error) {
-      console.error(
-        "Error searching user chats:",
-        error.response?.data || error.message
-      );
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error.response.data.error || "Something went wrong",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
@@ -81,7 +90,7 @@ const ExploreDiscussions = () => {
           type: "success",
           position: "bottom",
           text1: response.data.message,
-          visibilityTime: 2000,
+          visibilityTime: 8000,
           autoHide: true,
         });
         const { userId, userName, roomName } = response.data;

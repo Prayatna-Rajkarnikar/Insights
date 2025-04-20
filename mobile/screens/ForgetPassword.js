@@ -56,7 +56,7 @@ const ForgetPassword = () => {
 
   return (
     <Background>
-      {/* close icon */}
+      {/* Back Button */}
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className="flex-row items-center"
@@ -65,7 +65,7 @@ const ForgetPassword = () => {
         <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
 
-      {/* heading */}
+      {/* Heading */}
       <View className="mt-5">
         <Text className="text-3xl font-bold text-primaryWhite">
           Forget Password
@@ -74,12 +74,14 @@ const ForgetPassword = () => {
 
       {/* Input Fields */}
       <View className="mt-6">
+        {/* Email */}
         <InputField
           placeholder="Enter email address"
           value={email}
           onChangeText={setEmail}
         />
 
+        {/* Password */}
         <View className="relative">
           <InputField
             placeholder="Enter Password"
@@ -99,6 +101,7 @@ const ForgetPassword = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Confirm Password */}
         <View className="relative">
           <InputField
             placeholder="Enter Confirm Password"
@@ -118,7 +121,7 @@ const ForgetPassword = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Btn */}
+        {/* Done Btn */}
         <Button onPress={resetPassword} label="Done" />
       </View>
     </Background>

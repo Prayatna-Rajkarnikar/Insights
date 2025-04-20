@@ -37,6 +37,7 @@ const LoginScreen = () => {
       });
       navigation.navigate("Home");
     } catch (error) {
+      // If the account is deactivated (403 status code), show a modal
       if (error.response.status === 403) {
         setModalVisible(true);
       } else {
@@ -53,19 +54,21 @@ const LoginScreen = () => {
 
   return (
     <Background>
-      {/* heading */}
+      {/* Heading */}
       <View className="mt-14">
         <Text className="text-3xl font-bold text-primaryWhite">Login</Text>
       </View>
 
       {/* Input Fields */}
       <View className="mt-6">
+        {/* Email field */}
         <InputField
           placeholder="Enter email address"
           value={email}
           onChangeText={setEmail}
         />
 
+        {/* Password field */}
         <View className="relative">
           <InputField
             placeholder="Enter Password"
@@ -86,7 +89,7 @@ const LoginScreen = () => {
         </View>
       </View>
 
-      {/* Forget password */}
+      {/* Forget password field*/}
       <TouchableOpacity
         onPress={() => navigation.navigate("ForgetPassword")}
         className="mt-1 mb-6"
@@ -112,6 +115,7 @@ const LoginScreen = () => {
         </Text>
       </TouchableOpacity>
 
+      {/* Modal if account is deactivated */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View className="flex-1 justify-center items-center bg-secondaryBlack">
           <View className="w-3/4 p-5 bg-primaryBlack rounded-xl">

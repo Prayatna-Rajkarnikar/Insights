@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -10,6 +9,7 @@ import Button from "../helpers/Button";
 import Background from "../helpers/Background";
 
 const CompleteProfile = ({ route, navigation }) => {
+  //accept route and navigation props
   const { userData } = route.params;
   const { email, password, confirmPassword } = userData;
 
@@ -48,7 +48,7 @@ const CompleteProfile = ({ route, navigation }) => {
 
   return (
     <Background>
-      {/* close icon */}
+      {/* Back button*/}
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className="flex-row items-center"
@@ -57,13 +57,14 @@ const CompleteProfile = ({ route, navigation }) => {
         <Text className="text-primaryWhite text-lg ml-2">Back</Text>
       </TouchableOpacity>
 
-      {/* heading */}
+      {/* Heading */}
       <View className="mt-5">
         <Text className="text-3xl font-bold text-primaryWhite">
           Complete Profile
         </Text>
       </View>
 
+      {/* Instructions for username */}
       <View className="mt-1">
         <Text className="text-sm font-normal text-lightGray">
           Username must range from 4 to 20 characters and can only have letters,
@@ -84,6 +85,8 @@ const CompleteProfile = ({ route, navigation }) => {
           onChangeText={setUsername}
         />
       </View>
+
+      {/* Button */}
       <Button onPress={registerUser} label="Done" />
     </Background>
   );

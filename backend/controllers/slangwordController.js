@@ -54,7 +54,6 @@ export const filterSlangword = async (content) => {
       return { filteredText: content, isBlurred: false };
     }
 
-    // Split by word boundaries to ensure punctuation is handled properly
     let words = content.split(/\b/);
     let foundSlangs = false;
 
@@ -164,7 +163,7 @@ export const searchSlangword = async (req, res) => {
     const data = fs.readFileSync(filePath, "utf8");
     const wordsList = JSON.parse(data);
 
-    // Filter words that match the query (case-insensitive)
+    // Filter words that match the query
     const matchedWords = wordsList.filter((word) =>
       word.toLowerCase().includes(query.toLowerCase())
     );

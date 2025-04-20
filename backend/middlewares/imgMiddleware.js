@@ -1,13 +1,13 @@
 import multer from "multer";
 import path from "path";
 
-// Define allowed image file types
+// allowed image file types
 const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    // Dynamically set the folder based on the request or route
-    let folder = "./public/images"; // Default folder (for registration, etc.)
+    //set the folder based on the request or route
+    let folder = "./public/images";
 
     if (req.baseUrl.includes("/blog")) {
       folder = "./public/blogImages"; // Folder for blog images
@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callback) => {
     const ext = path.extname(file.originalname);
+
     callback(null, Date.now() + ext); // Generate a unique filename
   },
 });

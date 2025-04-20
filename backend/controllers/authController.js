@@ -1,20 +1,20 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import userModel from "../models/user.js";
 import { validate } from "email-validator";
+
+import userModel from "../models/userModel.js";
 
 export const validDetails = async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
 
-    // Check if all fields are filled
     if (!email || !password || !confirmPassword) {
       return res.status(401).json({ error: "Please fill all the fields" });
     }
 
+    // Remove any extra spaces
     const trimmedEmail = email.trim();
 
-    // Validate email format
     if (!validate(trimmedEmail)) {
       return res.status(400).json({ error: "Email is not valid." });
     }
@@ -25,13 +25,14 @@ export const validDetails = async (req, res) => {
       return res.status(400).json({ error: "Email already exists." });
     }
 
-    // Ensure password meets length and complexity requirements
+    // Ensure password meets length
     if (password.length < 8) {
       return res.status(400).json({
         error: "Password must be at least 8 characters long.",
       });
     }
 
+    // to validate if the password has at least one lowercase, one uppercase letter, and one number
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=[A-Za-z\d@_]*$)[A-Za-z\d@_]{8,}$/;
     if (!passwordRegex.test(password)) {
@@ -49,18 +50,14 @@ export const validDetails = async (req, res) => {
 
     return res.status(202).json({ message: "Valid details." });
   } catch (error) {
-    console.error(error); // Log the error for debugging purposes
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export const registerUser = async (req, res) => {
   try {
-    // This pulls the user's input data directly from the request body,
-    // allowing us to access email and password as variables
     const { name, email, username, password, role } = req.body;
 
-    //It ensures that fields are not empty.
     if (!name || !username) {
       return res.status(401).json({ error: "Please fill all the fields" });
     }
@@ -70,7 +67,7 @@ export const registerUser = async (req, res) => {
     const trimmedEmail = email.trim();
     const trimmedUsername = username.trim();
 
-    //It ensures that name can contain only Letters and Spaces
+    //It ensures that  can contain only Letters and Spaces
     const nameRegex = /^[a-zA-Z\s]*$/;
     if (!nameRegex.test(trimmedName)) {
       return res.status(400).json({
@@ -113,7 +110,6 @@ export const registerUser = async (req, res) => {
     await newUser.save();
     res.status(200).json({ message: "Registered Successfully" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -121,11 +117,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     // Destructure email and password from req.body
-    // This pulls the user's input data directly from the request body,
-    // allowing us to access email and password as variables
     const { email, password } = req.body;
-
-    //It ensures that fields are not empty.
 
     if (!email || !password) {
       return res.status(401).json({ error: "Please fill all the fields" });
@@ -134,7 +126,6 @@ export const loginUser = async (req, res) => {
     //Trim Inputs
     const trimmedEmail = email.trim();
 
-    //It ensures that email is in correct format.
     const emailValidation = validate(trimmedEmail);
     if (!emailValidation) {
       return res.status(400).json({ error: "Email is not valid" });
@@ -221,7 +212,6 @@ export const forgetPassword = async (req, res) => {
         error: "Invalid Password",
       });
     }
-    // It ensures that passoword and confirm passoword field matches.
 
     if (newPassword !== verifyNewPassword) {
       return res
@@ -245,6 +235,7 @@ export const forgetPassword = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
+  //clear the cookie named token
   res.clearCookie("token");
-  res.json({ message: "Logout Sucessful" });
+  res.status(200).json({ message: "Logout Successful" });
 };

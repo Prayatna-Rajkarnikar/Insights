@@ -42,7 +42,6 @@ const UserBlogs = ({ userId, onBlogDeleted }) => {
           });
           setTopics(["All", ...Array.from(extractedTopics)]);
         } catch (error) {
-          console.error("Error fetching blogs:", error);
           Toast.show({
             type: "error",
             position: "bottom",
