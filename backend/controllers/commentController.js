@@ -43,8 +43,8 @@ export const createComment = async (req, res) => {
       updatedUser = await userModel.findByIdAndUpdate(
         author,
         {
-          $push: { flaggedComments: newComment.id },
-          $inc: { warnings: 1 },
+          $push: { flaggedComments: newComment.id }, //Appends a value onto the end of an array field.
+          $inc: { warnings: 1 }, // increase a numeric field by the given amount
         },
         { new: true } // This ensures the updated user object
       );
@@ -53,6 +53,7 @@ export const createComment = async (req, res) => {
     }
 
     if (updatedUser?.warnings % 3 === 0) {
+      //safely access a property on an object that might be null or undefined
       await sendUserDeactivateEmail(updatedUser);
     }
 
@@ -93,7 +94,7 @@ export const getComments = async (req, res) => {
       .find({ blog: blogId, isHidden: false })
       .populate("author", "email name image")
       .sort({ createdAt: -1 })
-      .exec();
+      .exec(); //executes the built‐up query
     res.status(200).json({ comments });
   } catch (error) {
     res.status(500).json({ message: "Error fetching comments", error });

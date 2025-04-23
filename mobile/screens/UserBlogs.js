@@ -111,6 +111,7 @@ const UserBlogs = ({ userId, onBlogDeleted }) => {
           blog.topics?.some((topic) => topic.name === selectedTopic)
         );
 
+  // Topicsin which user have created blog on
   const renderFilter = () => (
     <ScrollView
       horizontal

@@ -30,15 +30,14 @@ export const flagComment = async (req, res) => {
     user.flaggedComments.push(commentId);
     await user.save();
 
-    // Increment the flag count
     comment.flags.count += 1;
 
     // Check if flag count reaches 3
     if (comment.flags.count >= 3) {
-      comment.isHidden = true; // Hide the comment
+      comment.isHidden = true;
     }
 
-    await comment.save(); // Save after updating flag count and isHidden status
+    await comment.save();
 
     // If comment is hidden, increase author's warnings
     if (comment.isHidden) {

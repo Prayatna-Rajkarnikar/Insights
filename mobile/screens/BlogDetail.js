@@ -70,7 +70,8 @@ const BlogDetail = () => {
     }
   };
 
-  //
+  //  usefocuseffect allows you to run side effects when a screen comes into focus.
+  // usecallback to prevent unnecessary re-renders
   useFocusEffect(
     useCallback(() => {
       getTotalComments(blogId);
@@ -180,6 +181,7 @@ const BlogDetail = () => {
           </View>
         </View>
 
+        {/* Blog detail */}
         <View className="py-2">
           <Text className="text-2xl font-bold text-primaryWhite">
             {blog.title}
@@ -219,6 +221,7 @@ const BlogDetail = () => {
         </View>
       </ScrollView>
 
+      {/* Action buttons */}
       <View className="flex-row justify-evenly py-5">
         <TouchableOpacity
           onPress={() => navigation.navigate("Like", { blogId })}

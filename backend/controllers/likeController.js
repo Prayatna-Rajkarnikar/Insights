@@ -18,11 +18,11 @@ export const toggleLike = async (req, res) => {
 
     if (existingLike) {
       await likeModel.findByIdAndDelete(existingLike._id);
-      blogPost.likes.pull(existingLike._id);
+      blogPost.likes.pull(existingLike._id); //removes all matching values
     } else {
       const newLike = new likeModel({ user: userId, blog: blogId });
       await newLike.save();
-      blogPost.likes.push(newLike._id);
+      blogPost.likes.push(newLike._id); //Adds a value to the end of an array.
     }
 
     await blogPost.save();
@@ -56,6 +56,7 @@ export const getTotalLikes = async (req, res) => {
     const userId = req.user.id;
 
     const likeCount = await likeModel.countDocuments({ blog: blogId });
+    // checks if at least one document matches the given condition without actually retrieving the whole document.
     const isLiked = await likeModel.exists({ user: userId, blog: blogId });
 
     res.status(200).json({ likeCount, isLiked: Boolean(isLiked) });

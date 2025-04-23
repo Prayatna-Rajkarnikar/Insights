@@ -1,5 +1,6 @@
 import { View } from "react-native";
 
+//destructuring props
 const Background = ({ children, className = "" }) => {
   return (
     <View className={`bg-primaryBlack flex-1 px-4 pt-7 pb-4 ${className}`}>

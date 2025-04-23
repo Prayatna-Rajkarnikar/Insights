@@ -45,9 +45,16 @@ app.use(cookieParser());
 //allows to access form data
 app.use(express.urlencoded({ extended: false }));
 
+//import.meta.url gives you the current module’s file URL
+//converts that file URL to a regular path string.
+//file:///Users/name/project/index.js to /Users/name/project/index.js
 const __filename = fileURLToPath(import.meta.url);
+
+// Extracts just the directory part from __filename
+// /Users/name/project
 const __dirname = path.dirname(__filename);
 
+// serve static files (like images, CSS, JS, etc.) from a folder called public
 app.use(express.static(path.join(__dirname, "./public")));
 dbConnect();
 
@@ -64,6 +71,9 @@ app.use("/flag", flagRoute);
 app.use("/room", roomRoute);
 app.use("/message", messageRoute);
 
+// Reads a file asynchronously.
+// Builds the full file path
+// utf Specifies the encoding, so the content is read as a human-readable string
 fs.readFile(path.join(__dirname, "slangwords.json"), "utf8", (error, data) => {
   try {
     let words = JSON.parse(data);
@@ -77,13 +87,15 @@ const server = app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
+// Creates a new Socket.IO server instance and attaches it to an existing HTTP server
 const io = new Server(server, {
   cors: {
-    origin: "http://100.64.197.40:3001", //
+    origin: "http://192.168.1.7:3001", //
     credentials: true,
   },
 });
 
+// Listens for new client connections.
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
@@ -92,6 +104,8 @@ io.on("connection", (socket) => {
     console.log(`${user.name} joined room ${roomId}`);
     socket.join(roomId);
   });
+
+  //send message
   socket.on("sendMessage", async ({ roomId, message, user }) => {
     try {
       const newMessage = new messageModel({
@@ -102,6 +116,7 @@ io.on("connection", (socket) => {
       await newMessage.save();
 
       // Emit the message to the room with the correct user information
+      // ensures only users in that room receive the message.
       io.to(roomId).emit("receiveMessage", {
         _id: newMessage._id,
         message: newMessage.message,
@@ -118,6 +133,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Logs when a user disconnects.
   socket.on("disconnect", () => {
     console.log("A user disconnected:", socket.id);
   });

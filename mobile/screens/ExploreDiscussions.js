@@ -11,6 +11,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+
 import Background from "../helpers/Background";
 
 const ExploreDiscussions = () => {
@@ -111,6 +112,7 @@ const ExploreDiscussions = () => {
 
   return (
     <Background>
+      {/* Header */}
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className="flex-row items-center"
@@ -121,6 +123,8 @@ const ExploreDiscussions = () => {
       <Text className="text-2xl font-bold my-4 text-primaryWhite">
         Explore Discussions
       </Text>
+
+      {/* Search bar */}
       <View className="mb-4">
         <View className="flex-row items-center bg-secondaryBlack rounded-full px-4 py-2">
           <Ionicons name="search-outline" size={20} color="#ABABAB" />
@@ -143,6 +147,8 @@ const ExploreDiscussions = () => {
           )}
         </View>
       </View>
+
+      {/* Search result */}
       {filteredRooms.length === 0 ? (
         <View className="flex-1 items-center justify-center py-20 bg-secondaryBlack rounded-xl">
           <Ionicons name="chatbubbles-outline" size={60} color="#ABABAB" />

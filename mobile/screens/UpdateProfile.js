@@ -119,7 +119,7 @@ const UpdateProfile = () => {
           Toast.show({
             type: "error",
             position: "bottom",
-            text1: "Something went wrong",
+            text1: errorMessage,
             visibilityTime: 2000,
             autoHide: true,
           });

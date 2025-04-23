@@ -84,6 +84,7 @@ const Likes = () => {
         Likes
       </Text>
 
+      {/* Likes */}
       {likeList.length === 0 ? (
         <Background>
           <View className="flex-1 justify-center items-center">

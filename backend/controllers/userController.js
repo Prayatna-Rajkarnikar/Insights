@@ -86,7 +86,7 @@ export const editProfile = async (req, res) => {
       // to ensure updated username is unique
       if (usernameExist && usernameExist._id.toString() !== userId) {
         return res.status(400).json({
-          message: "Username is already taken.",
+          error: "Username is already taken.",
         });
       }
     }

@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs";
 
-const __dirname = path.resolve();
-const filePath = path.join(__dirname, "slangwords.json");
+const __dirname = path.resolve(); // gives the absolute path to the current working directory.
+const filePath = path.join(__dirname, "slangwords.json"); //full path to the JSON file
 
 let slangwords = [];
-let slangSet = new Set();
+let slangSet = new Set(); // A Set created from the same array, used for quick lookup
 
 export const setSlangwords = (words) => {
   slangwords = words;
@@ -25,13 +25,14 @@ export const addSlangWord = async (req, res) => {
       return res.status(400).json({ error: "This word already exists." });
     }
 
+    // Add to both slangwords array and slangSet for fast lookup and persistent storage
     slangwords.push(lowerWord);
     slangSet.add(lowerWord);
 
     fs.writeFile(
       filePath,
-      JSON.stringify(slangwords, null, 2),
-      "utf8",
+      JSON.stringify(slangwords, null, 2), //converts array to Js string
+      "utf8", //tells it to read the file as text
       (err) => {
         if (err) {
           console.error("Error writing to slangwords.json:", err);
@@ -54,13 +55,14 @@ export const filterSlangword = async (content) => {
       return { filteredText: content, isBlurred: false };
     }
 
-    let words = content.split(/\b/);
+    let words = content.split(/\b/); //"You are a noob!" → ["You", " ", "are", " ", "a", " ", "noob", "!"]
+
     let foundSlangs = false;
 
+    // Loops through each word
     for (let i = 0; i < words.length; i++) {
       const lowerWord = words[i].toLowerCase();
 
-      // If the word is in the slangSet, apply filtering
       if (slangSet.has(lowerWord)) {
         foundSlangs = true;
         words[i] =
@@ -81,11 +83,12 @@ export const filterSlangword = async (content) => {
 
 export const getSlangwordList = async (req, res) => {
   try {
+    // checks if the slangwords.json file exists
     if (!fs.existsSync(filePath)) {
       return res.status(200).json({ list: [] });
     }
 
-    const data = fs.readFileSync(filePath, "utf8");
+    const data = fs.readFileSync(filePath, "utf8"); //tells it to read the file as text synchronously
     const wordsList = JSON.parse(data);
 
     res.status(200).json({ list: wordsList });

@@ -37,22 +37,34 @@ const Create = () => {
       return;
     }
 
-    // Validate each content section
-    const hasEmptySection = contentSections.some((section) => {
-      if (section.type === "text" || section.type === "bullet") {
-        return !section.value.trim(); // empty text or bullet
-      }
-      if (section.type === "image") {
-        return !section.value || !section.value.uri; // missing image
-      }
-      return false;
-    });
-
-    if (hasEmptySection) {
+    if (contentSections.length === 0) {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "Please fill all the fields.",
+        text1: "Please add at least one content section.",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      return;
+    }
+
+    // Validate each content section
+    const hasInvalidSection = contentSections.some((section) => {
+      if (section.type === "text" || section.type === "bullet") {
+        const content = section.value.trim();
+        return !content || content === "•";
+      }
+      if (section.type === "image") {
+        return !section.value || !section.value.uri;
+      }
+      return true;
+    });
+
+    if (hasInvalidSection) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Please fill all content fields properly.",
         visibilityTime: 2000,
         autoHide: true,
       });

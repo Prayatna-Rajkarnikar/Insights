@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const truncateStyle = {
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
+  whiteSpace: "nowrap", //It forces the text to stay on a single line.
+  overflow: "hidden", //Hides any content that overflows the element's box.
+  textOverflow: "ellipsis", //	If the text overflows, it adds a ... at the end
   maxWidth: "496px",
 };
 
@@ -45,6 +45,7 @@ export default function ManageBlogs() {
     }
   };
 
+  //Handle search
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {

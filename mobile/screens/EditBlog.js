@@ -64,7 +64,7 @@ const EditBlog = () => {
 
   const editBlog = async () => {
     setLoading(true);
-    const maxAttempts = 2; // Retry once after the first failure
+    const maxAttempts = 2;
     let attempts = 0;
 
     while (attempts < maxAttempts) {
@@ -109,7 +109,6 @@ const EditBlog = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-
         navigation.goBack();
         Toast.show({
           type: "success",

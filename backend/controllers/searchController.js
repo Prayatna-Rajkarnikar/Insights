@@ -7,7 +7,7 @@ export const searchTopic = async (req, res) => {
   try {
     const { query } = req.query;
     const topic = await topicModel.find({
-      name: { $regex: query, $options: "i" },
+      name: { $regex: query, $options: "i" }, //regular expression search and makes it case-insensitive
     });
     res.json(topic);
   } catch (error) {

@@ -10,8 +10,9 @@ import {
 import axios from "axios";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import Background from "../helpers/Background";
 import Toast from "react-native-toast-message";
+
+import Background from "../helpers/Background";
 
 const Discussions = () => {
   const [loading, setLoading] = useState(true);
@@ -70,6 +71,7 @@ const Discussions = () => {
 
   return (
     <Background>
+      {/* Headers */}
       <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -105,6 +107,7 @@ const Discussions = () => {
           <Text className="text-accent">{filteredRooms.length} rooms</Text>
         </View>
 
+        {/* Search bar */}
         <View className="mb-4">
           <View className="flex-row items-center bg-secondaryBlack rounded-full px-4 py-2">
             <Ionicons name="search-outline" size={20} color="#ABABAB" />
@@ -128,6 +131,7 @@ const Discussions = () => {
           </View>
         </View>
 
+        {/* Search Result */}
         {loading ? (
           <View className="flex-1 justify-center items-center bg-primaryBlack">
             <ActivityIndicator size="large" color="#3949AB" />

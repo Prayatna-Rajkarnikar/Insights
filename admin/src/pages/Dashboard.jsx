@@ -10,6 +10,7 @@ export default function Dashboard() {
   const [trending, setTrending] = useState(null);
   const [topics, setTopics] = useState([]);
 
+  // Fetch total number of users
   const fetchTotalUser = async () => {
     try {
       const response = await axios.get("/admin/getTotalUser");
@@ -19,6 +20,7 @@ export default function Dashboard() {
     }
   };
 
+  // Fetch total number of blogs
   const fetchTotalBlog = async () => {
     try {
       const response = await axios.get("/admin/getTotalBlogs");
@@ -28,6 +30,7 @@ export default function Dashboard() {
     }
   };
 
+  // Fetch trending blog
   const fetchBlogs = async () => {
     try {
       const response = await axios.get("/blog/trending");
@@ -38,6 +41,7 @@ export default function Dashboard() {
     }
   };
 
+  // Fetch most used topics
   const fetchTopics = async () => {
     try {
       const response = await axios.get("/topic/getMostUsedTopics");
@@ -48,6 +52,7 @@ export default function Dashboard() {
     }
   };
 
+  // Fetch all data on component mount
   useEffect(() => {
     fetchTotalUser();
     fetchTotalBlog();
@@ -124,7 +129,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Trending Blog Section */}
         {/* Trending Blog Section */}
         <div className="lg:w-[75%] h-full">
           <h3 className="font-medium text-base text-secondaryBlack ml-10 mb-3">

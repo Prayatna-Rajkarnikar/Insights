@@ -167,6 +167,7 @@ const Profile = () => {
         contentContainerStyle={{ paddingBottom: 20 }}
       />
 
+      {/* Menu icons */}
       {menuVisible && (
         <Animated.View
           className="absolute right-4 z-10 bg-secondaryBlack rounded-xl shadow-lg"

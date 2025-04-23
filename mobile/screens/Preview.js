@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -177,7 +177,13 @@ const Preview = ({ route }) => {
         </View>
 
         {/* Publish Button */}
-        <Button onPress={createBlog} label="Publish" />
+        {loading ? (
+          <View className="rounded-full py-5 mt-8 bg-accent">
+            <ActivityIndicator size="large" color="#E8E8E8" />
+          </View>
+        ) : (
+          <Button onPress={createBlog} label="Publish" />
+        )}
       </ScrollView>
     </Background>
   );

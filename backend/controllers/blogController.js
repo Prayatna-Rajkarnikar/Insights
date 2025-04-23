@@ -85,18 +85,16 @@ export const createBlog = async (req, res) => {
 
 export const editBlog = async (req, res) => {
   try {
-    let { title, subTitle, content, topics } = req.body;
+    let { title, subTitle, content } = req.body;
 
     const author = req.user.id;
     const blogId = req.params.id.trim();
 
     const blog = await blogModel.findById(blogId);
-
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
 
-    // Check if the logged-in user is the author of the blog
     if (blog.author.toString() !== author) {
       return res
         .status(403)
@@ -104,71 +102,97 @@ export const editBlog = async (req, res) => {
     }
 
     if (!title || !subTitle || !content) {
-      return res
-        .status(404)
-        .json({ error: "Title, Subtitle, and Content are required." });
+      return res.status(400).json({ error: "Please fill all the fields." });
     }
 
-    // Parse the content field
-    let parsedContent = blog.content;
-    if (content) {
-      try {
-        parsedContent = JSON.parse(content);
-      } catch (error) {
+    let parsedContent = [];
+    try {
+      parsedContent = JSON.parse(content);
+    } catch (error) {
+      return res.status(400).json({
+        error: "Invalid content format. It should be a valid JSON array.",
+      });
+    }
+
+    if (!Array.isArray(parsedContent) || parsedContent.length === 0) {
+      return res.status(400).json({ error: "Please fill the content field." });
+    }
+
+    // Check if there's an image section, but it's optional
+    const firstImage = parsedContent.find(
+      (section) => section.type === "image"
+    )?.value;
+
+    if (firstImage) {
+      // Validate image if found
+      if (typeof firstImage !== "string" || firstImage.trim().length === 0) {
         return res.status(400).json({
-          error: "Invalid content format. It should be a valid JSON array.",
+          error: "Image section found, but it's empty or invalid",
         });
       }
+    }
 
-      // Ensure the content is a non-empty array
-      if (!Array.isArray(parsedContent) || parsedContent.length === 0) {
-        return res
-          .status(400)
-          .json({ error: "Content must be a non-empty array." });
+    // Validate content sections
+    const hasInvalidSection = parsedContent.some((section) => {
+      if (section.type === "text" || section.type === "bullet") {
+        const content =
+          typeof section.value === "string" ? section.value.trim() : "";
+        return !content || content === "•";
       }
+
+      if (section.type === "image") {
+        const imageUri =
+          typeof section.value === "object"
+            ? section.value?.uri
+            : section.value;
+        return (
+          !imageUri ||
+          typeof imageUri !== "string" ||
+          imageUri.trim().length === 0
+        );
+      }
+
+      return true; // Unknown section type is invalid
+    });
+
+    if (hasInvalidSection) {
+      return res.status(400).json({
+        error: "Please fill all content fields properly.",
+      });
     }
 
-    if (typeof topics === "string") {
-      topics = JSON.parse(topics); // Convert back to an array
-    }
-
-    // Validate topics
-    if (
-      !Array.isArray(topics) ||
-      !topics.every(mongoose.Types.ObjectId.isValid)
-    ) {
-      return res.status(400).json({ error: "Invalid topics format" });
-    }
-
-    // Process uploaded images and map them to the content array
+    // Process uploaded images (if any)
     const images = req.files
       ? req.files.map((file) => `/blogImages/${file.filename}`)
       : [];
 
     let imageIndex = 0;
-    parsedContent = parsedContent.map((item, idx) => {
+    parsedContent = parsedContent.map((item) => {
       if (item.type === "image") {
-        if (item.value.startsWith("/blogImages/")) {
-          return item;
+        if (
+          typeof item.value === "string" &&
+          item.value.startsWith("/blogImages/") &&
+          !item.value.startsWith("/blogImages/") // Checking if it's an old image
+        ) {
+          return item; // Already has image or placeholder
         } else if (imageIndex < images.length) {
-          // Replace with new image if available
           item.value = images[imageIndex];
           imageIndex++;
         } else {
-          // No image available
-          item.value = "";
+          item.value = ""; // Optional image handling (if no image provided)
         }
       }
       return item;
     });
 
-    // Update blog fields
-    if (title) blog.title = title;
-    if (subTitle) blog.subTitle = subTitle;
-    if (content) blog.content = parsedContent;
-    if (topics) blog.topics = topics;
+    // Save updated blog
+    blog.title = title;
+    blog.subTitle = subTitle;
+    blog.content = parsedContent;
 
     const updatedBlog = await blog.save();
+
+    console.log("Updated Blog:", updatedBlog);
 
     res.status(200).json({
       message: "Blog updated successfully!",

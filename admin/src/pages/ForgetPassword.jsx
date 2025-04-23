@@ -61,6 +61,7 @@ export default function ForgetPassword() {
           </h1>
           <form onSubmit={forgetPassword}>
             <div className="space-y-3">
+              {/* Email input */}
               <input
                 className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
                 type="email"
@@ -69,6 +70,7 @@ export default function ForgetPassword() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
+              {/* Password Input */}
               <div className="relative">
                 <input
                   className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
@@ -88,6 +90,8 @@ export default function ForgetPassword() {
                   )}
                 </span>
               </div>
+
+              {/* Confirm password input */}
               <div className="relative">
                 <input
                   className="w-full bg-secondaryWhite border border-lightGray rounded-lg p-4 text-sm text-secondaryBlack focus:outline-none focus:ring-2 focus:ring-primaryBlack"
@@ -108,6 +112,8 @@ export default function ForgetPassword() {
                 </span>
               </div>
             </div>
+
+            {/* Button */}
             <button
               className="mt-6 w-full py-3 rounded-full bg-primaryBlack text-primaryWhite text-base font-semibold hover:bg-secondaryBlack focus:outline-none"
               type="submit"

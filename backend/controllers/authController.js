@@ -19,6 +19,13 @@ export const validDetails = async (req, res) => {
       return res.status(400).json({ error: "Email is not valid." });
     }
 
+    const emailStartChar = trimmedEmail[0];
+    if (!/^[a-zA-Z0-9]/.test(emailStartChar)) {
+      return res
+        .status(400)
+        .json({ error: "Email cannot start with special characters." });
+    }
+
     // Check if email already exists in the database
     const emailExist = await userModel.findOne({ email: trimmedEmail });
     if (emailExist) {
@@ -67,7 +74,7 @@ export const registerUser = async (req, res) => {
     const trimmedEmail = email.trim();
     const trimmedUsername = username.trim();
 
-    //It ensures that  can contain only Letters and Spaces
+    //It ensures that it can contain only Letters and Spaces
     const nameRegex = /^[a-zA-Z\s]*$/;
     if (!nameRegex.test(trimmedName)) {
       return res.status(400).json({

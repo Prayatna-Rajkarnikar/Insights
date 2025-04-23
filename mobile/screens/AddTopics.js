@@ -39,6 +39,11 @@ const AddTopics = ({ route, navigation }) => {
       ...blogData,
       selectedTopics,
     };
+    console.log(
+      "Selected Topics being passed to Preview screen:",
+      selectedTopics
+    );
+
     navigation.navigate("Preview", { blogData: updatedBlogData });
   };
 
@@ -127,6 +132,7 @@ const AddTopics = ({ route, navigation }) => {
         <View style={{ width: 70 }} />
       </View>
 
+      {/* Select Topics info */}
       <View className="mb-6">
         <Text className="text-primaryWhite text-lg font-bold mb-2">
           Select Topics

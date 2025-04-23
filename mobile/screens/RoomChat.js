@@ -89,13 +89,11 @@ const RoomChat = () => {
 
   const handleLeaveRoom = async () => {
     try {
-      // Call the backend API to leave the room
       const response = await axios.put(`/room/leaveRoom/${roomId}`);
 
       // Emit the leave room event via socket
       socket.emit("leaveRoom", { roomId });
 
-      // Navigate back to the previous screen
       navigation.navigate("Discussions");
     } catch (error) {
       Toast.show({
@@ -110,6 +108,7 @@ const RoomChat = () => {
 
   return (
     <Background>
+      {/* Headers */}
       <View className="flex-row items-center justify-between mb-4 px-4">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -127,6 +126,7 @@ const RoomChat = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Messages */}
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -169,6 +169,7 @@ const RoomChat = () => {
         }}
       />
 
+      {/* Messge input */}
       <View className="flex-row items-center bg-secondaryBlack px-3 py-2 rounded-2xl my-4">
         <TextInput
           value={msg}

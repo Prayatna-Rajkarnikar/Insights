@@ -32,8 +32,8 @@ import RoomChat from "./screens/RoomChat";
 import ExploreDiscussions from "./screens/ExploreDiscussions";
 import CreateDiscussionScreen from "./screens/CreateDiscussionScreen";
 
-// axios.defaults.baseURL = "http://192.168.1.10:3001";
-axios.defaults.baseURL = "http://100.64.197.40:3001";
+axios.defaults.baseURL = "http://192.168.1.7:3001";
+// axios.defaults.baseURL = "http://100.64.197.40:3001";
 axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
